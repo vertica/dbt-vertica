@@ -13,7 +13,7 @@ setup(
     long_description=description,
     author='Matthew Carter',
     author_email='carter.matt.p@gmail.com',
-    url='github.com/MCarter/dbt-vertica',
+    url='github.com/mpcarter/dbt-vertica',
     packages=find_packages(),
     package_data={
         'dbt': [
