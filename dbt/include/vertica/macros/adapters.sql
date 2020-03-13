@@ -64,38 +64,6 @@
   {%- endcall %}
 {% endmacro %}
 
-{# macro vertica__drop_relation(relation) -%}
-  {% call statement('drop_relation', auto_begin=False) -%}
-    drop {{ relation.type }} if exists {{ relation }} cascade
-  {%- endcall %}
-{% endmacro #}
-
-{# macro vertica__truncate_relation(relation) -%}
-  {% call statement('truncate_relation') -%}
-    truncate table {{ relation }}
-  {%- endcall %}
-{% endmacro #}
-
-
-{# macro vertica__alter_column_type(relation, column_name, new_column_type) -#}
-  {#
-    1. Create a new column (w/ temp name and correct type)
-    2. Copy data over to it
-    3. Drop the existing column (cascade!)
-    4. Rename the new column to existing column
-  #}
-  {#
-  {%- set tmp_column = column_name + "__dbt_alter" -%}
-
-  {% call statement('alter_column_type') %}
-    alter table {{ relation }} add column {{ adapter.quote(tmp_column) }} {{ new_column_type }};
-    update {{ relation }} set {{ adapter.quote(tmp_column) }} = {{ adapter.quote(column_name) }};
-    alter table {{ relation }} drop column {{ adapter.quote(column_name) }} cascade;
-    alter table {{ relation }} rename column {{ adapter.quote(tmp_column) }} to {{ adapter.quote(column_name) }}
-  {% endcall %}
-
-{% endmacro %}
-#}
 
 {% macro vertica__get_columns_in_relation(relation) -%}
   {% call statement('get_columns_in_relation', fetch_result=True) %}
@@ -104,12 +72,34 @@
     , data_type
     , character_maximum_length 
     , numeric_precision 
-    , numeric_scale 
-    from v_catalog.columns
-    where table_schema = '{{ relation.schema }}'
-    and table_name = '{{ relation.identifier }}'
+    , numeric_scale
+    from (
+        select 
+        column_name
+        , data_type
+        , character_maximum_length 
+        , numeric_precision 
+        , numeric_scale 
+        , ordinal_position 
+        from v_catalog.columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+        union all
+        select 
+        column_name
+        , data_type
+        , character_maximum_length 
+        , numeric_precision 
+        , numeric_scale 
+        , ordinal_position 
+        from v_catalog.view_columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+    ) t
     order by ordinal_position 
   {% endcall %}
+  {% set table = load_result('get_columns_in_relation').table %}
+  {{ return(sql_convert_columns_in_relation(table)) }}
 {% endmacro %}
 
 {% macro vertica__create_view_as(relation, sql) %}
@@ -127,9 +117,59 @@
 
   {{ sql_header if sql_header is not none }}
 
-  create {% if temporary: -%}temporary{%- endif %} table
+  create {% if temporary: -%}local temporary{%- endif %} table
     {{ relation.include(database=(not temporary), schema=(not temporary)) }}
   as (
     {{ sql }}
   );
+{% endmacro %}
+
+{% macro vertica__make_temp_relation(base_relation, suffix) %}
+    {% set tmp_identifier = base_relation.identifier ~ suffix %}
+    {% do return(base_relation.incorporate(
+                                  path={
+                                    "identifier": tmp_identifier,
+                                    "schema": none,
+                                    "database": none
+                                  })) -%}
+{% endmacro %}
+
+{% macro vertica__get_catalog(information_schemas) -%}
+  {% call statement('get_catalog', fetch_result=True) %}
+    
+    select 
+    '{{ information_schema.database }}' table_database
+    , tab.table_schema
+    , tab.table_name
+    , 'TABLE' table_type
+    , comment table_comment
+    , tab.owner_name table_owner
+    , col.column_name 
+    , col.ordinal_position column_index
+    , col.data_type column_type
+    , nullif('','') column_comment
+    from v_catalog.tables tab
+    join v_catalog.columns col on tab.table_id = col.table_id 
+    left join v_catalog.comments on tab.table_id = object_id
+    where not(tab.is_system_table)
+    union all
+    select 
+    '{{ information_schema.database }}' table_database
+    , vw.table_schema
+    , vw.table_name
+    , 'VIEW' table_type
+    , comment table_comment
+    , vw.owner_name table_owner
+    , col.column_name 
+    , col.ordinal_position column_index
+    , col.data_type column_type
+    , nullif('','') column_comment
+    from v_catalog.views vw
+    join v_catalog.view_columns col on vw.table_id = col.table_id 
+    left join v_catalog.comments on vw.table_id = object_id
+    where not(vw.is_system_view)
+    order by table_schema, table_name, column_index 
+    
+  {% endcall %}
+  {{ return(load_result('get_catalog').table) }}
 {% endmacro %}

@@ -13,10 +13,11 @@ import vertica_python
 class verticaCredentials(Credentials):
     host: str
     database: str
-    port: int
     schema: str
     username: str
     password: str
+    port: int = 5433
+    withMaterialization: bool = False
 
 
     @property
@@ -61,6 +62,23 @@ class verticaConnectionManager(SQLConnectionManager):
             connection.state = 'fail'
             connection.handle = None
             raise dbt.exceptions.FailedToConnectException(str(exc))
+
+        # This is here mainly to support dbt-integration-tests.
+        # It globally enables WITH materialization for every connection dbt 
+        # makes to Vertica. (Defaults to False)
+        # Normal usage would be to use query HINT or declare session parameter in model or hook,
+        # but tests do not support hooks and cannot change tests from dbt_utils
+        # used in dbt-integration-tests
+        if credentials.withMaterialization:
+            try:
+                logger.debug(f':P Set EnableWithClauseMaterialization')
+                cur = connection.handle.cursor()
+                cur.execute("ALTER SESSION SET PARAMETER EnableWithClauseMaterialization=1")
+                cur.close()
+
+            except Exception as exc:
+                logger.debug(f':P Could not EnableWithClauseMaterialization: {exc}')
+                pass
 
         return connection
 

@@ -1,6 +1,6 @@
 # dbt-vertica
 
-Your dbt adapter for [Vertica](https://www.vertica.com/).
+Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
 Built on dbt 0.15.x
 
