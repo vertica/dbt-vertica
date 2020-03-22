@@ -3,7 +3,7 @@ from setuptools import find_packages
 from setuptools import setup
 
 package_name = "dbt-vertica"
-package_version = "0.0.1"
+package_version = "0.15.0"
 description = """The vertica adapter plugin for dbt (data build tool)"""
 
 setup(
@@ -13,7 +13,7 @@ setup(
     long_description=description,
     author='Matthew Carter',
     author_email='carter.matt.p@gmail.com',
-    url='github.com/mpcarter/dbt-vertica',
+    url='https://github.com/mpcarter/dbt-vertica',
     packages=find_packages(),
     package_data={
         'dbt': [
