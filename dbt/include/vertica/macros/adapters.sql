@@ -24,35 +24,35 @@
   {{ return(load_result('check_schema_exists').table) }}
 {% endmacro %}
 
-{% macro vertica__drop_schema(database_name, schema_name) -%}
+{% macro vertica__drop_schema(relation) -%}
   {% call statement('drop_schema') -%}
-    drop schema {{database_name}}.{{schema_name}} cascade
+    drop schema {{ relation.without_identifier().include(database=False) }} cascade
   {% endcall %}
 {% endmacro %}
 
-{% macro vertica__create_schema(database_name, schema_name) -%}
+{% macro vertica__create_schema(relation) -%}
   {%- call statement('create_schema') -%}
-    create schema if not exists {{database_name}}.{{schema_name}}
+    create schema if not exists {{ relation.without_identifier().include(database=False) }}
   {% endcall %}
 {% endmacro %}
 
-{% macro vertica__list_relations_without_caching(information_schema, schema) %}
+{% macro vertica__list_relations_without_caching(schema_relation) %}
   {% call statement('list_relations_without_caching', fetch_result=True) -%}
     select
-      '{{ information_schema.database }}' as database,
+      '{{ schema_relation.database }}' as database,
       table_name as name,
       table_schema as schema,
       'table' as type
     from v_catalog.tables
-    where table_schema ilike '{{ schema }}'
+    where table_schema ilike '{{ schema_relation.schema }}'
     union all
     select
-      '{{ information_schema.database }}' as database,
+      '{{ schema_relation.database }}' as database,
       table_name as name,
       table_schema as schema,
       'view' as type
     from v_catalog.views
-    where table_schema ilike '{{ schema }}'
+    where table_schema ilike '{{ schema_relation.schema }}'
   {% endcall %}
   {{ return(load_result('list_relations_without_caching').table) }}
   {% endmacro %}

@@ -4,7 +4,7 @@ from setuptools import setup
 import pathlib
 
 package_name = "dbt-vertica"
-package_version = "0.15.0"
+package_version = "0.18.0"
 description = """The vertica adapter plugin for dbt (data build tool)"""
 
 HERE = pathlib.Path(__file__).parent
@@ -29,7 +29,7 @@ setup(
         ]
     },
     install_requires=[
-        'dbt-core>=0.15.0',
+        'dbt-core>=0.18.0',
         'vertica-python>=0.10.0',
     ]
 )
