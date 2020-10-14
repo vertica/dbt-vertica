@@ -134,7 +134,7 @@
                                   })) -%}
 {% endmacro %}
 
-{% macro vertica__get_catalog(information_schemas) -%}
+{% macro vertica__get_catalog(information_schema, schemas) -%}
   {% call statement('get_catalog', fetch_result=True) %}
     
     select 
@@ -151,7 +151,12 @@
     from v_catalog.tables tab
     join v_catalog.columns col on tab.table_id = col.table_id 
     left join v_catalog.comments on tab.table_id = object_id
-    where not(tab.is_system_table)
+    where not(tab.is_system_table) and
+        (
+          {%- for schema in schemas -%}
+            lower(tab.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
+          {%- endfor -%}
+        )
     union all
     select 
     '{{ information_schema.database }}' table_database
@@ -167,7 +172,12 @@
     from v_catalog.views vw
     join v_catalog.view_columns col on vw.table_id = col.table_id 
     left join v_catalog.comments on vw.table_id = object_id
-    where not(vw.is_system_view)
+    where not(vw.is_system_view) and
+        (
+          {%- for schema in schemas -%}
+            lower(vw.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
+          {%- endfor -%}
+        )
     order by table_schema, table_name, column_index 
     
   {% endcall %}
