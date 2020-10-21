@@ -2,7 +2,7 @@
 
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
-Built on dbt 0.15.x
+Built on dbt 0.18.x
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database. 
 

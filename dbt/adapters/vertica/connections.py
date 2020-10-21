@@ -17,6 +17,7 @@ class verticaCredentials(Credentials):
     username: str
     password: str
     port: int = 5433
+    timeout: int = 3600
     withMaterialization: bool = False
 
 
@@ -47,7 +48,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'user': credentials.username,
                 'password': credentials.password,
                 'database': credentials.database,
-                'connection_timeout': 10,
+                'connection_timeout': credentials.timeout,
                 'connection_load_balance': True,
                 'session_label': f'dbt_{credentials.username}',
             }
