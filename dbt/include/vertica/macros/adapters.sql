@@ -119,6 +119,7 @@
 
   create {% if temporary: -%}local temporary{%- endif %} table
     {{ relation.include(database=(not temporary), schema=(not temporary)) }}
+    {% if temporary: -%}on commit preserve rows{%- endif %}
   as (
     {{ sql }}
   );
