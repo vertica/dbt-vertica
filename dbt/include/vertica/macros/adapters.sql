@@ -184,3 +184,7 @@
   {% endcall %}
   {{ return(load_result('get_catalog').table) }}
 {% endmacro %}
+
+{% macro vertica__current_timestamp() -%}
+  current_timestamp
+{%- endmacro %}
