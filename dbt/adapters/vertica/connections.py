@@ -3,6 +3,7 @@ from dataclasses import dataclass
 
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
+from dbt.contracts.connection import AdapterResponse
 from dbt.logger import GLOBAL_LOGGER as logger
 import dbt.exceptions
 
@@ -82,6 +83,13 @@ class verticaConnectionManager(SQLConnectionManager):
                 pass
 
         return connection
+
+    @classmethod
+    def get_response(cls, cursor) -> AdapterResponse:
+        return AdapterResponse(
+            _message=str(cursor._message),
+            rows_affected=cursor.rowcount,
+        )
 
     @classmethod
     def get_status(cls, cursor):
