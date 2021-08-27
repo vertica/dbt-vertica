@@ -84,7 +84,7 @@ class verticaConnectionManager(SQLConnectionManager):
         return connection
 
     @classmethod
-    def get_status(cls, cursor):
+    def get_response(cls, cursor):
         return str(cursor.rowcount)
 
     def cancel(self, connection):
@@ -103,5 +103,4 @@ class verticaConnectionManager(SQLConnectionManager):
             logger.debug(f':P Error: {exc}')
             self.release()
             raise dbt.exceptions.RuntimeException(str(exc))
-
 

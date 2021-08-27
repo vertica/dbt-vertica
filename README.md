@@ -2,9 +2,17 @@
 
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
-Built on dbt 0.18.x
+Built on dbt 0.20.1
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database. 
+
+This is a fork of the project from [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thank you for the hard work putting it together, I've added support for version dbt version 0.20.1, and have adjusted the versioning of the adaptor to be inline with dbt's versioning.
+
+## Changes
+
+### 0.20.1
+- Added the required changes from dbt 0.19.0. [Details found here](https://docs.getdbt.com/docs/guides/migration-guide/upgrading-to-0-19-0#for-dbt-plugin-maintainers).
+- Added support for the MERGE command for incremental loading isntead of DELETE+INSERT
 
 ## Install
 
