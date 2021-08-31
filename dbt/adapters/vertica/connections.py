@@ -85,7 +85,14 @@ class verticaConnectionManager(SQLConnectionManager):
 
     @classmethod
     def get_response(cls, cursor):
-        return str(cursor.rowcount)
+        code = cursor.description
+        rows = cursor.rowcount
+
+        return AdapterResponse(
+            _message="{} {}".format(code, rows),
+            rows_affected=rows,
+            code=code
+        )
 
     def cancel(self, connection):
         logger.debug(':P Cancel query')
