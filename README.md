@@ -2,13 +2,17 @@
 
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
-Built on dbt 0.20.2
+Built on dbt 0.21.0
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database.
 
-This is a fork of the project from [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thank you for the hard work putting it together, I've added support for version dbt version 0.20.1, and have adjusted the versioning of the adaptor to be inline with dbt's versioning.
+This is a fork of the project from [ahedengren's fork](https://github.com/ahedengren/dbt-vertica) of [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thanks to both of them for the hard work putting it together.
 
 ## Changes
+
+### 0.21.0
+
+- Add `unique_field` property on connection.
 
 ### 0.20.2
 
