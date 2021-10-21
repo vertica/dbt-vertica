@@ -1,9 +1,13 @@
 from contextlib import contextmanager
 from dataclasses import dataclass
+import ssl
+import os
+import requests
 
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
 from dbt.logger import GLOBAL_LOGGER as logger
+from dbt.contracts.connection import AdapterResponse
 import dbt.exceptions
 
 import vertica_python
@@ -16,6 +20,9 @@ class verticaCredentials(Credentials):
     schema: str
     username: str
     password: str
+    ssl: bool = False
+    ssl_env_cafile: str = ''
+    ssl_uri: str = ''
     port: int = 5433
     timeout: int = 3600
     withMaterialization: bool = False
@@ -52,6 +59,23 @@ class verticaConnectionManager(SQLConnectionManager):
                 'connection_load_balance': True,
                 'session_label': f'dbt_{credentials.username}',
             }
+            # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
+            if credentials.ssl:
+                if credentials.ssl_env_cafile is not None:
+                    context = ssl.create_default_context(
+                        cafile=os.environ.get(credentials.ssl_env_cafile),
+                    )
+                elif credentials.ssl_uri is not None:
+                    resp = requests.get(credentials.ssl_uri)
+                    resp.raise_for_status()
+                    ssl_data = resp.content
+                    context = ssl.create_default_context(
+                        cadata=ssl_data.decode("ascii", "ignore")
+                    )
+                else:
+                    context = ssl.create_default_context()
+                conn_info['ssl'] = context
+                logger.debug(f'SSL is on')
 
             handle = vertica_python.connect(**conn_info)
             connection.state = 'open'
@@ -65,7 +89,7 @@ class verticaConnectionManager(SQLConnectionManager):
             raise dbt.exceptions.FailedToConnectException(str(exc))
 
         # This is here mainly to support dbt-integration-tests.
-        # It globally enables WITH materialization for every connection dbt 
+        # It globally enables WITH materialization for every connection dbt
         # makes to Vertica. (Defaults to False)
         # Normal usage would be to use query HINT or declare session parameter in model or hook,
         # but tests do not support hooks and cannot change tests from dbt_utils
