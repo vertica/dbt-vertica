@@ -3,6 +3,8 @@ from dataclasses import dataclass
 import ssl
 import os
 import requests
+from typing import Optional
+
 
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
@@ -21,20 +23,27 @@ class verticaCredentials(Credentials):
     username: str
     password: str
     ssl: bool = False
-    ssl_env_cafile: str = ''
-    ssl_uri: str = ''
     port: int = 5433
     timeout: int = 3600
     withMaterialization: bool = False
-
+    ssl_env_cafile: Optional[str] = None
+    ssl_uri: Optional[str] = None
 
     @property
     def type(self):
         return 'vertica'
 
+    @property
+    def unique_field(self):
+        """
+        Hashed and included in anonymous telemetry to track adapter adoption.
+        Pick a field that can uniquely identify one team/organization building with this adapter
+        """
+        return self.host
+
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
-        return ('host','port','database','username', 'schema')
+        return ('host','port','database','username','schema')
 
 
 class verticaConnectionManager(SQLConnectionManager):
