@@ -8,8 +8,6 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 This is a fork of the project from [ahedengren's fork](https://github.com/ahedengren/dbt-vertica) of [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thanks to both of them for the hard work putting it together.
 
-I've named it `dbt-vertica` (yes, two r's) so you can get it on pypi.
-
 ## Changes
 
 ### 0.21.0
