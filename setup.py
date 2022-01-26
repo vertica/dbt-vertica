@@ -3,7 +3,7 @@ from setuptools import find_packages
 from setuptools import setup
 import pathlib
 
-package_name = "dbt-verrtica"
+package_name = "dbt-vertica"
 package_version = "0.21.0"
 description = """The vertica adapter plugin for dbt (data build tool)"""
 
@@ -17,8 +17,8 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
     license='MIT',
-    author='Matthew Carter (original), @ahedengren, Andy Reagan',
-    author_email='ndy@andyreagan.com',
+    author='Matthew Carter (original), Andrew Hedengren, Andy Reagan',
+    author_email='arosychuk@gmail.com, andy@andyreagan.com',
     url='https://github.com/andyreagan/dbt-vertica',
     packages=find_packages(),
     package_data={
