@@ -1,4 +1,4 @@
-# dbt-verrtica
+# dbt-vertica
 
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
@@ -8,7 +8,7 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 This is a fork of the project from [ahedengren's fork](https://github.com/ahedengren/dbt-vertica) of [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thanks to both of them for the hard work putting it together.
 
-I've named it `dbt-verrtica` (yes, two r's) so you can get it on pypi.
+I've named it `dbt-vertica` (yes, two r's) so you can get it on pypi.
 
 ## Changes
 
@@ -27,10 +27,10 @@ I've named it `dbt-verrtica` (yes, two r's) so you can get it on pypi.
 ## Install
 
 ```
-pip install dbt-verrtica
+pip install dbt-vertica
 ```
 
-You don't need to install dbt separately. Installing `dbt-verrtica` will also install `dbt-core` and `vertica-python`.
+You don't need to install dbt separately. Installing `dbt-vertica` will also install `dbt-core` and `vertica-python`.
 
 ## Sample Profile Configuration
 
@@ -48,7 +48,7 @@ your-profile:
   target: dev
 ```
 
-By default, `dbt-verrtica` will request `ConnectionLoadBalance=true` (which is generally a good thing), and set a session label of `dbt_your-username`.
+By default, `dbt-vertica` will request `ConnectionLoadBalance=true` (which is generally a good thing), and set a session label of `dbt_your-username`.
 
 ## Reach out!
 
