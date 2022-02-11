@@ -34,7 +34,7 @@ setup(
     ],
     extras_require={
         'dev': [
-            'pytest-dbt-adapter',
+            'pytest-dbt-adapter==0.5.0',
         ]
     }
 )
