@@ -46,8 +46,27 @@ your-profile:
 
 By default, `dbt-vertica` will request `ConnectionLoadBalance=true` (which is generally a good thing), and set a session label of `dbt_your-username`.
 
+There are three options for SSL: `ssl`, `ssl_env_cafile`, and `ssl_uri`.
+See their use in the code [here](https://github.com/mpcarter/dbt-vertica/blob/d15f925049dabd2833b4d88304edd216e3f654ed/dbt/adapters/vertica/connections.py#L72-L87).
+
 ## Reach out!
 
 First off, I would not have been able to make this adapater if the smart folks at Fishtown Analytics didn't make it so easy. That said, it seems every database has its own little quirks. I ran into several different issues when adapting the macros to Vertica. If you find something not working right, please open an issue (assuming it has to do with the adapter and not dbt itself).
 
 Also, I would be excited to hear about anyone who is able to benefit from using dbt with Vertica. (Just open an issue to leave me a comment.)
+
+## Develop
+
+Run a local Vertica instance like:
+
+    docker run -p 5433:5433 jbfavre/vertica:9.2.0-7_centos-7
+
+You need the pytest dbt adapter:
+
+    pip3 install pytest-dbt-adapter==0.5.0
+
+Run tests via:
+
+    pytest tests/integration.dbtspec
+    # run an individual test with increased logging:
+    pytest tests/integration.dbtspec::test_dbt_base -xs --ff
