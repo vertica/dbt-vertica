@@ -6,8 +6,6 @@ Built on dbt 0.21.0
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database.
 
-This is a fork of the project from [ahedengren's fork](https://github.com/ahedengren/dbt-vertica) of [mpcarter's dbt-vertica](https://github.com/mpcarter/dbt-vertica). Thanks to both of them for the hard work putting it together.
-
 ## Changes
 
 ### 0.21.0
