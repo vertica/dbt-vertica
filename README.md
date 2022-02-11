@@ -2,15 +2,21 @@
 
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
-Built on dbt 0.21.0
-
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database.
 
 ## Changes
 
+### 1.0.0
+
+- Add support for DBT version 1.
+
+### 0.21.1
+
+- Add testing, fix schema drop.
+
 ### 0.21.0
 
-- Add `unique_field` property on connection.
+- Add `unique_field` property on connection, supporting 0.21.x.
 
 ### 0.20.2
 
@@ -63,7 +69,7 @@ Run a local Vertica instance like:
 
 You need the pytest dbt adapter:
 
-    pip3 install pytest-dbt-adapter==0.5.0
+    pip3 install pytest-dbt-adapter==0.6.0
 
 Run tests via:
 
