@@ -57,7 +57,7 @@ See their use in the code [here](https://github.com/mpcarter/dbt-vertica/blob/d1
 
 ## Reach out!
 
-First off, I would not have been able to make this adapater if the smart folks at Fishtown Analytics didn't make it so easy. That said, it seems every database has its own little quirks. I ran into several different issues when adapting the macros to Vertica. If you find something not working right, please open an issue (assuming it has to do with the adapter and not dbt itself).
+First off, I would not have been able to make this adapater if the smart folks at dbt labs didn't make it so easy. That said, it seems every database has its own little quirks. I ran into several different issues when adapting the macros to Vertica. If you find something not working right, please open an issue (assuming it has to do with the adapter and not dbt itself).
 
 Also, I would be excited to hear about anyone who is able to benefit from using dbt with Vertica. (Just open an issue to leave me a comment.)
 
