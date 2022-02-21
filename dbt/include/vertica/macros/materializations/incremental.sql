@@ -32,23 +32,33 @@
     merge into {{ target_relation }} as DBT_INTERNAL_DEST
     using {{ tmp_relation }} as DBT_INTERNAL_SOURCE
 
+    {#-- Test 1, find the unique key #}
     {% if unique_key %}
       on DBT_INTERNAL_DEST.{{ unique_key }} = DBT_INTERNAL_SOURCE.{{ unique_key }}
+
+    {#-- Test 2, find the provided merge columns #}
     {% elif merge_columns %}
       on 
       {% for column in merge_columns %}
           DBT_INTERNAL_DEST.{{ adapter.quote(column) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column) }}
-          {%- if not loop.last %} AND {%- endif %}
+          {%- if not loop.last %} AND {% endif %} 
       {%- endfor %}
+
+    {#-- Test 3, use all columns in the destination table #}
     {% else %}
-        on FALSE
+      on
+      {% for column in dest_columns -%}
+          DBT_INTERNAL_DEST.{{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }} 
+          {%- if not loop.last %} AND {% endif %}
+      {%- endfor %}
+
     {% endif %}
 
     {% if unique_key %}
     when matched then update set
         {% for column in dest_columns -%}
             {{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
-            {%- if not loop.last %}, {%- endif %}
+            {%- if not loop.last %}, {% endif %}
         {%- endfor %}
     {% endif %}
 
@@ -58,7 +68,7 @@
         (
           {% for column in dest_columns -%}
             DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
-            {%- if not loop.last %}, {%- endif %}
+            {%- if not loop.last %}, {% endif %}
         {%- endfor %}
         )
 

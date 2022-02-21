@@ -6,6 +6,15 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 ## Changes
 
+### 1.0.3
+
+- Fixed the Incremental method implementation (was buggy/incomplete)
+- Added testing for Incremental (Need to 2 add more, by ID and by column names)
+- Added more logging to the connector to help understand why tests were failing
+- Bumped vertica-python to version 1.0.3
+- Bumped dbt to version 1.0.3
+- Using the official [Vertica CE 11.0.x docker image](https://hub.docker.com/r/vertica/vertica-ce) now for tests
+
 ### 1.0.0
 
 - Add support for DBT version 1.
@@ -65,7 +74,16 @@ Also, I would be excited to hear about anyone who is able to benefit from using 
 
 Run a local Vertica instance like:
 
-    docker run -p 5433:5433 jbfavre/vertica:9.2.0-7_centos-7
+    docker run -p 5433:5433 \
+               -p 5444:5444 \
+               -e VERTICA_DB_NAME=docker \
+               -e VMART_ETL_SCRIPT="" \
+               -e VMART_ETL_SQL="" \
+               vertica/vertica-ce
+
+Access the local Vertica instance like:
+
+    docker exec -it <docker_image_name> /opt/vertica/bin/vsql
 
 You need the pytest dbt adapter:
 
