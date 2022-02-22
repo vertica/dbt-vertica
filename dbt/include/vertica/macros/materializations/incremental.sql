@@ -14,43 +14,47 @@
   {% do return(strategy) %}
 {% endmacro %}
 
-{% macro vertica__get_incremental_sql(strategy, tmp_relation, target_relation, unique_key, dest_columns) %}
+{% macro vertica__get_incremental_sql(strategy, tmp_relation, target_relation, dest_columns) %}
   {% if strategy == 'merge' %}
-    {% do return(vertica__get_merge_sql(target_relation, tmp_relation, unique_key, dest_columns)) %}
+    {% do return(vertica__get_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% elif strategy == 'delete+insert' %}
-    {% do return(get_delete_insert_merge_sql(target_relation, tmp_relation, unique_key, dest_columns)) %}
+    {% do return(get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% else %}
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}
 {% endmacro %}
 
 
-{% macro vertica__get_merge_sql(target_relation, tmp_relation, unique_key, dest_columns) %}
+{% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
     {%- set dest_columns_csv =  get_quoted_csv(dest_columns | map(attribute="name")) -%}
     {%- set merge_columns = config.get("merge_columns", default=None)%}
 
     merge into {{ target_relation }} as DBT_INTERNAL_DEST
     using {{ tmp_relation }} as DBT_INTERNAL_SOURCE
 
-    {% if unique_key %}
-      on DBT_INTERNAL_DEST.{{ unique_key }} = DBT_INTERNAL_SOURCE.{{ unique_key }}
-    {% elif merge_columns %}
+    {#-- Test 1, find the provided merge columns #}
+    {% if merge_columns %}
       on 
       {% for column in merge_columns %}
           DBT_INTERNAL_DEST.{{ adapter.quote(column) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column) }}
-          {%- if not loop.last %} AND {%- endif %}
+          {%- if not loop.last %} AND {% endif %} 
       {%- endfor %}
+
+    {#-- Test 2, use all columns in the destination table #}
     {% else %}
-        on FALSE
+      on
+      {% for column in dest_columns -%}
+          DBT_INTERNAL_DEST.{{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }} 
+          {%- if not loop.last %} AND {% endif %}
+      {%- endfor %}
+
     {% endif %}
 
-    {% if unique_key %}
     when matched then update set
-        {% for column in dest_columns -%}
-            {{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
-            {%- if not loop.last %}, {%- endif %}
-        {%- endfor %}
-    {% endif %}
+    {% for column in dest_columns -%}
+        {{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
+        {%- if not loop.last %}, {% endif %}
+    {%- endfor %}
 
     when not matched then insert
         ({{ dest_columns_csv }})
@@ -58,7 +62,7 @@
         (
           {% for column in dest_columns -%}
             DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
-            {%- if not loop.last %}, {%- endif %}
+            {%- if not loop.last %}, {% endif %}
         {%- endfor %}
         )
 
@@ -66,7 +70,6 @@
 
 {% materialization incremental, adapter='vertica' %}
 
-  {% set unique_key = config.get('unique_key') %}
   {% set full_refresh_mode = flags.FULL_REFRESH %}
 
   {% set target_relation = this %}
@@ -101,7 +104,7 @@
              from_relation=tmp_relation,
              to_relation=target_relation) %}
       {% set dest_columns = adapter.get_columns_in_relation(target_relation) %}
-      {% set build_sql = vertica__get_incremental_sql(strategy, tmp_relation, target_relation, unique_key, dest_columns) %}
+      {% set build_sql = vertica__get_incremental_sql(strategy, tmp_relation, target_relation, dest_columns) %}
   {% endif %}
 
   {% call statement("main") %}

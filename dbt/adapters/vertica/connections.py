@@ -122,11 +122,14 @@ class verticaConnectionManager(SQLConnectionManager):
     def get_response(cls, cursor):
         code = cursor.description
         rows = cursor.rowcount
+        message = cursor._message
+        arraysize = cursor.arraysize
+        operation = cursor.operation
 
         return AdapterResponse(
-            _message="{} {}".format(code, rows),
+            _message="Operation: {}, Message: {}, Code: {}, Rows: {}, Arraysize: {}".format(operation, message, str(code), rows, arraysize),
             rows_affected=rows,
-            code=code
+            code=str(code)
         )
 
     def cancel(self, connection):
