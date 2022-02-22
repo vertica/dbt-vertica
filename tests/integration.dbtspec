@@ -7,10 +7,11 @@ target:
   schema: "dbt_test_{{ var('_dbt_random_suffix') }}"
   port: 5433
   threads: 1
+
 projects:
   - overrides: incremental
     paths:
-      "models/incremental.sql":
+      models/incremental.sql:
         materialized: incremental
         # Wrap in a CTE due to added seed name varchar being size 9 and seed base name varchar being size 8
         body: |
@@ -20,7 +21,57 @@ projects:
               {% if is_incremental() %}
               where id > (select max(id) from {{ this }})
               {% endif %}
-            ) select * from incremental_data
+            ) 
+            select * from incremental_data
+  - name: test_vertica_dbt_incremental_merge_columns
+    paths:
+      seeds/base.csv: files.seeds.base
+      seeds/added.csv: files.seeds.added
+      models/schema.yml: files.schemas.base
+      models/incremental.sql:
+        materialized: incremental
+        # Specifying which column to use, in this case, we will use the id
+        # Wrap in a CTE due to added seed name varchar being size 9 and seed base name varchar being size 8
+        body: |
+            {{
+              config(
+                materialized = 'incremental',
+                incremental_strategy = 'merge',
+                merge_columns = [ 'id', 'name' ]
+              )
+            }}
+            with incremental_data as 
+            (
+              select id, name::varchar(9) as name, some_date from {{ source('raw', 'seed') }}
+              {% if is_incremental() %}
+              where id > (select max(id) from {{ this }})
+              {% endif %}
+            ) 
+            select * from incremental_data  
+    facts:
+      seed:
+        length: 2
+        names:
+          - base
+          - added
+      run:
+        length: 1
+        names:
+          - incremental
+      catalog:
+        nodes:
+          length: 3
+        sources:
+          length: 1
+      persisted_relations:
+        - base
+        - added
+        - incremental
+      base:
+        rowcount: 10
+      added:
+        rowcount: 20
+
 sequences:
   test_dbt_empty: empty
   test_dbt_base: base
@@ -31,3 +82,47 @@ sequences:
   test_dbt_data_test: data_test
   test_dbt_schema_test: schema_test
   test_dbt_ephemeral_data_tests: data_test_ephemeral_models
+
+  # Additional Vertica tests below
+  # Test the incremental merge based upon specific columns
+  test_vertica_dbt_incremental_merge_columns:
+    project: test_vertica_dbt_incremental_merge_columns
+    sequence: 
+      - type: dbt
+        cmd: seed
+      - type: run_results
+        length: fact.seed.length
+      - type: dbt
+        cmd: run
+        vars:
+          seed_name: base
+      - type: relation_rows
+        name: base
+        length: fact.base.rowcount
+      - type: run_results
+        length: fact.run.length
+      - type: relations_equal
+        relations:
+          - base
+          - incremental
+      - type: dbt
+        cmd: run
+        vars:
+          seed_name: added
+      - type: relation_rows
+        name: added
+        length: fact.added.rowcount
+      - type: run_results
+        length: fact.run.length
+      - type: relations_equal
+        relations:
+          - added
+          - incremental
+      - type: dbt
+        cmd: docs generate
+      - type: catalog
+        exists: True
+        nodes:
+          length: fact.catalog.nodes.length
+        sources:
+          length: fact.catalog.sources.length

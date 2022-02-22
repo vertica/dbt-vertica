@@ -6,18 +6,20 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 ## Changes
 
-### 1.0.3
+### 1.0.1
 
 - Fixed the Incremental method implementation (was buggy/incomplete)
-- Added testing for Incremental (Need to 2 add more, by ID and by column names)
+   - Removed the `unique_id` as it wasn't implemented
+   - Fixed when no fields were added - full table merge
+- Added testing for Incremental materialization
+  - Testing for dbt Incremental full table
+  - Testing for dbt Incremental specified merged columns
 - Added more logging to the connector to help understand why tests were failing
-- Bumped vertica-python to version 1.0.3
-- Bumped dbt to version 1.0.3
 - Using the official [Vertica CE 11.0.x docker image](https://hub.docker.com/r/vertica/vertica-ce) now for tests
 
 ### 1.0.0
 
-- Add support for DBT version 1.
+- Add support for DBT version 1.0.0
 
 ### 0.21.1
 
