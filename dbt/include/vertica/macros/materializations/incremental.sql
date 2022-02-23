@@ -1,5 +1,4 @@
-
-{% macro vertica___validate_get_incremental_strategy(config) %}
+{% macro vertica__validate_get_incremental_strategy(config) %}
   {#-- Find and validate the incremental strategy #}
   {%- set strategy = config.get("incremental_strategy", default="merge") -%}
 
@@ -77,7 +76,7 @@
   {% set tmp_relation = make_temp_relation(this) %}
 
   {#-- Validate early so we don't run SQL if the strategy is invalid --#}
-  {% set strategy = vertica___validate_get_incremental_strategy(config) %}
+  {% set strategy = vertica__validate_get_incremental_strategy(config) %}
 
   -- setup
   {{ run_hooks(pre_hooks, inside_transaction=False) }}
@@ -125,4 +124,3 @@
   {{ return({'relations': [target_relation]}) }}
 
 {%- endmaterialization %}
-
