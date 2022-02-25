@@ -4,7 +4,50 @@ Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.co
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database.
 
+## Supported Features
+
+### dbt Core Features
+
+Below is a table for what features the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
+
+| dbt Core Features                                 | Supported   |
+| ------------------------------------------------- | ----------- |
+| Table Materializations                            | Yes         |
+| Ephemeral Materializations                        | Yes         |
+| View Materializations                             | Yes         |
+| Incremental Materializations - Append             | Untested    |
+| Incremental Materailizations - Insert + Overwrite | Yes         |
+| Incremental Materializations - Merge              | Yes         |
+| Snapshots - Timestamp                             | Passes Test |
+| Snapshots - Check Cols                            | Passes Test |
+| Seeds                                             | Yes         |
+| Tests                                             | Yes         |
+| Documentation                                     | Yes         |
+| External Tables                                   | Untested    |
+
+* **Yes** - Supported, and tests pass.
+* **No** - Not supported or implemented.
+* **Untested** - May support out of the box, though hasn't been tested.
+* **Passes Test** -The testes have passed, though haven't tested in a production like environment
+
+### Vertica Features
+
+Below is a table for what features the current Vertica adapter supports for Vertica. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
+
+| Vertica Features      | Supported |    
+| --------------------- | --------- |
+| Created/Drop Schema   | Yes       |
+| Analyze Statistics    | No        |
+| Purge Delete Vectors  | No        |
+| Projection Management | No        |
+| Primary/Unique Keys   | No        |
+| Other DDLs            | No        |
+
 ## Changes
+
+### 1.0.2
+- Added support for snapshot timestamp with passing tests
+- Added support for snapshot check cols with passing tests
 
 ### 1.0.1
 

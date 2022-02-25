@@ -11,22 +11,58 @@ target:
 projects:
   - overrides: incremental
     paths:
-      models/incremental.sql:
-        materialized: incremental
-        # Wrap in a CTE due to added seed name varchar being size 9 and seed base name varchar being size 8
-        body: |
-            with incremental_data as 
-            (
-              select id, name::varchar(9) as name, some_date from {{ source('raw', 'seed') }}
-              {% if is_incremental() %}
-              where id > (select max(id) from {{ this }})
-              {% endif %}
-            ) 
-            select * from incremental_data
+      seeds/properties.yml: |
+        version: 2
+        seeds:
+          - name: base
+            config:
+              column_types:
+                name: varchar(50)
+          - name: added
+            config:
+              column_types:
+                name: varchar(50)
+  - overrides: snapshot_strategy_timestamp
+    paths:
+      seeds/properties.yml: |
+        version: 2
+        seeds:
+          - name: base
+            config:
+              column_types:
+                name: varchar(50)
+          - name: added
+            config:
+              column_types:
+                name: varchar(50)
+  - overrides: snapshot_strategy_check_cols
+    paths:
+      seeds/properties.yml: |
+        version: 2
+        seeds:
+          - name: base
+            config:
+              column_types:
+                name: varchar(50)
+          - name: added
+            config:
+              column_types:
+                name: varchar(50)
   - name: test_vertica_dbt_incremental_merge_columns
     paths:
       seeds/base.csv: files.seeds.base
       seeds/added.csv: files.seeds.added
+      seeds/properties.yml: |
+        version: 2
+        seeds:
+          - name: base
+            config:
+              column_types:
+                name: varchar(50)
+          - name: added
+            config:
+              column_types:
+                name: varchar(50)
       models/schema.yml: files.schemas.base
       models/incremental.sql:
         materialized: incremental
@@ -42,7 +78,7 @@ projects:
             }}
             with incremental_data as 
             (
-              select id, name::varchar(9) as name, some_date from {{ source('raw', 'seed') }}
+              select * from {{ source('raw', 'seed') }}
               {% if is_incremental() %}
               where id > (select max(id) from {{ this }})
               {% endif %}
@@ -77,8 +113,8 @@ sequences:
   test_dbt_base: base
   test_dbt_ephemeral: ephemeral
   test_dbt_incremental: incremental
-  # test_dbt_snapshot_strategy_timestamp: snapshot_strategy_timestamp
-  # test_dbt_snapshot_strategy_check_cols: snapshot_strategy_check_cols
+  test_dbt_snapshot_strategy_timestamp: snapshot_strategy_timestamp
+  test_dbt_snapshot_strategy_check_cols: snapshot_strategy_check_cols
   test_dbt_data_test: data_test
   test_dbt_schema_test: schema_test
   test_dbt_ephemeral_data_tests: data_test_ephemeral_models
