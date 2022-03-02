@@ -4,7 +4,7 @@ from setuptools import setup
 import pathlib
 
 package_name = "dbt-vertica"
-package_version = "1.0.2"
+package_version = "1.0.3"
 description = """The vertica adapter plugin for dbt (data build tool)"""
 
 HERE = pathlib.Path(__file__).parent
@@ -25,7 +25,13 @@ setup(
         'dbt': [
             'include/vertica/dbt_project.yml',
             'include/vertica/macros/*.sql',
+            'include/vertica/macros/adapters/*.sql',
             'include/vertica/macros/materializations/*.sql',
+            'include/vertica/macros/materializations/models/incremental/*.sql',
+            'include/vertica/macros/materializations/models/table/*.sql',
+            'include/vertica/macros/materializations/models/view/*.sql',
+            'include/vertica/macros/materializations/seeds/*.sql',
+            'include/vertica/macros/materializations/snapshots/*.sql',
         ]
     },
     install_requires=[

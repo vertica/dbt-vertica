@@ -8,7 +8,8 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 ### dbt Core Features
 
-Below is a table for what features the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
+Below is a table for what features the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves. This list is based upon dbt 1.0.3.
+
 
 | dbt Core Features                                 | Supported   |
 | ------------------------------------------------- | ----------- |
@@ -44,6 +45,10 @@ Below is a table for what features the current Vertica adapter supports for Vert
 | Other DDLs            | No        |
 
 ## Changes
+
+### 1.0.3
+- Refactored the adapter to model after dbt's global_project macros
+- Unimplemented functions should throw an exception that it's not implemented. If you stumble across this, please open an Issue or PR so we can investigate.
 
 ### 1.0.2
 - Added support for snapshot timestamp with passing tests
