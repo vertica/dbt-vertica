@@ -1,6 +1,6 @@
 # dbt-vertica Macro Implementations
 
-Below is a table for what macros the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improvies. This list is based upon dbt 1.0.3, with the list found under https://github.com/dbt-labs/dbt-core/tree/main/core/dbt/include/global_project/macros.
+Below is a table for what macros the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves. This list is based upon dbt 1.0.3, with the list found under https://github.com/dbt-labs/dbt-core/tree/main/core/dbt/include/global_project/macros.
 
 ## dbt Macros - adapters
 
