@@ -8,7 +8,8 @@ Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to V
 
 ### dbt Core Features
 
-Below is a table for what features the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
+Below is a table for what features the current Vertica adapter supports for dbt. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves. This list is based upon dbt 1.0.3.
+
 
 | dbt Core Features                                 | Supported   |
 | ------------------------------------------------- | ----------- |
