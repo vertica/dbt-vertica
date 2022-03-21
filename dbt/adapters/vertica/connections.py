@@ -127,7 +127,7 @@ class verticaConnectionManager(SQLConnectionManager):
         operation = cursor.operation
 
         return AdapterResponse(
-            _message="Operation: {}, Message: {}, Code: {}, Rows: {}, Arraysize: {}".format(operation, message, str(code), rows, arraysize),
+            _message="Code: {}, Rows: {}, Array Size: {}".format(str(code), rows, arraysize),
             rows_affected=rows,
             code=str(code)
         )
