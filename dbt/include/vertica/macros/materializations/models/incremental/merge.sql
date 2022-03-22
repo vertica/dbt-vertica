@@ -1,4 +1,4 @@
-{% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
+{% macro vertica__get_merge_sql(target_relation, tmp_relation, unique_key, dest_columns) %}
   {%- set dest_columns_csv =  get_quoted_csv(dest_columns | map(attribute="name")) -%}
   {%- set merge_columns = config.get("merge_columns", default=None)%}
 
@@ -39,7 +39,27 @@
 {%- endmacro %}
 
 
-{# No need to implement get_delete_insert_merge_sql(). Syntax supported by default. #}
+{% macro vertica__get_delete_insert_merge_sql(target, source, unique_key, dest_columns) -%}
+
+    {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
+
+    {% if unique_key %}
+        delete from {{ target }}
+            where (
+                {{ unique_key }}) in (
+                select ({{ unique_key }})
+                from {{ source }}
+            );
+
+    {% endif %}
+
+    insert into {{ target }} ({{ dest_cols_csv }})
+    (
+        select {{ dest_cols_csv }}
+        from {{ source }}
+    );
+
+{%- endmacro %}
 
 
 {% macro vertica__get_insert_overwrite_merge_sql() -%}
