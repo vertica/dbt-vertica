@@ -5,6 +5,10 @@ import os
 import requests
 from typing import Optional
 
+from typing import List, Optional, Tuple, Any, Iterable, Dict, Union
+from dbt.contracts.connection import AdapterResponse
+import dbt.clients.agate_helper
+import agate
 
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
@@ -149,3 +153,40 @@ class verticaConnectionManager(SQLConnectionManager):
             self.release()
             raise dbt.exceptions.RuntimeException(str(exc))
 
+    @classmethod
+    def get_result_from_cursor(cls, cursor: Any) -> agate.Table:
+        data: List[Any] = []
+        column_names: List[str] = []
+
+        if cursor.description is not None:
+            column_names = [col[0] for col in cursor.description]
+            rows = cursor.fetchall()
+            self.check_exceptions_for_msq(cursor)
+            data = cls.process_results(column_names, rows)
+
+        return dbt.clients.agate_helper.table_from_data_flat(
+            data,
+            column_names
+        )
+
+    def execute(self, sql: str, auto_begin: bool = False, fetch: bool = False) -> Tuple[Union[AdapterResponse, str], agate.Table]:
+        sql = self._add_query_comment(sql)
+        _, cursor = self.add_query(sql, auto_begin)
+        response = self.get_response(cursor)
+        if fetch:
+            table = self.get_result_from_cursor(cursor)
+        else:
+            table = dbt.clients.agate_helper.empty_table()
+            self.check_exceptions_for_msq(cursor)
+        return response, table
+
+    
+    def check_exceptions_for_msq(self, curso: Any):
+        # check results of other queries in multistatement query
+        # check it only after getting data from cursor!
+        while cursor.nextset():
+            check = cursor._message
+            if isinstance(check, vertica_python.vertica.messages.ErrorResponse):
+                logger.debug(f'Cursor message is: {check}')
+                self.release()
+                raise dbt.exceptions.DatabaseException(str(check))
