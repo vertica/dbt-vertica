@@ -1,29 +1,16 @@
 {% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
-  {%- set dest_columns_csv =  get_quoted_csv(dest_columns | map(attribute="name")) -%}
-  {%- set merge_columns = config.get("merge_columns", default=None)%}
+  {%- set dest_columns_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
+  {%- set unique_key = config.get("unique_key", default = dest_columns | map(attribute="name")) -%}
+  {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name") | list) -%}
 
   merge into {{ target_relation }} as DBT_INTERNAL_DEST
   using {{ tmp_relation }} as DBT_INTERNAL_SOURCE
 
-  {#-- Test 1, find the provided merge columns #}
-  {% if merge_columns %}
-    on 
-    {% for column in merge_columns %}
-      DBT_INTERNAL_DEST.{{ adapter.quote(column) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column) }}
-      {%- if not loop.last %} AND {% endif %} 
-    {%- endfor %}
-  {#-- Test 2, use all columns in the destination table #}
-  {% else %}
-    on
-    {% for column in dest_columns -%}
-      DBT_INTERNAL_DEST.{{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }} 
-      {%- if not loop.last %} AND {% endif %}
-    {%- endfor %}
-  {% endif %}
+  on HASH( {{ get_qouted_csv_with_prefix("DBT_INTERNAL_DEST", unique_key) }} ) = HASH({{ get_qouted_csv_with_prefix("DBT_INTERNAL_SOURCE", unique_key) }})
 
   when matched then update set
-  {% for column in dest_columns -%}
-    {{ adapter.quote(column.name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column.name) }}
+  {% for column_name in merge_update_columns -%}
+    {{ adapter.quote(column_name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column_name) }}
     {%- if not loop.last %}, {% endif %}
   {%- endfor %}
 

@@ -13,6 +13,17 @@
   {% do return(strategy) %}
 {% endmacro %}
 
+{% macro get_qouted_csv_with_prefix(prefix, column_names) %}
+  {% set quoted = [] %}
+
+  {% for col in column_names -%}
+      {%- do quoted.append(prefix + "." + adapter.quote(col)) -%}
+  {%- endfor %}
+
+  {%- set dest_cols_csv = quoted | join(', ') -%}
+
+  {{ return(dest_cols_csv) }}
+{% endmacro %}
 
 {% macro vertica__get_incremental_sql(strategy, tmp_relation, target_relation, dest_columns) %}
   {% if strategy == 'merge' %}
