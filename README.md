@@ -114,6 +114,19 @@ By default, `dbt-vertica` will request `ConnectionLoadBalance=true` (which is ge
 There are three options for SSL: `ssl`, `ssl_env_cafile`, and `ssl_uri`.
 See their use in the code [here](https://github.com/mpcarter/dbt-vertica/blob/d15f925049dabd2833b4d88304edd216e3f654ed/dbt/adapters/vertica/connections.py#L72-L87).
 
+## Sample Incremental Model Configuration
+
+```sql
+{{
+  config(
+    materialized = 'incremental',
+    unique_key = ['your-first-id', 'your-second-id'],
+    incremental_strategy = 'merge',
+    merge_update_columns = ['column-to-update']
+  )
+}}
+```
+
 ## Reach out!
 
 First off, I would not have been able to make this adapater if the smart folks at dbt labs didn't make it so easy. That said, it seems every database has its own little quirks. I ran into several different issues when adapting the macros to Vertica. If you find something not working right, please open an issue (assuming it has to do with the adapter and not dbt itself).
