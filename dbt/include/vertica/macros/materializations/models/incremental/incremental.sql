@@ -29,7 +29,6 @@
       {% do to_drop.append(backup_relation) %}
   {% else %}
       {% set tmp_relation = make_temp_relation(target_relation) %}
-      {% do run_query(vertica__create_table_as(True, tmp_relation, sql)) %}
       {% do adapter.expand_target_column_types(
              from_relation=tmp_relation,
              to_relation=target_relation) %}
