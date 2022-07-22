@@ -36,3 +36,47 @@
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}
 {% endmacro %}
+
+{% macro sql_convert_columns_in_relation1(table) -%}
+  {% set columns = [] %}
+  {% for row in table %}
+    {% do columns.append(row.column_name + ' '+ row.data_type+',') %}
+  {% endfor %}
+  {{ return(columns) }}
+{% endmacro %}
+
+{% macro vertica1__get_columns_in_relation(relation) -%}
+  {% call statement('get_columns_in_relation', fetch_result=True) %}
+    select
+    column_name
+    , data_type
+    , character_maximum_length
+    , numeric_precision
+    , numeric_scale
+    from (
+        select
+        column_name
+        , data_type
+        , character_maximum_length
+        , numeric_precision
+        , numeric_scale
+        , ordinal_position
+        from v_catalog.columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+        union all
+        select
+        column_name
+        , data_type
+        , character_maximum_length
+        , numeric_precision
+        , numeric_scale
+        , ordinal_position
+        from v_catalog.view_columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+    ) t
+    order by ordinal_position
+  {% endcall %}
+  {{ return(load_result('get_columns_in_relation').table) }}
+{% endmacro %}
