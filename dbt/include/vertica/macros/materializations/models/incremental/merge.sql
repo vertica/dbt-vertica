@@ -1,8 +1,15 @@
 {% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
+  {%- set complex_type = config.get('include_complex_type') -%}
   {%- set dest_columns_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
   {%- set unique_key = config.get("unique_key", default = dest_columns | map(attribute="name")) -%}
   {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name") | list) -%}
-  {{vertica__create_table_as(True, tmp_relation, sql)}}
+
+  {%- if complex_type %}
+      {{vertica__create_complex_table_as(True,  tmp_relation, target_relation, dest_columns, sql)}}
+  {% else %}
+      {{vertica__create_table_as(True, tmp_relation, sql)}}
+  {% endif %}
+
   merge into {{ target_relation }} as DBT_INTERNAL_DEST
   using {{ tmp_relation }} as DBT_INTERNAL_SOURCE
 
@@ -27,11 +34,17 @@
 
 
 {% macro vertica__get_delete_insert_merge_sql(target, source, dest_columns) -%}
-
+    {%- set complex_type = config.get('include_complex_type') -%}
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
     {%- set unique_key = config.get('unique_key', default = dest_columns | map(attribute="name") | list) -%}
     {%- set unique_key_columns_csv = get_quoted_csv(unique_key) -%}
-    {{vertica__create_table_as(True, source, sql)}}
+
+    {%- if complex_type %}
+        {{vertica__create_complex_table_as(True, source, target, dest_columns, sql)}}
+    {% else %}
+        {{vertica__create_table_as(True, source, sql)}}
+    {% endif %}
+
     {% if unique_key %}
         {% if unique_key is sequence and unique_key is not string %}
             delete from {{target }}
