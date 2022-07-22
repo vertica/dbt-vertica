@@ -60,7 +60,6 @@
 {%- endmacro %}
 
 {% macro vertica__get_insert_overwrite_merge_sql(target, source, dest_columns) -%}
-    {%- set table_schema=vertica1__get_columns_in_relation(target) -%}
     {%- set complex_type = config.get('include_complex_type') -%}
     {%- set partition_by = config.get('partition_by', default = dest_columns | map(attribute="name") | list) -%}
     {%- set partitions = config.get('partitions', default = dest_columns | map(attribute="name") | list) -%}

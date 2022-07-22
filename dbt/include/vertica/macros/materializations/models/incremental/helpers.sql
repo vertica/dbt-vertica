@@ -37,15 +37,7 @@
   {% endif %}
 {% endmacro %}
 
-{% macro sql_convert_columns_in_relation1(table) -%}
-  {% set columns = [] %}
-  {% for row in table %}
-    {% do columns.append(row.column_name + ' '+ row.data_type+',') %}
-  {% endfor %}
-  {{ return(columns) }}
-{% endmacro %}
-
-{% macro vertica1__get_columns_in_relation(relation) -%}
+{% macro vertica__get_columns_in_relation_complex(relation) -%}
   {% call statement('get_columns_in_relation', fetch_result=True) %}
     select
     column_name
