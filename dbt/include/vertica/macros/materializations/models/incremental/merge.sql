@@ -1,11 +1,11 @@
 {% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
-  {%- set complex_type = config.get('include_complex_type') -%}
+  {%- set complex_type = config.get('include_complex_type', default = False) -%}
   {%- set dest_columns_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
   {%- set unique_key = config.get("unique_key", default = dest_columns | map(attribute="name")) -%}
-  {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name") | list) -%}
+  {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name")) -%}
 
   {%- if complex_type %}
-      {{vertica__create_complex_table_as(True,  tmp_relation, target_relation, dest_columns, sql)}}
+      {{vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql)}}
   {% else %}
       {{vertica__create_table_as(True, tmp_relation, sql)}}
   {% endif %}
@@ -33,72 +33,65 @@
 {%- endmacro %}
 
 
-{% macro vertica__get_delete_insert_merge_sql(target, source, dest_columns) -%}
+{% macro vertica__get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns) -%}
     {%- set complex_type = config.get('include_complex_type') -%}
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
-    {%- set unique_key = config.get('unique_key', default = dest_columns | map(attribute="name") | list) -%}
+    {%- set unique_key = config.get('unique_key', default = dest_columns | map(attribute="name")) -%}
     {%- set unique_key_columns_csv = get_quoted_csv(unique_key) -%}
 
     {%- if complex_type %}
-        {{vertica__create_complex_table_as(True, source, target, dest_columns, sql)}}
+        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
-        {{vertica__create_table_as(True, source, sql)}}
+        {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
 
-    {% if unique_key %}
-        {% if unique_key is sequence and unique_key is not string %}
-            delete from {{target }}
-            where (
-                HASH( {{ unique_key_columns_csv }} ) in (
-                select HASH({{  unique_key_columns_csv }})
-                                from {{ source }} )
-            );
-        {% else %}
-            delete from {{ target }}
-            where (
-                {{ unique_key}}) in (
-                select {{ unique_key }}
-                from {{ source }}
-            );
 
-        {% endif %}
-        {% endif %}
+    {% if unique_key is sequence and unique_key is not string %}
+        delete from {{ target_relation }}
+        where (
+            HASH( {{ unique_key_columns_csv }} ) in (
+            select HASH({{  unique_key_columns_csv }})
+                            from {{ tmp_relation }} )
+        );
+    {% else %}
+        delete from {{ target_relation }}
+        where (
+            {{ unique_key }}) in (
+            select {{ unique_key }}
+            from {{ tmp_relation }}
+        );
 
-    insert into {{ target }} ({{ dest_cols_csv }})
+    {% endif %}
+
+    insert into {{ target_relation }} ({{ dest_cols_csv }})
     (
         select {{ dest_cols_csv }}
-        from {{ source }}
+        from {{ tmp_relation }}
     )
 
 {%- endmacro %}
 
-{% macro vertica__get_insert_overwrite_merge_sql(target, source, dest_columns) -%}
+{% macro vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns) -%}
     {%- set complex_type = config.get('include_complex_type') -%}
-    {%- set partition_by = config.get('partition_by', default = dest_columns | map(attribute="name") | list) -%}
-    {%- set partitions = config.get('partitions', default = dest_columns | map(attribute="name") | list) -%}
+    {%- set partitions = config.get('partitions') -%}
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
     {%- if complex_type %}
-        {{vertica__create_complex_table_as(True, source, target, dest_columns, sql)}}
+        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
-        {{vertica__create_table_as(True, source, sql)}}
+        {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
 
 
-    {% for partition in partitions -%}
-    SELECT DROP_PARTITIONS('{{target.schema}}.{{target.table}}','{{partition}}','{{partition}}');
+    {% for partition in partitions %}
+    SELECT DROP_PARTITIONS('{{ target_relation.schema }}.{{ target_relation.table }}','{{ partition }}','{{ partition }}');
+    SELECT PURGE_PARTITION('{{ target_relation.schema }}.{{ target_relation.table }}','{{ partition }}');
+    {% endfor %}
 
-    {%- endfor %}
-
-    {% for partition in partitions -%}
-    SELECT PURGE_PARTITION('{{target.schema}}.{{target.table}}','{{partition}}');
-
-    {%- endfor %}
-
-    insert into {{ target }} ({{ dest_cols_csv }})
+    insert into {{ target_relation }} ({{ dest_cols_csv }})
     (
         select {{ dest_cols_csv }}
-        from {{ source }}
+        from {{ tmp_relation }}
     )
 {% endmacro %}
 

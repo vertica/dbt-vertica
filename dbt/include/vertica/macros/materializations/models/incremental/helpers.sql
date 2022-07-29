@@ -6,7 +6,7 @@
     Invalid incremental strategy provided: {{ strategy }}
     Expected one of: 'merge', 'delete+insert','insert+overwrite'
   {%- endset %}
-  {% if strategy not in ['merge', 'delete+insert','insert+overwrite'] %}
+  {% if strategy not in ['merge', 'delete+insert', 'insert+overwrite'] %}
     {% do exceptions.raise_compiler_error(invalid_strategy_msg) %}
   {% endif %}
 
@@ -31,13 +31,13 @@
   {% elif strategy == 'delete+insert' %}
     {% do return(vertica__get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% elif strategy == 'insert+overwrite' %}
-      {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+    {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% else %}
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}
 {% endmacro %}
 
-{% macro vertica__get_columns_in_relation_complex(relation) -%}
+{% macro vertica__get_table_in_relation(relation) -%}
   {% call statement('get_columns_in_relation', fetch_result=True) %}
     select
     column_name
