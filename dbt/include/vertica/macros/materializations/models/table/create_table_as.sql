@@ -11,24 +11,24 @@
   );
 {% endmacro %}
 
-{% macro vertica__create_complex_table_as(temporary, relation, target,dest_columns, sql) -%}
+{% macro vertica__create_table_from_relation(relation, target, dest_columns, sql) -%}
   {%- set sql_header = config.get('sql_header', none) -%}
-  {%- set table_schema=vertica__get_columns_in_relation_complex(target) -%}
+  {%- set table_schema = vertica__get_table_in_relation(target) -%}
   {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
   {{ sql_header if sql_header is not none }}
 
-  create local temporary table {{relation}}
+  create local temporary table {{ relation }}
       (
       {% for row in table_schema %}
-        {{row.column_name}} {{row.data_type}}
+        {{ row.column_name }} {{ row.data_type }}
         {%- if not loop.last %}, {% endif %}
       {% endfor %}
       ) on commit preserve rows;
 
       insert into {{ relation }} ({{ dest_cols_csv }})
       (
-          {{sql}}
+          {{ sql }}
       );
 
 {% endmacro %}
