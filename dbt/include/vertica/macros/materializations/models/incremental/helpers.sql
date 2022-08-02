@@ -4,7 +4,7 @@
 
   {% set invalid_strategy_msg -%}
     Invalid incremental strategy provided: {{ strategy }}
-    Expected one of: 'merge', 'delete+insert','insert+overwrite'
+    Expected one of: 'merge', 'delete+insert', 'insert+overwrite'
   {%- endset %}
   {% if strategy not in ['merge', 'delete+insert', 'insert+overwrite'] %}
     {% do exceptions.raise_compiler_error(invalid_strategy_msg) %}

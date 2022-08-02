@@ -5,7 +5,7 @@
   {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name")) -%}
 
   {%- if complex_type %}
-      {{vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql)}}
+      {{vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql)}}
   {% else %}
       {{vertica__create_table_as(True, tmp_relation, sql)}}
   {% endif %}
@@ -40,7 +40,7 @@
     {%- set unique_key_columns_csv = get_quoted_csv(unique_key) -%}
 
     {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
+        {{ vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
         {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
@@ -77,15 +77,15 @@
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
     {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
+        {{ vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
         {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
 
 
     {% for partition in partitions %}
-    SELECT DROP_PARTITIONS('{{ target_relation.schema }}.{{ target_relation.table }}','{{ partition }}','{{ partition }}');
-    SELECT PURGE_PARTITION('{{ target_relation.schema }}.{{ target_relation.table }}','{{ partition }}');
+    SELECT DROP_PARTITIONS('{{ target_relation.schema }}.{{ target_relation.table }}', '{{ partition }}', '{{ partition }}');
+    SELECT PURGE_PARTITION('{{ target_relation.schema }}.{{ target_relation.table }}', '{{ partition }}');
     {% endfor %}
 
     insert into {{ target_relation }} ({{ dest_cols_csv }})
