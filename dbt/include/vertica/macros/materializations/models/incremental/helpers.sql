@@ -4,9 +4,9 @@
 
   {% set invalid_strategy_msg -%}
     Invalid incremental strategy provided: {{ strategy }}
-    Expected one of: 'merge', 'delete+insert'
+    Expected one of: 'merge', 'delete+insert', 'insert+overwrite'
   {%- endset %}
-  {% if strategy not in ['merge', 'delete+insert'] %}
+  {% if strategy not in ['merge', 'delete+insert', 'insert+overwrite'] %}
     {% do exceptions.raise_compiler_error(invalid_strategy_msg) %}
   {% endif %}
 
@@ -29,8 +29,46 @@
   {% if strategy == 'merge' %}
     {% do return(vertica__get_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% elif strategy == 'delete+insert' %}
-    {% do return(get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+    {% do return(vertica__get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+  {% elif strategy == 'insert+overwrite' %}
+    {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% else %}
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}
+{% endmacro %}
+
+{% macro vertica__get_table_in_relation(relation) -%}
+  {% call statement('get_columns_in_relation', fetch_result=True) %}
+    select
+    column_name
+    , data_type
+    , character_maximum_length
+    , numeric_precision
+    , numeric_scale
+    from (
+        select
+        column_name
+        , data_type
+        , character_maximum_length
+        , numeric_precision
+        , numeric_scale
+        , ordinal_position
+        from v_catalog.columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+        union all
+        select
+        column_name
+        , data_type
+        , character_maximum_length
+        , numeric_precision
+        , numeric_scale
+        , ordinal_position
+        from v_catalog.view_columns
+        where table_schema = '{{ relation.schema }}'
+        and table_name = '{{ relation.identifier }}'
+    ) t
+    order by ordinal_position
+  {% endcall %}
+  {{ return(load_result('get_columns_in_relation').table) }}
 {% endmacro %}
