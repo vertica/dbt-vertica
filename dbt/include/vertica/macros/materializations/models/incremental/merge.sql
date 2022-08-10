@@ -15,11 +15,17 @@
 
   on HASH( {{ get_qouted_csv_with_prefix("DBT_INTERNAL_DEST", unique_key) }} ) = HASH({{ get_qouted_csv_with_prefix("DBT_INTERNAL_SOURCE", unique_key) }})
 
-  when matched then update set
-  {% for column_name in merge_update_columns -%}
-    {{ adapter.quote(column_name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column_name) }}
-    {%- if not loop.last %}, {% endif %}
-  {%- endfor %}
+  {%- if merge_update_columns is string %}
+    {%- set merge_update_columns = merge_update_columns.split(',') %}
+  {% endif %}
+
+  {%- if merge_update_columns | length > 0 %}
+    when matched then update set
+    {% for column_name in merge_update_columns -%}
+      {{ adapter.quote(column_name) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column_name) }}
+      {%- if not loop.last %}, {% endif %}
+    {%- endfor %}
+  {%- endif %}
 
   when not matched then insert
     ({{ dest_columns_csv }})

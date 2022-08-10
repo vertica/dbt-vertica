@@ -28,7 +28,9 @@
 
       insert into {{ relation }} ({{ dest_cols_csv }})
       (
-          {{ sql }}
+        select {{ dest_cols_csv }} from (
+         {{ sql }}
+        ) as DBT_MASKED_TARGET
       );
 
 {% endmacro %}
