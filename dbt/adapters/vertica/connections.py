@@ -120,15 +120,18 @@ class verticaConnectionManager(SQLConnectionManager):
 
     @classmethod
     def get_response(cls, cursor):
-        code = cursor.description
-        rows = cursor.rowcount
+
+        rows_affected = cursor.fetchone()[0]
+        while cursor.nextset():
+            rows_affected = cursor.fetchone()[0]
+
+        code = "DONE"
         message = cursor._message
-        arraysize = cursor.arraysize
         operation = cursor.operation
 
         return AdapterResponse(
-            _message="Code: {}, Rows: {}, Array Size: {}".format(str(code), rows, arraysize),
-            rows_affected=rows,
+            _message="Code: {}, Rows Affected: {}".format(str(code), rows_affected),
+            rows_affected=rows_affected,
             code=str(code)
         )
 
