@@ -37,38 +37,9 @@
   {% endif %}
 {% endmacro %}
 
-{% macro vertica__get_table_in_relation(relation) -%}
-  {% call statement('get_columns_in_relation', fetch_result=True) %}
-    select
-    column_name
-    , data_type
-    , character_maximum_length
-    , numeric_precision
-    , numeric_scale
-    from (
-        select
-        column_name
-        , data_type
-        , character_maximum_length
-        , numeric_precision
-        , numeric_scale
-        , ordinal_position
-        from v_catalog.columns
-        where table_schema = '{{ relation.schema }}'
-        and table_name = '{{ relation.identifier }}'
-        union all
-        select
-        column_name
-        , data_type
-        , character_maximum_length
-        , numeric_precision
-        , numeric_scale
-        , ordinal_position
-        from v_catalog.view_columns
-        where table_schema = '{{ relation.schema }}'
-        and table_name = '{{ relation.identifier }}'
-    ) t
-    order by ordinal_position
+{% macro vertica__get_ddl_in_relation(relation) -%}
+  {% call statement('get_ddl_in_relation', fetch_result=True) %}
+    SELECT export_tables('','{{ relation }}') ddl
   {% endcall %}
-  {{ return(load_result('get_columns_in_relation').table) }}
+  {{ return(load_result('get_ddl_in_relation').table) }}
 {% endmacro %}
