@@ -30,6 +30,7 @@ class verticaCredentials(Credentials):
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
+    connection_load_balance: bool = True
 
     @property
     def type(self):
@@ -45,7 +46,7 @@ class verticaCredentials(Credentials):
 
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
-        return ('host','port','database','username','schema')
+        return ('host','port','database','username','schema', 'connection_load_balance')
 
 
 class verticaConnectionManager(SQLConnectionManager):
@@ -67,7 +68,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'password': credentials.password,
                 'database': credentials.database,
                 'connection_timeout': credentials.timeout,
-                'connection_load_balance': True,
+                'connection_load_balance': credentials.connection_load_balance,
                 'session_label': f'dbt_{credentials.username}',
             }
             # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
