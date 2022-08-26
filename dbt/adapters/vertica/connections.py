@@ -30,6 +30,7 @@ class verticaCredentials(Credentials):
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
+    connection_load_balance: bool = True
 
     @property
     def type(self):
@@ -45,7 +46,7 @@ class verticaCredentials(Credentials):
 
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
-        return ('host','port','database','username','schema')
+        return ('host','port','database','username','schema', 'connection_load_balance')
 
 
 class verticaConnectionManager(SQLConnectionManager):
@@ -67,7 +68,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'password': credentials.password,
                 'database': credentials.database,
                 'connection_timeout': credentials.timeout,
-                'connection_load_balance': True,
+                'connection_load_balance': credentials.connection_load_balance,
                 'session_label': f'dbt_{credentials.username}',
             }
             # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
@@ -121,17 +122,15 @@ class verticaConnectionManager(SQLConnectionManager):
     @classmethod
     def get_response(cls, cursor):
 
-        rows_affected = cursor.fetchone()[0]
-        while cursor.nextset():
-            rows_affected = cursor.fetchone()[0]
-
-        code = "DONE"
+        code = cursor.description
+        rows = cursor.rowcount
         message = cursor._message
+        arraysize = cursor.arraysize
         operation = cursor.operation
 
         return AdapterResponse(
-            _message="Code: {}, Rows Affected: {}".format(str(code), rows_affected),
-            rows_affected=rows_affected,
+            _message="Code: {}, Rows: {}, Array Size: {}".format(str(code), rows, arraysize),
+            rows_affected=rows,
             code=str(code)
         )
 
