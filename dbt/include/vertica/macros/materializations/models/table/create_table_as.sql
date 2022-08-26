@@ -11,19 +11,19 @@
   );
 {% endmacro %}
 
-{% macro vertica__create_table_from_relation(relation, target, dest_columns, sql) -%}
+{% macro vertica__create_table_from_relation(temporary, relation, target, dest_columns, sql) -%}
   {%- set sql_header = config.get('sql_header', none) -%}
   {%- set ddl = vertica__get_ddl_in_relation(target) -%}
   {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
   {{ sql_header if sql_header is not none }}
 
-  create local temporary table {{ relation }}
+  create {% if temporary: -%}local temporary{%- endif %} table {{ relation }}
      {% for row in ddl %}
        {%- set to_replace = "CREATE TABLE " + target.schema + "." + target.identifier -%}
        {%- set table_schema = (row.ddl | replace(to_replace, "")) | replace(";", "") | replace("PARTITION", "--PARTITION") -%}
        {{ table_schema }}
-     {% endfor %} on commit preserve rows;
+     {% endfor %} {% if temporary: -%}on commit preserve rows{%- endif %};
 
       insert into {{ relation }} ({{ dest_cols_csv }})
       (

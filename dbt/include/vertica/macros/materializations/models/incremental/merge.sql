@@ -5,7 +5,7 @@
   {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name")) -%}
 
   {%- if complex_type %}
-      {{vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql)}}
+      {{vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql)}}
   {% else %}
       {{vertica__create_table_as(True, tmp_relation, sql)}}
   {% endif %}
@@ -46,7 +46,7 @@
     {%- set unique_key_columns_csv = get_quoted_csv(unique_key) -%}
 
     {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
+        {{ vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
         {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
@@ -55,7 +55,7 @@
     {% if unique_key is sequence and unique_key is not string %}
         delete from {{ target_relation }}
         where (
-            HASH( {{ unique_key_columns_csv }} ) in (
+            HASH({{ unique_key_columns_csv }}) in (
             select HASH({{  unique_key_columns_csv }})
                             from {{ tmp_relation }} )
         );
@@ -83,7 +83,7 @@
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
     {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
+        {{ vertica__create_table_from_relation(True, tmp_relation, target_relation, dest_columns, sql) }}
     {% else %}
         {{ vertica__create_table_as(True, tmp_relation, sql) }}
     {% endif %}
