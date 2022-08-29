@@ -27,19 +27,12 @@
 
 {% macro vertica__get_incremental_sql(strategy, tmp_relation, target_relation, dest_columns) %}
   {% if strategy == 'merge' %}
-    {% do return(vertica__get_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+    {% do return(vertica__get_merge_sql(target_relation, dest_columns, sql)) %}
   {% elif strategy == 'delete+insert' %}
-    {% do return(vertica__get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+    {% do return(vertica__get_delete_insert_merge_sql(target_relation, dest_columns, sql)) %}
   {% elif strategy == 'insert+overwrite' %}
-    {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns)) %}
+    {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, dest_columns, sql)) %}
   {% else %}
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}
-{% endmacro %}
-
-{% macro vertica__get_ddl_in_relation(relation) -%}
-  {% call statement('get_ddl_in_relation', fetch_result=True) %}
-    SELECT export_tables('','{{ relation }}') ddl
-  {% endcall %}
-  {{ return(load_result('get_ddl_in_relation').table) }}
 {% endmacro %}

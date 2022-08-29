@@ -1,17 +1,15 @@
-{% macro vertica__get_merge_sql(target_relation, tmp_relation, dest_columns) %}
-  {%- set complex_type = config.get('include_complex_type', default = False) -%}
+{% macro vertica__get_merge_sql(target_relation, dest_columns, sql) %}
+  {%- set sql_header = config.get('sql_header', none) -%}
   {%- set dest_columns_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
   {%- set unique_key = config.get("unique_key", default = dest_columns | map(attribute="name")) -%}
   {%- set merge_update_columns = config.get('merge_update_columns', default = dest_columns | map(attribute="name")) -%}
 
-  {%- if complex_type %}
-      {{vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql)}}
-  {% else %}
-      {{vertica__create_table_as(True, tmp_relation, sql)}}
-  {% endif %}
+  {{ sql_header if sql_header is not none }}
 
   merge into {{ target_relation }} as DBT_INTERNAL_DEST
-  using {{ tmp_relation }} as DBT_INTERNAL_SOURCE
+  using (
+            {{ sql }}
+        ) as DBT_INTERNAL_SOURCE
 
   on HASH( {{ get_qouted_csv_with_prefix("DBT_INTERNAL_DEST", unique_key) }} ) = HASH({{ get_qouted_csv_with_prefix("DBT_INTERNAL_SOURCE", unique_key) }})
 
@@ -39,32 +37,32 @@
 {%- endmacro %}
 
 
-{% macro vertica__get_delete_insert_merge_sql(target_relation, tmp_relation, dest_columns) -%}
-    {%- set complex_type = config.get('include_complex_type') -%}
+{% macro vertica__get_delete_insert_merge_sql(target_relation, dest_columns, sql) -%}
+    {%- set sql_header = config.get('sql_header', none) -%}
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
-    {%- set unique_key = config.get('unique_key', default = dest_columns | map(attribute="name")) -%}
-    {%- set unique_key_columns_csv = get_quoted_csv(unique_key) -%}
+    {%- set condition_columns = config.get('condition_columns', default = dest_columns | map(attribute="name")) -%}
+    {%- set condition_columns_csv = get_quoted_csv(condition_columns) -%}
 
-    {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
-    {% else %}
-        {{ vertica__create_table_as(True, tmp_relation, sql) }}
-    {% endif %}
+    {{ sql_header if sql_header is not none }}
 
 
-    {% if unique_key is sequence and unique_key is not string %}
+    {% if condition_columns is sequence and condition_columns is not string %}
         delete from {{ target_relation }}
         where (
-            HASH( {{ unique_key_columns_csv }} ) in (
-            select HASH({{  unique_key_columns_csv }})
-                            from {{ tmp_relation }} )
+            HASH( {{ condition_columns_csv }} ) in (
+            select HASH({{ condition_columns_csv }})
+            from (
+                     {{ sql }}
+                 ) as DBT_MASKED_TARGET )
         );
     {% else %}
         delete from {{ target_relation }}
         where (
-            {{ unique_key }}) in (
-            select {{ unique_key }}
-            from {{ tmp_relation }}
+            {{ condition_columns }}) in (
+            select {{ condition_columns }}
+            from (
+                     {{ sql }}
+                 ) as DBT_MASKED_TARGET
         );
 
     {% endif %}
@@ -72,22 +70,19 @@
     insert into {{ target_relation }} ({{ dest_cols_csv }})
     (
         select {{ dest_cols_csv }}
-        from {{ tmp_relation }}
+        from (
+                 {{ sql }}
+             ) as DBT_MASKED_TARGET
     )
-
 {%- endmacro %}
 
-{% macro vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns) -%}
-    {%- set complex_type = config.get('include_complex_type') -%}
+
+{% macro vertica__get_insert_overwrite_merge_sql(target_relation, dest_columns, sql) -%}
+    {%- set sql_header = config.get('sql_header', none) -%}
     {%- set partitions = config.get('partitions') -%}
     {%- set dest_cols_csv = get_quoted_csv(dest_columns | map(attribute="name")) -%}
 
-    {%- if complex_type %}
-        {{ vertica__create_table_from_relation(tmp_relation, target_relation, dest_columns, sql) }}
-    {% else %}
-        {{ vertica__create_table_as(True, tmp_relation, sql) }}
-    {% endif %}
-
+    {{ sql_header if sql_header is not none }}
 
     {% for partition in partitions %}
     SELECT DROP_PARTITIONS('{{ target_relation.schema }}.{{ target_relation.table }}', '{{ partition }}', '{{ partition }}');
@@ -97,7 +92,9 @@
     insert into {{ target_relation }} ({{ dest_cols_csv }})
     (
         select {{ dest_cols_csv }}
-        from {{ tmp_relation }}
+        from (
+                 {{ sql }}
+             ) as DBT_MASKED_TARGET
     )
 {% endmacro %}
 
