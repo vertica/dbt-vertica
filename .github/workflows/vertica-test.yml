@@ -1,10 +1,13 @@
 name: Test package against latest Vertica
 
 # Triggers the workflow on push or pull request events
-on: [push, pull_request]
+on: [push]
 
 permissions:
   contents: read
+
+env:
+  VERTICA_DB_NAME: docker
 
 jobs:
   test:
