@@ -26,7 +26,7 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        Extract reqspip install build twine pip-tools
+        pip install build twine pip-tools
     - name: Build package
       run: python -m build
     - name: Check
