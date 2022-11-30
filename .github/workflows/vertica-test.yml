@@ -35,6 +35,8 @@ jobs:
       run: pip-compile -o requirements.txt --extra dev setup.py
     - name: Install reqs
       run: pip install -r requirements.txt
+    - name: Install
+      run: python setup.py install
     - name: Test
       run: pytest tests/integration.dbtspec
 
