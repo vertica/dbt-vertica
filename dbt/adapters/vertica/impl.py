@@ -22,3 +22,21 @@ class verticaAdapter(SQLAdapter):
         decimals = agate_table.aggregate(agate.MaxPrecision(col_idx))
         return "numeric(18,{})".format(decimals) if decimals else "integer"
 
+    def run_sql_for_tests(self, sql, fetch, conn):
+        cursor = conn.handle.cursor()
+        try:
+            cursor.execute(sql)
+            if fetch == "one":
+                return cursor.fetchone()
+            elif fetch == "all":
+                return cursor.fetchall()
+            else:
+                return
+        except BaseException as e:
+            if conn.handle and not getattr(conn.handle, "closed", True):
+                conn.handle.rollback()
+            print(sql)
+            print(e)
+            raise
+        finally:
+            conn.transaction_open = False
