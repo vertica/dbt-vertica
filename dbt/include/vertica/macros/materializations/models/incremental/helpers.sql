@@ -1,6 +1,7 @@
 {% macro vertica__validate_get_incremental_strategy(config) %}
   {#-- Find and validate the incremental strategy #}
-  {%- set strategy = config.get("incremental_strategy", default="merge") -%}
+  {#-- See: https://github.com/dbt-labs/dbt-core/blob/1071a4681df91633301fdf23e34de819b66fbeb7/core/dbt/include/global_project/macros/materializations/models/incremental/incremental.sql#L52 #}
+  {% set strategy = config.get('incremental_strategy') or 'merge' %}
 
   {% set invalid_strategy_msg -%}
     Invalid incremental strategy provided: {{ strategy }}

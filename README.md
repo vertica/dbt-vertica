@@ -36,7 +36,7 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 
 Below is a table for what features the current Vertica adapter supports for Vertica. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
 
-| Vertica Features      | Supported |    
+| Vertica Features      | Supported |
 | --------------------- | --------- |
 | Created/Drop Schema   | Yes       |
 | Analyze Statistics    | No        |
@@ -76,7 +76,7 @@ Within your SQL file, you can specify the following config:
 
 ## Changes
 
-### 1.0.4
+### 1.0.5
 - Added support for delete+insert merge
 
 ### 1.0.3.1
