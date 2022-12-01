@@ -76,14 +76,14 @@ projects:
                 merge_columns = [ 'id', 'name' ]
               )
             }}
-            with incremental_data as 
+            with incremental_data as
             (
               select * from {{ source('raw', 'seed') }}
               {% if is_incremental() %}
               where id > (select max(id) from {{ this }})
               {% endif %}
-            ) 
-            select * from incremental_data  
+            )
+            select * from incremental_data
     facts:
       seed:
         length: 2
@@ -123,7 +123,7 @@ sequences:
   # Test the incremental merge based upon specific columns
   test_vertica_dbt_incremental_merge_columns:
     project: test_vertica_dbt_incremental_merge_columns
-    sequence: 
+    sequence:
       - type: dbt
         cmd: seed
       - type: run_results
