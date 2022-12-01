@@ -9,4 +9,5 @@ from dbt.include import vertica
 Plugin = AdapterPlugin(
     adapter=verticaAdapter,
     credentials=verticaCredentials,
-    include_path=vertica.PACKAGE_PATH)
+    include_path=vertica.PACKAGE_PATH
+)
