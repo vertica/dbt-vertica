@@ -1,5 +1,7 @@
 # dbt-vertica
 
+[![Test package against latest Vertica](https://github.com/vertica/dbt-vertica/actions/workflows/vertica-test.yml/badge.svg?branch=master)](https://github.com/vertica/dbt-vertica/actions/workflows/vertica-test.yml)
+
 Your [dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/).
 
 Uses [vertica-python](https://github.com/vertica/vertica-python) to connect to Vertica database.
