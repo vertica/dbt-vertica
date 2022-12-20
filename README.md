@@ -17,7 +17,7 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 | Ephemeral Materializations                        | Yes         |
 | View Materializations                             | Yes         |
 | Incremental Materializations - Append             | No          |
-| Incremental Materailizations - Insert + Overwrite | No          |
+| Incremental Materializations - Insert + Overwrite | No          |
 | Incremental Materializations - Merge              | Yes         |
 | Incremental Materializations - Delete + Insert    | Yes         |
 | Snapshots - Timestamp                             | Passes Test |

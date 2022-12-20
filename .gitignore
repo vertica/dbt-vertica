@@ -5,3 +5,4 @@ dist/
 build/
 requirements.txt
 venv/
+__pycache__/
