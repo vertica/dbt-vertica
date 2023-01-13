@@ -128,3 +128,4 @@ def only_profile_type(request):
         for only_profile_type in request.node.get_closest_marker("only_profile").args:
             if only_profile_type != profile_type:
                 pytest.skip("skipped on '{profile_type}' profile")
+                
