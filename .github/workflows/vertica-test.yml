@@ -42,8 +42,20 @@ jobs:
       run: pip install -r requirements.txt
     - name: Install
       run: python setup.py install
-    - name: Test
-      run: python -m pytest tests/functional
+    - name: Test Basic
+      run: python -m pytest tests/functional/adapter/test_basic.py
+    - name: Test Concurrency
+      run: python -m pytest tests/functional/adapter/concurrency/
+    - name: Test ephemeral
+      run: python -m pytest tests/functional/adapter/ephemeral/
+    - name: Test Doc Generate
+      run: python -m pytest tests/functional/adapter/test_doc_gen.py
+    - name: Test Data Type Boolean
+      run: python -m pytest tests/functional/adapter/test_data_types.py
+    - name: Test Concat
+      run: python -m pytest tests/functional/adapter/utils/test_concat.py
+    - name: Test Data Type Int
+      run: python -m pytest tests/functional/adapter/utils/data_type/
 
 
 

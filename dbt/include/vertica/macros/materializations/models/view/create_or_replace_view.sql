@@ -2,7 +2,7 @@
   {% set sql_header = config.get('sql_header', none) %}
 
   {{ sql_header if sql_header is not none }}
-  create or replace view {{ relation }} include schema privileges as (
+  create or replace view {{ relation }} as (
     {{ sql }}
   );
 {% endmacro %}

@@ -1,5 +1,8 @@
 {%- materialization view, default -%}
 
+    -- -- grab current tables grants config for comparision later on
+  {% set grant_config = config.get('grants') %}
+
   {%- set identifier = model['alias'] -%}
   {%- set tmp_identifier = model['name'] + '__dbt_tmp' -%}
   {%- set backup_identifier = model['name'] + '__dbt_backup' -%}
@@ -56,6 +59,9 @@
     {{ adapter.rename_relation(old_relation, backup_relation) }}
   {% endif %}
   {{ adapter.rename_relation(intermediate_relation, target_relation) }}
+  {% call statement('main') %}
+    {{ vertica__do_apply_grants(target_relation, grant_config) }}
+  {% endcall %}
 
   {% do persist_docs(target_relation, model) %}
 

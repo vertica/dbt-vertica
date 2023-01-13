@@ -1,19 +1,38 @@
+# Copyright (c) [2018-2023]  Micro Focus or one of its affiliates.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+
+
 from contextlib import contextmanager
 from dataclasses import dataclass
 import ssl
 import os
 import requests
 from typing import Optional
-
-
+from dbt.contracts.connection import AdapterResponse
+from typing import List, Optional, Tuple, Any, Iterable, Dict, Union
+import dbt.clients.agate_helper
+import agate
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
 from dbt.events import AdapterLogger
 logger = AdapterLogger("vertica")
-
 from dbt.contracts.connection import AdapterResponse
-import dbt.exceptions
 
+
+import dbt.exceptions
 import vertica_python
 
 
@@ -30,6 +49,15 @@ class verticaCredentials(Credentials):
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
+    connection_load_balance: Optional[bool]= True
+    retries:int  =  1
+    backup_server_node: Optional[List[str]] = None
+    # backup_server_node: Optional[str] = None
+
+    # additional_info = {
+    # 'password': str, 
+    # 'backup_server_node': list# invalid value to be set in a connection string
+    # }
 
     @property
     def type(self):
@@ -45,8 +73,7 @@ class verticaCredentials(Credentials):
 
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
-        return ('host','port','database','username','schema')
-
+        return ('host','port','database','username','schema', 'connection_load_balance')
 
 class verticaConnectionManager(SQLConnectionManager):
     TYPE = 'vertica'
@@ -67,9 +94,14 @@ class verticaConnectionManager(SQLConnectionManager):
                 'password': credentials.password,
                 'database': credentials.database,
                 'connection_timeout': credentials.timeout,
-                'connection_load_balance': True,
+                'connection_load_balance':credentials.connection_load_balance,
                 'session_label': f'dbt_{credentials.username}',
+                'retries': credentials.retries,
+              
+                'backup_server_node':credentials.backup_server_node,
+                
             }
+
             # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
             if credentials.ssl:
                 if credentials.ssl_env_cafile is not None:
@@ -87,11 +119,17 @@ class verticaConnectionManager(SQLConnectionManager):
                     context = ssl.create_default_context()
                 conn_info['ssl'] = context
                 logger.debug(f'SSL is on')
+            
+            def connect():
+                handle = vertica_python.connect(**conn_info)
+                logger.debug(f':P Connection work {handle}')
+                connection.state = 'open'
+                connection.handle = handle
+                logger.debug(f':P Connected to database: {credentials.database} at {credentials.host} at {handle}')
+                return handle
+        
+               
 
-            handle = vertica_python.connect(**conn_info)
-            connection.state = 'open'
-            connection.handle = handle
-            logger.debug(f':P Connected to database: {credentials.database} at {credentials.host}')
 
         except Exception as exc:
             logger.debug(f':P Error connecting to database: {exc}')
@@ -116,7 +154,18 @@ class verticaConnectionManager(SQLConnectionManager):
                 logger.debug(f':P Could not EnableWithClauseMaterialization: {exc}')
                 pass
 
-        return connection
+        retryable_exceptions = [
+        Exception,
+        dbt.exceptions.FailedToConnectException
+        ]
+
+        return cls.retry_connection(
+        connection,
+        connect=connect,
+        logger=logger,
+        retry_limit=credentials.retries,
+        retryable_exceptions=retryable_exceptions,
+        )
 
     @classmethod
     def get_response(cls, cursor):
@@ -125,9 +174,8 @@ class verticaConnectionManager(SQLConnectionManager):
         message = cursor._message
         arraysize = cursor.arraysize
         operation = cursor.operation
-
         return AdapterResponse(
-            _message="Code: {}, Rows: {}, Array Size: {}".format(str(code), rows, arraysize),
+            _message="Operation: {}, Message: {}, Code: {}, Rows: {}, Arraysize: {}".format(operation, message, str(code), rows, arraysize),
             rows_affected=rows,
             code=str(code)
         )
@@ -135,6 +183,7 @@ class verticaConnectionManager(SQLConnectionManager):
     def cancel(self, connection):
         logger.debug(':P Cancel query')
         connection.handle.cancel()
+
 
     @contextmanager
     def exception_handler(self, sql):

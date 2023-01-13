@@ -1,7 +1,5 @@
-.vscode/
-*.pyc
-*.egg-info/
-dist/
 build/
-requirements.txt
-venv/
+logs
+*.egg-info
+*__pycache__
+*.pyc
