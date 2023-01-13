@@ -77,7 +77,7 @@ def _get_dbt_core_version():
     return f"{minor}{pre}"
 
 
-package_name = "dbt_vertica_o"
+package_name = "dbt-vertica"
 package_version = "1.3.0"
 description = """The vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
@@ -88,10 +88,10 @@ setup(
     description=description,
     long_description=README,
     long_description_content_type='text/markdown',
-    license='MIT',
-    author='sachin thakur, shilpa c',
-    author_email='shilpa.chandrashekar15@gmail.com, sachin.thakur9614@gmail.com',
-    url='https://github.com/Sachin-Thakur/dbt-vertica-3x/',
+    license='MIT', 
+    author='Matthew Carter (original), Andrew Hedengren, Andy Reagan',
+    author_email='arosychuk@gmail.com, andy@andyreagan.com',
+    url='https://github.com/vertica/dbt-vertica/',
     packages=find_packages(include=["dbt","dbt.*"]),
     
     package_data={
