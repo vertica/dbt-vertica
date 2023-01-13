@@ -89,6 +89,7 @@ See the [changelog](https://github.com/vertica/dbt-vertica/CHANGELOG.md)
 
 
 ## Contributing guidelines
+
 Have a bug or an idea? Please see [CONTRIBUTING.md](https://github.com/vertica/dbt-vertica/CONTRIBUTING.md) for details
 
 ## Develop
