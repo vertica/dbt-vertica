@@ -1,6 +1,6 @@
 target:
   type: vertica
-  host: 159.65.150.255
+  host: localhost
   username: dbadmin
   password: ''
   database: docker
