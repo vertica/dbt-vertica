@@ -85,7 +85,7 @@ For more information on Vertica’s connection properties please refer to [Verti
 
 ## Changelog
 
-See the [changelog](https://github.com/vertica/dbt-vertica/blob/master/CHANGLOG.md)
+See the [changelog](https://github.com/vertica/dbt-vertica/blob/master/CHANGELOG.md)
 
 
 ## Contributing guidelines
