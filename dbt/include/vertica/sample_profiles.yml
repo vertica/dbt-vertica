@@ -1,0 +1,26 @@
+default:
+  outputs:
+    dev:
+      type: vertica
+      host: [host]
+      port: [port]
+      username: [dev_username]
+      password: [dev_password]
+      database: [dbname]
+      schema: [dev_schema]
+      threads: [1 or more]
+      connection_load_balance: [True or False]
+      retries: [2 or more]
+
+    prod:
+      type: vertica
+      host: [host]
+      port: [port]
+      username: [prod_username]
+      password: [prod_password]
+      database: [dbname]
+      schema: [prod_schema]
+      threads: [1 or more]
+      connection_load_balance: [True or False]
+      retries: [2 or more]
+  target: dev
