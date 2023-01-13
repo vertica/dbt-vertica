@@ -27,7 +27,7 @@ Fork the project [on Github](https://github.com/vertica/dbt-vertica)  and check 
 git clone git@github.com:YOURUSERNAME/dbt-vertica.git
 cd dbt-vertica
 ```
-Your GitHub repository **YOURUSERNAME/dbt-vertica**r will be called "origin" in Git. 
+Your GitHub repository **YOURUSERNAME/dbt-vertica** will be called "origin" in Git. 
 You should also set up **vertica/dbt-vertica** as an "upstream" remote.
 
 ```shell
