@@ -79,7 +79,7 @@ def _get_dbt_core_version():
 
 package_name = "dbt-vertica"
 package_version = "1.3.0"
-description = """The vertica adapter plugin for dbt (data build tool)"""
+description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
 
 setup(
@@ -88,7 +88,7 @@ setup(
     description=description,
     long_description=README,
     long_description_content_type='text/markdown',
-    license='Apache License', 
+    license='Apache License 2.0', 
     author='Vertica (Former authors:- Matthew Carter, Andy Regan, Andrew Hedengren)',
     author_email='arosychuk@gmail.com, andy@andyreagan.com',
     url='https://github.com/vertica/dbt-vertica/',
@@ -115,5 +115,16 @@ setup(
         'vertica-python>=1.1.0',
         'dbt-tests-adapter==1.3.0',
         'python-dotenv==0.21.0',
+    ],
+    classifiers=[
+        "Development Status :: 5 - Production/Stable",
+        "License :: OSI Approved :: Apache Software License",
+        "Programming Language :: Python",
+        "Programming Language :: Python :: 3",
+        "Topic :: Database",
+        "Topic :: Database :: Database Engines/Servers",
+        "Topic :: Database :: Front-Ends",
+        "Topic :: Software Development :: Libraries :: Python Modules",
+        "Operating System :: OS Independent"
     ],
 )
