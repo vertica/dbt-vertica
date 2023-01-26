@@ -114,7 +114,7 @@ setup(
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
         'dbt-tests-adapter==1.3.0',
-        'python-dotenv==0.21.0',
+        'python-dotenv==0.21.1',
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
