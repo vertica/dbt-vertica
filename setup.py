@@ -110,7 +110,7 @@ setup(
         ]
     },
     install_requires=[
-        'dbt-core==1.3.0',
+        'dbt-core==1.4.1',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
         'dbt-tests-adapter==1.3.0',
