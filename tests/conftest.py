@@ -42,10 +42,10 @@ def dbt_profile_target():
     return {
          'type': 'vertica',
         'threads': 1,
-        'host': 'localhost',
+        'host': '10.20.73.216',
         'username': 'dbadmin',
-        'password': '',
-        'database': 'docker',
+        'password': 'vdb',
+        'database': 'vertica_db',
         'port': 5433,
         
     }
@@ -105,10 +105,10 @@ def vertica_target():
     return {
        'type': 'vertica',
         'threads': 1,
-        'host': 'localhost',
+        'host': '10.20.73.216',
         'username': 'dbadmin',
-        'password': '',
-        'database': 'docker',
+        'password': 'vdb',
+        'database': 'vertica_db',
         'port': 5433,
     }
 

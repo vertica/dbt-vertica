@@ -135,7 +135,7 @@ class verticaConnectionManager(SQLConnectionManager):
             logger.debug(f':P Error connecting to database: {exc}')
             connection.state = 'fail'
             connection.handle = None
-            raise dbt.exceptions.FailedToConnectException(str(exc))
+            raise dbt.exceptions.DbtFailedToConnectErroe(str(exc))
 
         # This is here mainly to support dbt-integration-tests.
         # It globally enables WITH materialization for every connection dbt
@@ -156,7 +156,7 @@ class verticaConnectionManager(SQLConnectionManager):
 
         retryable_exceptions = [
         Exception,
-        dbt.exceptions.FailedToConnectException
+        dbt.exceptions.FailedToConnectError
         ]
 
         return cls.retry_connection(
@@ -192,9 +192,9 @@ class verticaConnectionManager(SQLConnectionManager):
         except vertica_python.DatabaseError as exc:
             logger.debug(f':P Database error: {exc}')
             self.release()
-            raise dbt.exceptions.DatabaseException(str(exc))
+            raise dbt.exceptions.DbtDatabaseError(str(exc))
         except Exception as exc:
             logger.debug(f':P Error: {exc}')
             self.release()
-            raise dbt.exceptions.RuntimeException(str(exc))
+            raise dbt.exceptions.DbtRuntimeError(str(exc))
 

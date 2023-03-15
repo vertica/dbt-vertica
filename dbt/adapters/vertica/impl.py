@@ -19,7 +19,7 @@ from typing import Mapping, Any, Optional, List, Union, Dict
 from dbt.adapters.base import available
 from dbt.exceptions import (
 
-    RuntimeException
+    DbtRuntimeError
 )
 
 import agate
@@ -128,7 +128,7 @@ class verticaAdapter(SQLAdapter):
         valid_strategies.append("default")
         builtin_strategies = self.builtin_incremental_strategies()
         if strategy in builtin_strategies and strategy not in valid_strategies:
-            raise RuntimeException(
+            raise DbtRuntimeError(
                 f"The incremental strategy '{strategy}' is not valid for this adapter"
             )
 
@@ -136,7 +136,7 @@ class verticaAdapter(SQLAdapter):
         macro_name = f"get_incremental_{strategy}_sql"
         # The model_context should have MacroGenerator callable objects for all macros
         if macro_name not in model_context:
-            raise RuntimeException(
+            raise DbtRuntimeError(
                 'dbt could not find an incremental strategy macro with the name "{}" in {}'.format(
                     macro_name, self.config.project_name
                 )

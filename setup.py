@@ -91,7 +91,7 @@ setup(
     license='Apache License 2.0', 
     author='Vertica (Former authors:- Matthew Carter, Andy Regan, Andrew Hedengren)',
     author_email='arosychuk@gmail.com, andy@andyreagan.com',
-    url='https://github.com/vertica/dbt-vertica/',
+    url='https://github.com/ajay.abrol2/dbt-vertica/',
     packages=find_packages(include=["dbt","dbt.*"]),
     
     package_data={
@@ -110,10 +110,10 @@ setup(
         ]
     },
     install_requires=[
-        'dbt-core==1.3.0',
+        'dbt-core==1.4.4',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.3.0',
+        'dbt-tests-adapter==1.4.4',
         'python-dotenv==0.21.1',
     ],
     classifiers=[
@@ -127,4 +127,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
+    python_requires=">=3.7.2",
 )
