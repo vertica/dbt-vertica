@@ -90,7 +90,7 @@ setup(
     long_description_content_type='text/markdown',
     license='Apache License 2.0', 
     author='Vertica (Former authors:- Matthew Carter, Andy Regan, Andrew Hedengren)',
-    author_email='arosychuk@gmail.com, andy@andyreagan.com',
+    author_email='os_dbt_vertica@microfocus.com',
     url='https://github.com/ajay.abrol2/dbt-vertica/',
     packages=find_packages(include=["dbt","dbt.*"]),
     

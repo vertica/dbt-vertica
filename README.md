@@ -3,9 +3,20 @@
 [![PyPI version](https://badge.fury.io/py/dbt-vertica.svg)](https://badge.fury.io/py/dbt-vertica)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/). The adapter uses [vertica-python](https://github.com/vertica/vertica-python) to connect to your Vertica database. The adapter is forward compatible with newer versions of dbt-core but it is not backward compatible with dbt-core versions earlier than v1.3.0.
+[dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/). The adapter uses [vertica-python](https://github.com/vertica/vertica-python) to connect to your Vertica database.
 
 For more information on using dbt with Vertica, consult the [Vertica-Setup](https://docs.getdbt.com/reference/warehouse-setups/vertica-setup) and [Configuration](https://docs.getdbt.com/reference/resource-configs/vertica-configs) pages.
+
+
+## dbt-vertica Versions Tested 
+
+dbt-vertica has been developed with the following software and versions: 
+•	Vertica Server 12.0.3-0 
+•	Python 3.11
+•	vertica-python client 1.3.1
+•	dbt-core 1.4.4
+•	dbt-tests-adapter 1.4.4
+
 
 ## Supported Features
 ### dbt Core Features
