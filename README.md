@@ -38,16 +38,6 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 * **No** - Not supported or implemented.
 * **Untested** - May support out of the box, though hasn't been tested.
 * **Passes Test** -The testes have passed, though haven't tested in a production like environment
-### Vertica Features
-Below is a table for what features the current Vertica adapter supports for Vertica. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
-|   Vertica Features    | Supported |    
-| --------------------- | --------- |
-| Created/Drop Schema   | Yes       |
-| Analyze Statistics    | No        |
-| Purge Delete Vectors  | No        |
-| Projection Management | No        |
-| Primary/Unique Keys   | No        |
-| Other DDLs            | No        |
 
 ## Installation
 ```
