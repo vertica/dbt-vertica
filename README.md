@@ -9,14 +9,12 @@ For more information on using dbt with Vertica, consult the [Vertica-Setup](http
 
 
 ## dbt-vertica Versions Tested 
-
-dbt-vertica has been developed with the following software and versions: 
-•	Vertica Server 12.0.3-0 
-•	Python 3.11
-•	vertica-python client 1.3.1
-•	dbt-core 1.4.4
-•	dbt-tests-adapter 1.4.4
-
+dbt-vertica has been developed using the following software and versions: 
+* Vertica Server 12.0.3-0
+* Python 3.11
+* vertica-python client 1.3.1
+* dbt-core 1.4.4
+* dbt-tests-adapter 1.4.4
 
 ## Supported Features
 ### dbt Core Features
