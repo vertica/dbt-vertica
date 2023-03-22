@@ -1,8 +1,0 @@
-version: 2
-
-sources:
-  - name: raw_data
-    database: vertica_db
-    schema: raw_data_schema 
-    tables: 
-      - name: test_s3
