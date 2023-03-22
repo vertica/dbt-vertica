@@ -11,5 +11,5 @@ updates:
       interval: "monthly"
     ignore:
       - dependency-name: "dbt-core"
-      - dependency-name: "dbt-test-adapter"
+      - dependency-name: "dbt-tests-adapter"
       
