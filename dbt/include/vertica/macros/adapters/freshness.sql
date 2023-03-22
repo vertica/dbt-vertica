@@ -13,5 +13,5 @@
     where {{ filter }}
     {% endif %}
   {% endcall %}
-  {{ return(load_result('collect_freshness')) }}
+  {{ return(load_result('collect_freshness').table) }}
 {%- endmacro %}
