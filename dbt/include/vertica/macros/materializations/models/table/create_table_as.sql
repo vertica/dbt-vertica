@@ -10,6 +10,7 @@
   {%- set partition_by_group_by_string = config.get('partition_by_group_by_string', default=none) -%}
   {%- set partition_by_active_count = config.get('partition_by_active_count', default=none) -%}
   
+  
   create {% if temporary: -%}local temporary{%- endif %} table
     {{ relation.include(database=(not temporary), schema=(not temporary)) }}
     {% if temporary: -%}on commit preserve rows{%- endif %}
