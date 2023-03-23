@@ -17,11 +17,11 @@
     INCLUDE SCHEMA PRIVILEGES as (
     {{ sql }}
   )
-
+ {% if not temporary: %}
   {% if order_by is not none  -%}
       order by {{ order_by }} 
   {% endif -%}
-
+  
   {% if segmented_by_string is not none -%}
               segmented  BY  {{ segmented_by_string }} {% if segmented_by_all_nodes %} ALL NODES {% endif %}
   {% endif %}
@@ -43,6 +43,7 @@
       SET ACTIVEPARTITIONCOUNT {{ partition_by_active_count }}
     {% endif %}
   {% endif %}  
+  {% endif %}
   ;
 {% endmacro %}
 
