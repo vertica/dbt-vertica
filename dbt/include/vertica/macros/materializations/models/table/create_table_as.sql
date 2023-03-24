@@ -17,7 +17,7 @@
     INCLUDE SCHEMA PRIVILEGES as (
     {{ sql }}
   )
- {% if not temporary: %}
+ 
   {% if order_by is not none  -%}
       order by {{ order_by }} 
   {% endif -%}
@@ -43,7 +43,7 @@
       SET ACTIVEPARTITIONCOUNT {{ partition_by_active_count }}
     {% endif %}
   {% endif %}  
-  {% endif %}
+ 
   ;
 {% endmacro %}
 
