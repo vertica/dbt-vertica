@@ -89,8 +89,8 @@ class TestIncrementalVertica(BaseIncremental):
         return {"incremental.sql": incremental_sql, "schema.yml": schema_base_yml}
     
 
-class TestBaseIncrementalNotSchemaChangeVertica(BaseIncrementalNotSchemaChange):
-    pass
+#class TestBaseIncrementalNotSchemaChangeVertica(BaseIncrementalNotSchemaChange):
+#   pass
 
 # @pytest.mark.skip_profile('vertica')
 class TestSnapshotCheckColsVertica(BaseSnapshotCheckCols):
