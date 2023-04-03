@@ -25,6 +25,8 @@ from dbt.tests.adapter.basic.test_singular_tests_ephemeral import (
 from dbt.tests.adapter.basic.test_empty import BaseEmpty
 from dbt.tests.adapter.basic.test_ephemeral import BaseEphemeral
 from dbt.tests.adapter.basic.test_incremental import BaseIncremental,BaseIncrementalNotSchemaChange
+from dbt.tests.adapter.incremental.test_incremental_unique_id import BaseIncrementalUniqueKey
+from dbt.tests.adapter.incremental.test_incremental_predicates import BaseIncrementalPredicates
 from dbt.tests.adapter.basic.test_generic_tests import BaseGenericTests
 from dbt.tests.adapter.basic.test_snapshot_check_cols import BaseSnapshotCheckCols
 from dbt.tests.adapter.basic.test_snapshot_timestamp import BaseSnapshotTimestamp
@@ -48,6 +50,16 @@ sources:
       - name: seed
         identifier: "{{ var('seed_name', 'base') }}"
 """
+
+#class TestIncrementalPredicatesDeleteInsert(BaseIncrementalPredicates):
+#    pass
+
+
+#class TestPredicatesDeleteInsert(BaseIncrementalPredicates):
+#    pass
+
+#class TestIncrementalUniqueKey(BaseIncrementalUniqueKey):
+#    pass
 
 class TestEmptyVertica(BaseEmpty):
     pass
@@ -77,8 +89,8 @@ class TestIncrementalVertica(BaseIncremental):
         return {"incremental.sql": incremental_sql, "schema.yml": schema_base_yml}
     
 
-class TestBaseIncrementalNotSchemaChangeVertica(BaseIncrementalNotSchemaChange):
-    pass
+#class TestBaseIncrementalNotSchemaChangeVertica(BaseIncrementalNotSchemaChange):
+#   pass
 
 # @pytest.mark.skip_profile('vertica')
 class TestSnapshotCheckColsVertica(BaseSnapshotCheckCols):

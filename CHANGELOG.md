@@ -1,6 +1,13 @@
 ## Changelog
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
+### 1.4.4
+#### Features:
+- Added support for [`dbt-core version 1.4.0`](https://github.com/dbt-labs/dbt-core/discussions/6624) according to DBT guidelines. 
+- Support for Python 3.11.
+#### Fixes:
+- Merge strategy config parameter `merge_update_columns` is now working as intended. 
+- The incremental flag `--full-refresh` is now working as intended.
 ### 1.3.0
 #### Features:
 - Added support for [`dbt-core version 1.3.0`](https://github.com/dbt-labs/dbt-core/discussions/6011) and migrated testing framework to new testing framework according to DBT guidelines. 
