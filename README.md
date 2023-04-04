@@ -113,7 +113,7 @@ Access the local Vertica instance like:
 
 You need the pytest dbt adapter:
 
-    pip3 install  dbt-tests-adapter==1.3.0
+    pip3 install  dbt-tests-adapter==1.4.4
 
 Run tests via:
   
