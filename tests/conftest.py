@@ -105,7 +105,7 @@ def vertica_target():
     return {
        'type': 'vertica',
         'threads': 1,
-        'host': 'localhost',
+        'host': 'localhos t',
         'username': 'dbadmin',
         'password': '',
         'database': 'docker',
