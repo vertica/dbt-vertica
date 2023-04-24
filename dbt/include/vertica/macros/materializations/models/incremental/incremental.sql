@@ -1,7 +1,7 @@
 {% materialization incremental, adapter='vertica' %}
 
   {% set unique_key = config.get('unique_key')   or 'none' %}
-
+  {% set grant_config = config.get('grants') %}
   {% set target_relation = this %}
   -- {%- set existing_relation = load_cached_relation(this) -%}
   {% set existing_relation = load_relation(this) %}
@@ -74,6 +74,9 @@
   {% endif %}
   {% call statement("main") %}
       {{ build_sql }}
+      {% if grant_config is not none %}
+       ; {{ vertica__do_apply_grants(target_relation, grant_config) }}
+      {% endif %}
   {% endcall %}
   {% if need_swap %}
       {% do adapter.rename_relation(target_relation, backup_relation) %}
