@@ -35,13 +35,14 @@
     {% endif -%}
 
     {% if partition_by_string is not none -%}
-      ; alter table {{ relation.include(database=(not temporary), schema=(not temporary)) }} partition BY {{ partition_by_string }}
-      {% if partition_by_string is not none and partition_by_group_by_string is not none -%}
-        group by {{ partition_by_group_by_string }}
+      ; ALTER TABLE {{ relation.include(database=(not temporary), schema=(not temporary)) }} PARTITION BY {{ partition_by_string }}
+      {% if partition_by_group_by_string is not none -%}
+        GROUP BY {{ partition_by_group_by_string }}
       {% endif %}
-      {% if partition_by_string is not none and partition_by_active_count is not none %}
+      {% if partition_by_active_count is not none %}
         SET ACTIVEPARTITIONCOUNT {{ partition_by_active_count }}
       {% endif %}
+      ; ALTER TABLE {{ relation.include(database=(not temporary), schema=(not temporary)) }} REORGANIZE;
     {% endif %}
   {% endif %}
   ;
