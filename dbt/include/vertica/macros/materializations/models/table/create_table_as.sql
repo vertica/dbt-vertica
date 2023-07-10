@@ -9,6 +9,7 @@
   {%- set partition_by_string = config.get('partition_by_string', default=none) -%}
   {%- set partition_by_group_by_string = config.get('partition_by_group_by_string', default=none) -%}
   {%- set partition_by_active_count = config.get('partition_by_active_count', default=none) -%}
+  {%- set primary_key_columns_by_string = config.get('primary_key_columns_by_string', default=none) -%}
 
   create {% if temporary: -%}local temporary{%- endif %} table
     {{ relation.include(database=(not temporary), schema=(not temporary)) }}
@@ -44,6 +45,10 @@
       {% endif %}
       ; ALTER TABLE {{ relation.include(database=(not temporary), schema=(not temporary)) }} REORGANIZE;
     {% endif %}
+
+    {% if primary_key_columns_by_string is not none -%}
+      ; ALTER TABLE {{ relation.include(database=(not temporary), schema=(not temporary)) }} ADD CONSTRAINT pk PRIMARY KEY ({{ primary_key_columns_by_string }}) ENABLED
+    {% endif -%}
   {% endif %}
   ;
 {% endmacro %}
