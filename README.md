@@ -13,8 +13,8 @@ dbt-vertica has been developed using the following software and versions:
 * Vertica Server 12.0.3-0
 * Python 3.11
 * vertica-python client 1.3.1
-* dbt-core 1.4.4
-* dbt-tests-adapter 1.4.4
+* dbt-core 1.5.5
+* dbt-tests-adapter 1.5.5
 
 ## Supported Features
 ### dbt Core Features
@@ -113,7 +113,7 @@ Access the local Vertica instance like:
 
 You need the pytest dbt adapter:
 
-    pip3 install  dbt-tests-adapter==1.4.4
+    pip3 install  dbt-tests-adapter==1.5.5
 
 Run tests via:
   

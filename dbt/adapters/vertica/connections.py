@@ -236,3 +236,7 @@ class verticaConnectionManager(SQLConnectionManager):
             self.release()
             raise dbt.exceptions.DbtRuntimeError(str(exc))
 
+    @classmethod
+    def data_type_code_to_name(cls, type_code: Union[int, str]) -> str:
+        assert isinstance(type_code, int)
+        return vertica.connector.constants.FIELD_ID_TO_NAME[type_code]

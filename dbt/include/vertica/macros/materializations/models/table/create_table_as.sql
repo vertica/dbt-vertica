@@ -9,7 +9,11 @@
   {%- set partition_by_string = config.get('partition_by_string', default=none) -%}
   {%- set partition_by_group_by_string = config.get('partition_by_group_by_string', default=none) -%}
   {%- set partition_by_active_count = config.get('partition_by_active_count', default=none) -%}
+  {%- set contract_config = config.get('contract') -%}
   
+  {% if contract_config.enforced %}
+     {{exceptions.warn("Model contracts cannot be enforced by <adapter>!")}}
+  {% endif %}
   
   create {% if temporary: -%}local temporary{%- endif %} table
     {{ relation.include(database=(not temporary), schema=(not temporary)) }}
