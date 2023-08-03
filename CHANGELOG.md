@@ -1,21 +1,21 @@
 ## Changelog
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
-### 1.5.5
+### 1.5.0
 #### Features:
-- Added support for [`dbt-core version 1.5.5`](https://github.com/dbt-labs/dbt-core/discussions/7213) according to DBT guidelines. 
+- Added support for [`dbt-core version 1.5.0`](https://github.com/dbt-labs/dbt-core/discussions/7213) according to DBT guidelines. 
 - Support for Python 3.11.
 #### Fixes:
 - Support the `constraints` data structure. 
 - Implement `data_type_code_to_name` to convert Python connector return types to strings.
 - In both `create_table_as` and `create_view_as` macros, raise an explicit warning if a model is configured with an enforced contract
 - Add new functional tests and parametrize them by overriding fixtures:
-- - TestTableConstraintsColumnsEqual
-- - TestViewConstraintsColumnsEqual
-- - TestIncrementalConstraintsColumnsEqual
-- - TestTableConstraintsRuntimeDdlEnforcement
-- - TestIncrementalConstraintsRuntimeDdlEnforcement
-- - TestModelConstraintsRuntimeEnforcement  
+  - TestTableConstraintsColumnsEqual
+  - TestViewConstraintsColumnsEqual
+  - TestIncrementalConstraintsColumnsEqual
+  - TestTableConstraintsRuntimeDdlEnforcement
+  - TestIncrementalConstraintsRuntimeDdlEnforcement
+  - TestModelConstraintsRuntimeEnforcement  
 
 ### 1.4.4
 #### Features:
