@@ -15,6 +15,8 @@
 
 from dbt.adapters.sql import SQLAdapter
 from dbt.adapters.vertica import verticaConnectionManager
+#from dbt.adapters.vertica import VerticaRelation
+#from dbt.adapters.vertica import VerticaColumn
 from typing import Mapping, Any, Optional, List, Union, Dict
 from dbt.adapters.base import available
 from dbt.exceptions import (
@@ -26,12 +28,15 @@ import agate
 from dataclasses import dataclass
 from dbt.adapters.base.meta import available
 from dbt.adapters.sql import SQLAdapter  # type: ignore
+
 from dbt.adapters.sql.impl import (
     LIST_SCHEMAS_MACRO_NAME,
     LIST_RELATIONS_MACRO_NAME,
 )
 
-from dbt.adapters.base.impl import AdapterConfig
+from dbt.adapters.base.impl import AdapterConfig,ConstraintSupport
+from dbt.contracts.graph.nodes import ConstraintType
+
 @dataclass
 class VerticaConfig(AdapterConfig):
     transient: Optional[bool] = None
@@ -39,12 +44,27 @@ class VerticaConfig(AdapterConfig):
     automatic_clustering: Optional[bool] = None
     secure: Optional[bool] = None
     copy_grants: Optional[bool] = None
-    snowflake_warehouse: Optional[str] = None
+    vertica_warehouse: Optional[str] = None
     query_tag: Optional[str] = None
     merge_update_columns: Optional[str] = None
 
+
+
+
 class verticaAdapter(SQLAdapter):
     ConnectionManager = verticaConnectionManager
+   # Relation = VerticaRelation
+    #Column = VerticaColumn
+    
+    AdapterSpecificConfigs = VerticaConfig
+    CONSTRAINT_SUPPORT = {
+        ConstraintType.check: ConstraintSupport.NOT_SUPPORTED,
+        ConstraintType.not_null: ConstraintSupport.ENFORCED,
+        ConstraintType.unique: ConstraintSupport.NOT_ENFORCED,
+        ConstraintType.primary_key: ConstraintSupport.NOT_ENFORCED,
+        ConstraintType.foreign_key: ConstraintSupport.NOT_ENFORCED,
+    }
+
 
     @classmethod
     def date_function(cls):

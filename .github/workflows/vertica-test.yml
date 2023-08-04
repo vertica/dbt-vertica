@@ -44,6 +44,10 @@ jobs:
       run: python setup.py install
     - name: Test Basic
       run: python -m pytest tests/functional/adapter/test_basic.py
+    - name: Test Constraints
+      run: python -m pytest tests/functional/adapter/test_constraints.py
+    - name: Test Incremental
+      run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
       run: python -m pytest tests/functional/adapter/concurrency/
     - name: Test ephemeral

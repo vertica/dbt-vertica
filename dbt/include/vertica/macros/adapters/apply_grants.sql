@@ -16,3 +16,12 @@
         grant {{ privilege }} on {{ relation }} to {{ grantees|join(",") }};
     {% endfor %}
 {% endmacro %}
+
+{% macro vertica__copy_grants() %}
+    {% set copy_grants = config.get('copy_grants', False) %}
+    {{ return(copy_grants) }}
+{% endmacro %}
+
+{%- macro vertica_support_multiple_grantees_per_dcl_statement() -%}
+    {{ return(False) }}
+{%- endmacro -%}
