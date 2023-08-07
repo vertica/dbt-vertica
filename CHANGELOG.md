@@ -9,7 +9,7 @@
 - Supported for `constraints` data structure. 
 - Implemented `data_type_code_to_name` to convert Python connector return types to strings.
 - In both `create_table_as` and `create_view_as` macros, raised an explicit warning if a model is configured with an enforced contract
-- Added new functional tests and parametrize them by overriding fixtures:
+- Added new functional tests and parameterize them by overriding fixtures:
   - TestTableConstraintsColumnsEqual
   - TestViewConstraintsColumnsEqual
   - TestIncrementalConstraintsColumnsEqual
