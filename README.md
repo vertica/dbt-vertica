@@ -37,7 +37,7 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 * **Yes** - Supported, and tests pass.
 * **No** - Not supported or implemented.
 * **Untested** - May support out of the box, though hasn't been tested.
-* **Passes Test** - The testes have passed, though haven't tested in a production like environment. 
+* **Passes Test** - The tests have passed, though haven't tested in a production like environment. 
 
 ## Installation
 ```
