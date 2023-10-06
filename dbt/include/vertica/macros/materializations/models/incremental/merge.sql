@@ -8,8 +8,8 @@
 
   {#-- Test 1, find the provided merge columns #}
   {% if merge_columns %}
-    on 
-    {% for column in [merge_columns] %}
+    on
+    {% for column in merge_columns -%}
       DBT_INTERNAL_DEST.{{ adapter.quote(column) }} = DBT_INTERNAL_SOURCE.{{ adapter.quote(column) }}
       {%- if not loop.last %} AND {% endif %} 
     {%- endfor %}
@@ -55,11 +55,16 @@
 
     {% if unique_key %}
         delete from {{ target }}
-            where (
-                {{ unique_key }}) in (
-                select ({{ unique_key }})
-                from {{ source }}
-            );
+            where 
+              {% for column in unique_key -%}
+                ({{ column }}) in (
+                  select ({{ column }})
+                  from {{ source }}
+                )
+                {%- if not loop.last %} AND {% endif %} 
+              {%- endfor %}
+                
+            ;
 
     {% endif %}
 
