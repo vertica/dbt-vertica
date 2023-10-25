@@ -127,5 +127,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
-    python_requires=">=3.7.2",
+    python_requires=">=3.8.0",
 )
