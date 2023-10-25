@@ -110,10 +110,10 @@ setup(
         ]
     },
     install_requires=[
-        'dbt-core==1.5.0',
+        'dbt-core==1.6.6',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.5.0',
+        'dbt-tests-adapter==1.6.0',
         'python-dotenv==0.21.1',
     ],
     classifiers=[
