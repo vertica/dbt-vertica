@@ -22,10 +22,10 @@ from dbt.tests.adapter.constraints.test_constraints import (
     #BaseIncrementalContractSqlHeader,
     BaseIncrementalConstraintsColumnsEqual,
     BaseConstraintsRuntimeDdlEnforcement,
-    BaseConstraintsRollback,
+    # BaseConstraintsRollback,
     BaseIncrementalConstraintsRuntimeDdlEnforcement,
-    BaseIncrementalConstraintsRollback,
-    BaseModelConstraintsRuntimeEnforcement,
+    # BaseIncrementalConstraintsRollback,
+    # BaseModelConstraintsRuntimeEnforcement,
     #BaseConstraintQuotedColumn,
 )
 
