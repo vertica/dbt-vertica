@@ -396,28 +396,14 @@ class TestVerticaConstraintsRuntimeDdlEnforcement(BaseConstraintsRuntimeDdlEnfor
      @pytest.fixture(scope="class")
      def expected_sql(self):
         return """
- create  table
-    <model_identifier>
-
-    INCLUDE SCHEMA PRIVILEGES as (
-
-
-select
-  'blue' as color,
-  1 as id,
-  '2019-01-01' as date_day
-  )
-
-
-
-
-
-
-  ;
+create table <model_identifier> include schema privileges as(-- depends_on: <foreign_key_model_identifier> select 'blue' as color,1 as id,'2019-01-01' as date_day); 
 """
 class TestVerticaIncrementalConstraintsRuntimeDdlEnforcement(BaseIncrementalConstraintsRuntimeDdlEnforcement):
      @pytest.fixture(scope="class")
      def expected_sql(self):
+        
+        return """create table <model_identifier> include schema privileges as(-- depends_on: <foreign_key_model_identifier> select 'blue' as color,1 as id,'2019-01-01' as date_day); ;"""
+
         return """
  create  table
     <model_identifier>
@@ -430,7 +416,7 @@ select
   1 as id,
   '2019-01-01' as date_day
   )
-
+    
 
 
 
