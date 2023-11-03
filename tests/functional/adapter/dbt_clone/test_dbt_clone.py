@@ -2,18 +2,15 @@ from copy import deepcopy
 from collections import Counter
 from dbt.tests.util import run_dbt
 from dbt.tests.adapter.dbt_clone.test_dbt_clone import BaseClonePossible
- 
 import pytest
 import shutil
 import os
  
- 
 class TestSnowflakeClonePossible(BaseClonePossible):
-
     def test_can_clone_true(self, project, unique_schema, other_schema):
         project.create_test_schema(other_schema)
+        print(other_schema)
         self.run_and_save_state(project.project_root, with_snapshot=True)
- 
         clone_args = [
             "clone",
             "--state",
@@ -24,7 +21,6 @@ class TestSnowflakeClonePossible(BaseClonePossible):
  
         results = run_dbt(clone_args)
         assert len(results) == 4
-        print(results)
  
         schema_relations = project.adapter.list_relations(
             database=project.database, schema=other_schema
@@ -46,21 +42,21 @@ class TestSnowflakeClonePossible(BaseClonePossible):
         assert len(results) == 2
         assert all("no-op" in r.message.lower() for r in results)
  
-    # @pytest.fixture(autouse=True)
-    # def clean_up(self, project):
-    #     yield
-    #     with project.adapter.connection_named("__test"):
-    #         relation = project.adapter.Relation.create(
-    #             database=project.database, schema=f"{project.test_schema}_SEEDS"
-    #         )
-    #         project.adapter.drop_schema(relation)
+    @pytest.fixture(autouse=True)
+    def clean_up(self, project):
+        yield
+        with project.adapter.connection_named("__test"):
+            relation = project.adapter.Relation.create(
+                database=project.database, schema=f"{project.test_schema}_SEEDS"
+            )
+            project.adapter.drop_schema(relation)
  
-    #         relation = project.adapter.Relation.create(
-    #             database=project.database, schema=project.test_schema
-    #         )
-    #         project.adapter.drop_schema(relation)
+            relation = project.adapter.Relation.create(
+                database=project.database, schema=project.test_schema
+            )
+            project.adapter.drop_schema(relation)
  
-    # pass
+    pass
  
  
 table_model_1_sql = """
@@ -71,9 +67,6 @@ table_model_1_sql = """
     select 1 as fun
     """
  
-
-
-
  
 class TestSnowflakeCloneTrainsentTable:
     @pytest.fixture(scope="class")
