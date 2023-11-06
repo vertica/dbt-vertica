@@ -19,7 +19,17 @@ from dbt.tests.util import (
 
 import pytest
 
-
+SEEDS__DATA_EQUALS_CSV = """key_name,x,y,expected
+1,1,1,same
+2,1,2,different
+3,1,,different
+4,2,1,different
+5,2,2,same
+6,2,,different
+7,,1,different
+8,,2,different
+9,,,same
+"""
 
 # model breaking constraints
 my_model_with_nulls_sql = """
@@ -172,7 +182,7 @@ class BaseConstraintsRollback:
         write_file(null_model_sql, "models", "my_model.sql")
        
         failing_results = run_dbt(["run", "-s", "my_model"], expect_pass=False)
-        print("start",failing_results[0].message,"endhere", len(failing_results))
+        # print("start",failing_results[0].message,"endhere", len(failing_results))
         assert len(failing_results) == 1
 
 #         # Verify the previous table still exists
@@ -244,33 +254,40 @@ class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
 
 
 
-# class TestValidateSqlMethod(BaseValidateSqlMethod):
-#     pass
+class TestValidateSqlMethod(BaseValidateSqlMethod):
+    pass
 
-# class TestNullCompare(BaseNullCompare):
-#     pass
-
-
-# class TestMixedNullCompare(BaseMixedNullCompare):
-#     pass
+class TestNullCompare(BaseNullCompare):
+    pass
 
 
-# class TestEquals(BaseEquals):
-#     pass
+class TestMixedNullCompare(BaseMixedNullCompare):
+    pass
+
+
+class TestEquals(BaseEquals):
+    
+    @pytest.fixture(scope="class")
+    def seeds(self):
+        return {
+            "data_equals.csv": SEEDS__DATA_EQUALS_CSV,
+        }
+    pass
+    
 
 
 
 
-# class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
-#     @pytest.fixture(scope="class")
-#     def expected_sql(self):
-#         return """
-# create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( select 'blue' as "from", 1 as id, '2019-01-01' as date_day ) ;       """
-#     pass
+class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
+    @pytest.fixture(scope="class")
+    def expected_sql(self):
+        return """
+create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( select 'blue' as "from", 1 as id, '2019-01-01' as date_day ) ;       """
+    pass
 
-# class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
-#     @pytest.fixture(scope="class")
-#     def expected_sql(self):
-#         return """
-# create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
-# """
+class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
+    @pytest.fixture(scope="class")
+    def expected_sql(self):
+        return """
+create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
+"""
