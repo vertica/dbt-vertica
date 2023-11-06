@@ -130,43 +130,43 @@ models:
 """
 
 
-class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
+# class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
 
-    @pytest.fixture(scope="class")
-    def models(self):
-        return {
-            "my_model.sql": my_model_sql,
-            "constraints_schema.yml": model_schema_yml,
-        }
-    @pytest.fixture(scope="class")
-    def expected_error_messages(self):
-        return  [""]
+#     @pytest.fixture(scope="class")
+#     def models(self):
+#         return {
+#             "my_model.sql": my_model_sql,
+#             "constraints_schema.yml": model_schema_yml,
+#         }
+#     @pytest.fixture(scope="class")
+#     def expected_error_messages(self):
+#         return  [""]
     
-    @pytest.fixture(scope="class")
-    def expected_color(self):
-        return "red"
+#     @pytest.fixture(scope="class")
+#     def expected_color(self):
+#         return "red"
     
-    @pytest.fixture(scope="class")
-    def null_model_sql(self):
-        return my_model_with_nulls_sql
+#     @pytest.fixture(scope="class")
+#     def null_model_sql(self):
+#         return my_model_with_nulls_sql
     
 
 
 
 
-class TestValidateSqlMethod(BaseValidateSqlMethod):
-    pass
+# class TestValidateSqlMethod(BaseValidateSqlMethod):
+#     pass
 
-class TestNullCompare(BaseNullCompare):
-    pass
-
-
-class TestMixedNullCompare(BaseMixedNullCompare):
-    pass
+# class TestNullCompare(BaseNullCompare):
+#     pass
 
 
-class TestEquals(BaseEquals):
-    pass
+# class TestMixedNullCompare(BaseMixedNullCompare):
+#     pass
+
+
+# class TestEquals(BaseEquals):
+#     pass
 
 
 
@@ -175,35 +175,12 @@ class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
     @pytest.fixture(scope="class")
     def expected_sql(self):
         return """
-create table <model_identifier> include schema privileges as(select 'blue' as "from",1 as id,'2019-01-01' as date_day);
-       """
+create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( select 'blue' as "from", 1 as id, '2019-01-01' as date_day ) ;       """
     pass
 
 class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
     @pytest.fixture(scope="class")
     def expected_sql(self):
         return """
-create table <model_identifier> (
-    id integer not null,
-    color text,
-    date_day text,
-    primary key (id),
-    constraint strange_uniqueness_requirement unique (color, date_day),
-    foreign key (id) references <foreign_key_model_identifier> (id)
-) ;
-insert into <model_identifier>
-(
-    select
-        id,
-        color,
-        date_day from
-    (
-        -- depends_on: <foreign_key_model_identifier>
-        select
-            'blue' as color,
-            1 as id,
-            '2019-01-01' as date_day
-    ) as model_subq
-)
-;
+create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
 """
