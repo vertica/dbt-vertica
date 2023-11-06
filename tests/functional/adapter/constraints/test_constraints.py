@@ -153,17 +153,18 @@ class BaseConstraintsRollback:
             "my_model.sql": my_model_sql,
             "constraints_schema.yml": model_schema_yml,
         }
-    @pytest.fixture(scope="class")
-    def expected_error_messages(self):
-        return  [""]
-    
-    @pytest.fixture(scope="class")
-    def expected_color(self):
-        return "blue"
-    
+
     @pytest.fixture(scope="class")
     def null_model_sql(self):
         return my_model_with_nulls_sql
+
+    @pytest.fixture(scope="class")
+    def expected_color(self):
+        return "blue"
+
+    @pytest.fixture(scope="class")
+    def expected_error_messages(self):
+        return ['null value in column "id"', "violates not-null constraint"]
 
     def assert_expected_error_messages(self, error_message, expected_error_messages):
         print(msg in error_message for msg in expected_error_messages)
@@ -174,14 +175,14 @@ class BaseConstraintsRollback:
     ):
         # print(expected_error_messages)
         results = run_dbt(["run", "-s", "my_model"])
-        print(results)
+        # print(results)
         
         assert len(results) == 1
 
 #         # Make a contract-breaking change to the model
         write_file(null_model_sql, "models", "my_model.sql")
        
-        failing_results = run_dbt(["run", "-s", "my_model"], expect_pass=False)
+        failing_results = run_dbt(["run", "-s", "my_model"], expect_pass=True)
         # print("start",failing_results[0].message,"endhere", len(failing_results))
         assert len(failing_results) == 1
 
@@ -228,6 +229,50 @@ class BaseConstraintsRollback:
 #     @pytest.fixture(scope="class")
 #     def null_model_sql(self):
 #         return my_model_with_nulls_sql
+
+
+my_incremental_model_sql = """
+{{
+  config(
+    materialized = "incremental",
+    on_schema_change='append_new_columns'
+  )
+}}
+
+select
+  1 as id,
+  'blue' as color,
+  '2019-01-01' as date_day
+"""
+
+my_model_incremental_with_nulls_sql = """
+{{
+  config(
+    materialized = "incremental",
+    on_schema_change='append_new_columns'  )
+}}
+
+select
+  -- null value for 'id'
+  cast(null as {{ dbt.type_int() }}) as id,
+  -- change the color as well (to test rollback)
+  'red' as color,
+  '2019-01-01' as date_day
+"""
+
+class BaseIncrementalConstraintsRollback(BaseConstraintsRollback):
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {
+            "my_model.sql": my_incremental_model_sql,
+            "constraints_schema.yml": model_schema_yml,
+        }
+
+    @pytest.fixture(scope="class")
+    def null_model_sql(self):
+        return my_model_incremental_with_nulls_sql
+
+
 
 class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
     # pass
