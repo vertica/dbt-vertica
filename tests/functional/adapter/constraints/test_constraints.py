@@ -224,19 +224,19 @@ class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
 
 
 
-# class TestValidateSqlMethod(BaseValidateSqlMethod):
-#     pass
+class TestValidateSqlMethod(BaseValidateSqlMethod):
+    pass
 
-# class TestNullCompare(BaseNullCompare):
-#     pass
-
-
-# class TestMixedNullCompare(BaseMixedNullCompare):
-#     pass
+class TestNullCompare(BaseNullCompare):
+    pass
 
 
-# class TestEquals(BaseEquals):
-#     pass
+class TestMixedNullCompare(BaseMixedNullCompare):
+    pass
+
+
+class TestEquals(BaseEquals):
+    pass
 
 
 
