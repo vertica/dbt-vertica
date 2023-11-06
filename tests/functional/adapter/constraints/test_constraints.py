@@ -8,7 +8,14 @@ from dbt.tests.adapter.utils.test_validate_sql import  BaseValidateSqlMethod
 from dbt.tests.adapter.constraints.test_constraints import BaseModelConstraintsRuntimeEnforcement
 from dbt.tests.adapter.constraints.test_constraints import BaseConstraintQuotedColumn
 
-
+from dbt.tests.util import (
+    run_dbt,
+    get_manifest,
+    run_dbt_and_capture,
+    write_file,
+    read_file,
+    relation_from_name,
+)
 
 import pytest
 
@@ -130,25 +137,88 @@ models:
 """
 
 
-# class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
+class BaseConstraintsRollback:
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {
+            "my_model.sql": my_model_sql,
+            "constraints_schema.yml": model_schema_yml,
+        }
 
-#     @pytest.fixture(scope="class")
-#     def models(self):
-#         return {
-#             "my_model.sql": my_model_sql,
-#             "constraints_schema.yml": model_schema_yml,
-#         }
-#     @pytest.fixture(scope="class")
-#     def expected_error_messages(self):
-#         return  [""]
+    @pytest.fixture(scope="class")
+    def null_model_sql(self):
+        return my_model_with_nulls_sql
+
+    @pytest.fixture(scope="class")
+    def expected_color(self):
+        return "blue"
+
+    @pytest.fixture(scope="class")
+    def expected_error_messages(self):
+        return ['null value in column "id"', "violates not-null constraint"]
+
+    def assert_expected_error_messages(self, error_message, expected_error_messages):
+        print(msg in error_message for msg in expected_error_messages)
+        assert all(msg in error_message for msg in expected_error_messages)
+
+    def test__constraints_enforcement_rollback(
+        self, project, expected_color, expected_error_messages, null_model_sql
+    ):
+        # print(expected_error_messages)
+        results = run_dbt(["run", "-s", "my_model"])
+        # print(results)
+        
+        assert len(results) == 1
+
+#         # Make a contract-breaking change to the model
+        write_file(null_model_sql, "models", "my_model.sql")
+       
+        failing_results = run_dbt(["run", "-s", "my_model"], expect_pass=True)
+        # print("start",failing_results[0].message,"endhere", len(failing_results))
+        assert len(failing_results) == 1
+
+#         # Verify the previous table still exists
+        relation = relation_from_name(project.adapter, "my_model")
+        old_model_exists_sql = f"select * from {relation}"
+        old_model_exists = project.run_sql(old_model_exists_sql, fetch="all")
+        # print(old_model_exists[0][1],len(old_model_exists))
+        assert len(old_model_exists) == 1
+        assert old_model_exists[0][1] == expected_color
+        
+        # Confirm this model was contracted
+        # TODO: is this step really necessary?
+        manifest = get_manifest(project.project_root)
+        model_id = "model.test.my_model"
+        my_model_config = manifest.nodes[model_id].config
+        contract_actual_config = my_model_config.contract
+        
+        assert contract_actual_config.enforced is True
+
+        # # Its result includes the expected error messages
+        # print(expected_error_messages)
+        self.assert_expected_error_messages(failing_results[0].message, expected_error_messages)
+
+
+
+class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
+
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {
+            "my_model.sql": my_model_sql,
+            "constraints_schema.yml": model_schema_yml,
+        }
+    @pytest.fixture(scope="class")
+    def expected_error_messages(self):
+        return  [""]
     
-#     @pytest.fixture(scope="class")
-#     def expected_color(self):
-#         return "red"
+    @pytest.fixture(scope="class")
+    def expected_color(self):
+        return "red"
     
-#     @pytest.fixture(scope="class")
-#     def null_model_sql(self):
-#         return my_model_with_nulls_sql
+    @pytest.fixture(scope="class")
+    def null_model_sql(self):
+        return my_model_with_nulls_sql
     
 
 
