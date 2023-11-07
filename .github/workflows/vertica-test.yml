@@ -50,8 +50,6 @@ jobs:
       run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
       run: python -m pytest tests/functional/adapter/concurrency/
-    - name: Test ephemeral
-      run: python -m pytest tests/functional/adapter/ephemeral/
     - name: Test Doc Generate
       run: python -m pytest tests/functional/adapter/test_doc_gen.py
     - name: Test Data Type Boolean
@@ -60,3 +58,6 @@ jobs:
       run: python -m pytest tests/functional/adapter/utils/test_concat.py
     - name: Test Data Type Int
       run: python -m pytest tests/functional/adapter/utils/data_type/
+    - name: Test ephemeral
+      run: python -m pytest tests/functional/adapter/ephemeral/
+    
