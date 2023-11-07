@@ -46,12 +46,14 @@ jobs:
       run: python -m pytest tests/functional/adapter/test_basic.py
     - name: Test Constraints
       run: python -m pytest tests/functional/adapter/test_constraints.py
+    - name: Test Dbt clone
+      run: python -m pytest tests/functional/adapter/dbt_clone/test_dbt_clone.py  
+    - name: Test Constraints1
+      run: python -m pytest tests/functional/adapter/constraints/test_constraints.py
     - name: Test Incremental
       run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
       run: python -m pytest tests/functional/adapter/concurrency/
-    - name: Test ephemeral
-      run: python -m pytest tests/functional/adapter/ephemeral/
     - name: Test Doc Generate
       run: python -m pytest tests/functional/adapter/test_doc_gen.py
     - name: Test Data Type Boolean
@@ -60,9 +62,8 @@ jobs:
       run: python -m pytest tests/functional/adapter/utils/test_concat.py
     - name: Test Data Type Int
       run: python -m pytest tests/functional/adapter/utils/data_type/
-    - name: Test Dbt clone
-      run: python -m pytest tests/functional/adapter/dbt_clone/test_dbt_clone.py  
-    - name: Test New Constraints
-      run: python -m pytest tests/functional/adapter/constraints/test_constraints.py
-    
+    - name: Test ephemeral
+      run: python -m pytest tests/functional/adapter/ephemeral/
+
+
 
