@@ -6,7 +6,7 @@ import pytest
 import shutil
 import os
  
-class TestSnowflakeClonePossible(BaseClonePossible):
+class TestVerticaClonePossible(BaseClonePossible):
     def test_can_clone_true(self, project, unique_schema, other_schema):
         project.create_test_schema(other_schema)
         print(other_schema)
@@ -35,6 +35,7 @@ class TestSnowflakeClonePossible(BaseClonePossible):
         assert all("no-op" in r.message.lower() for r in results)
  
         # recreate all objects
+        results = run_dbt([*clone_args, "--full-refresh"])
         assert len(results) == 4
  
         # select only models this time
@@ -68,7 +69,7 @@ table_model_1_sql = """
     """
  
  
-class TestSnowflakeCloneTrainsentTable:
+class TestVerticaCloneTrainsentTable:
     @pytest.fixture(scope="class")
     def models(self):
         return {
