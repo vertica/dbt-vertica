@@ -26,5 +26,6 @@ class TestEphemeralMultiVertica(BaseEphemeralMulti):
         check_relations_equal(project.adapter, ["seed", "dependent"])
         check_relations_equal(project.adapter, ["seed", "double_dependent"])
         check_relations_equal(project.adapter, ["seed", "super_dependent"])
+        
 
 
