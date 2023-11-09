@@ -45,7 +45,7 @@ jobs:
     - name: Test Basic
       run: python -m pytest tests/functional/adapter/test_basic.py
     - name: Test Constraints
-      run: python -m pytest tests/functional/adapter/test_constraints.py
+      run: python -m pytest tests/functional/adapter/constraints/test_constraints.py
     - name: Test Incremental
       run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
