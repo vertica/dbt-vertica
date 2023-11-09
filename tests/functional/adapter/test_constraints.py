@@ -448,24 +448,19 @@ class BaseConstraintsRollback:
     def test__constraints_enforcement_rollback(
         self, project, expected_color, expected_error_messages, null_model_sql
     ):
-        # print(expected_error_messages)
         results = run_dbt(["run", "-s", "my_model"])
-        # print(results)
-        
         assert len(results) == 1
 
-#         # Make a contract-breaking change to the model
+         # Make a contract-breaking change to the model
         write_file(null_model_sql, "models", "my_model.sql")
        
         failing_results = run_dbt(["run", "-s", "my_model"], expect_pass=True)
-        # print("start",failing_results[0].message,"endhere", len(failing_results))
         assert len(failing_results) == 1
 
-#         # Verify the previous table still exists
+         # Verify the previous table still exists
         relation = relation_from_name(project.adapter, "my_model")
         old_model_exists_sql = f"select * from {relation}"
         old_model_exists = project.run_sql(old_model_exists_sql, fetch="all")
-        # print(old_model_exists[0][1],len(old_model_exists))
         assert len(old_model_exists) == 1
         assert old_model_exists[0][1] == expected_color
         
@@ -478,8 +473,7 @@ class BaseConstraintsRollback:
         
         assert contract_actual_config.enforced is True
 
-        # # Its result includes the expected error messages
-        # print(expected_error_messages)
+        # Its result includes the expected error messages
         self.assert_expected_error_messages(failing_results[0].message, expected_error_messages)
 
 
@@ -574,17 +568,7 @@ class TestVerticaViewConstraintsColumnsEqual(
             "my_model_wrong_name.sql": my_model_view_wrong_name_sql,
             "constraints_schema.yml": constraints_yml,
         }
-#class TestVerticaTableConstraintsRollback(BaseConstraintsRollback):
-#     @pytest.fixture(scope="class")
-#     def models(self):
-#        return {
-#            "my_model.sql": my_model_sql,
-#            "constraints_schema.yml": constraints_yml,
-#        }
 
-#     @pytest.fixture(scope="class")
-#     def expected_error_messages(self):
-#        return ["Required field id cannot be null"]
 
 
 class TestVerticaConstraintsRuntimeDdlEnforcement(BaseConstraintsRuntimeDdlEnforcement):
@@ -599,27 +583,7 @@ class TestVerticaIncrementalConstraintsRuntimeDdlEnforcement(BaseIncrementalCons
         
         return """create table <model_identifier> include schema privileges as(-- depends_on: <foreign_key_model_identifier> select 'blue' as color,1 as id,'2019-01-01' as date_day); ;"""
 
-        return """
- create  table
-    <model_identifier>
-
-    INCLUDE SCHEMA PRIVILEGES as (
-
-
-select
-  'blue' as color,
-  1 as id,
-  '2019-01-01' as date_day
-  )
-    
-
-
-
-
-
-;  ; 
-"""
- 
+         
 
 my_incremental_model_sql = """
 {{
@@ -665,7 +629,6 @@ class BaseIncrementalConstraintsRollback(BaseConstraintsRollback):
 
 
 class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
-    # pass
 
     @pytest.fixture(scope="class")
     def models(self):
@@ -685,8 +648,6 @@ class TestIncrementalConstraintsRollback(BaseIncrementalConstraintsRollback):
     def null_model_sql(self):
         return my_model_with_nulls_sql
     
-
-
 
 
 class TestValidateSqlMethod(BaseValidateSqlMethod):
@@ -711,8 +672,6 @@ class TestEquals(BaseEquals):
     
 
 
-
-
 class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
     @pytest.fixture(scope="class")
     def expected_sql(self):
@@ -726,8 +685,6 @@ class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcem
         return """
 create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
 """
-
-
 
 
 
@@ -804,8 +761,6 @@ class TestTableContractSqlHeader(BaseTableContractSqlHeader):
             "my_model_contract_sql_header.sql": my_model_contract_sql_header_sql,
             "constraints_schema.yml": model_contract_header_schema_yml,
         }
-
-
 
 
 class BaseIncrementalContractSqlHeader(BaseContractSqlHeader):
