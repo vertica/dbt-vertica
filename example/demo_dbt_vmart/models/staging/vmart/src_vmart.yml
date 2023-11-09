@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: raw_data
     description: This is the raw data to transform.
-    database: partner12db
+    database: VMart
     schema: raw_schema 
     tables: 
       - name: states

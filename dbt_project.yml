@@ -1,10 +1,10 @@
 config-version: 2
 
-name: dbt_vertica_1
+name: dbt_vertica
 # version: 0.20.1
 version: 2.0.0
 
 macro-paths: ["macros"]
 
 
-profile: project_example
+profile: 'project_example'
