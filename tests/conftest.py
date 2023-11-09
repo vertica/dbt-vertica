@@ -42,10 +42,10 @@ def dbt_profile_target():
     return {
          'type': 'vertica',
         'threads': 1,
-        'host': '159.65.150.255',
+        'host': 'localhost',
         'username': 'dbadmin',
         'password': '',
-        'database': 'VMart',
+        'database': 'docker',
         'port': 5433,
         
     }
@@ -105,10 +105,10 @@ def vertica_target():
     return {
        'type': 'vertica',
         'threads': 1,
-        'host': '159.65.150.255',
+        'host': 'localhost',
         'username': 'dbadmin',
         'password': '',
-        'database': 'VMart',
+        'database': 'docker',
         'port': 5433,
     }
 
