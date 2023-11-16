@@ -10,7 +10,6 @@
 - Droped support for Python 3.7 
 
 #### Fixes:
-- new limit arg for `adapter.execute()`
 - ensure support for revamped `dbt debug``
 - new limit arg for `adapter.execute()`
 - ensure support for revamped `dbt debug``
