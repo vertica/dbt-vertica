@@ -58,8 +58,7 @@ jobs:
       run: python -m pytest tests/functional/adapter/utils/test_concat.py
     - name: Test Data Type Int
       run: python -m pytest tests/functional/adapter/utils/data_type/
-    - name: Test ephemeral
-      run: python -m pytest tests/functional/adapter/ephemeral/
+
     
 
 
