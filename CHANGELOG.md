@@ -10,9 +10,8 @@
 - Droped support for Python 3.7 
 
 #### Fixes:
-- ensure support for revamped `dbt debug``
+- ensure support for revamped `dbt debug`
 - new limit arg for `adapter.execute()`
-- ensure support for revamped `dbt debug``
 - Added new functional tests and parameterize them by overriding fixtures:
   - TestIncrementalConstraintsRollback 
   - TestTableContractSqlHeader 
