@@ -6,11 +6,14 @@
 
 #### Features:
 - Added support for [`dbt-core version 1.6.0`](https://github.com/dbt-labs/dbt-core/discussions/7958) according to DBT guidelines. 
-- [ ] SUPPORT: new `clone` command
-- [ ] BEHIND THE SCENES: Droped support for Python 3.7 
-- [ ] BEHIND THE SCENES: new limit arg for `adapter.execute()`
-- [ ] BEHIND THE SCENES: ensure support for revamped `dbt debug``
-- [ ] BEHIND THE SCENES: Add support for new/modified relevant tests
+- new `clone` command
+- Droped support for Python 3.7 
+
+#### Fixes:
+- new limit arg for `adapter.execute()`
+- ensure support for revamped `dbt debug``
+- new limit arg for `adapter.execute()`
+- ensure support for revamped `dbt debug``
 - Added new functional tests and parameterize them by overriding fixtures:
   - TestIncrementalConstraintsRollback 
   - TestTableContractSqlHeader 
