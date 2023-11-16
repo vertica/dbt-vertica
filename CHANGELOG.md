@@ -21,7 +21,7 @@
   - TestEquals 
   - TestMixedNullCompare 
   - TestNullCompare 
-  - TestPostgresCloneNotPossible 
+  - TestVerticaCloneNotPossible 
   - TestValidateSqlMethod 
   
 
