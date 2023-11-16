@@ -6,7 +6,7 @@ import pytest
 import shutil
 import os
  
-class TestVerticaClonePossible(BaseClonePossible):
+class TestVerticaCloneNotPossible(BaseClonePossible):
     def test_can_clone_true(self, project, unique_schema, other_schema):
         project.create_test_schema(other_schema)
         print(other_schema)
