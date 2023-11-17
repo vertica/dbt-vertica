@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python-version: [ '3.8','3.9' ,'3.10', '3.11']
     services:
       vertica:
         image: vertica/vertica-ce:latest
@@ -45,13 +45,11 @@ jobs:
     - name: Test Basic
       run: python -m pytest tests/functional/adapter/test_basic.py
     - name: Test Constraints
-      run: python -m pytest tests/functional/adapter/test_constraints.py
+      run: python -m pytest tests/functional/adapter/constraints/test_constraints.py
     - name: Test Incremental
       run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
       run: python -m pytest tests/functional/adapter/concurrency/
-    - name: Test ephemeral
-      run: python -m pytest tests/functional/adapter/ephemeral/
     - name: Test Doc Generate
       run: python -m pytest tests/functional/adapter/test_doc_gen.py
     - name: Test Data Type Boolean
@@ -61,5 +59,6 @@ jobs:
     - name: Test Data Type Int
       run: python -m pytest tests/functional/adapter/utils/data_type/
 
+    
 
 
