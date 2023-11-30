@@ -8,6 +8,9 @@ prompts:
     type: 'int'
   username:
     hint: 'dev username'
+  oauth_access_token:
+    hint: 'access token'
+    default: ''
   password:
     hint: 'dev password'
     hide_input: true

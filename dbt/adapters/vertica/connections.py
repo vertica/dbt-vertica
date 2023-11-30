@@ -46,6 +46,7 @@ class verticaCredentials(Credentials):
     ssl: bool = False
     port: int = 5433
     timeout: int = 3600
+    oauth_access_token: str = ""
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
@@ -97,7 +98,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'connection_load_balance':credentials.connection_load_balance,
                 'session_label': f'dbt_{credentials.username}',
                 'retries': credentials.retries,
-              
+                'oauth_access_token': credentials.oauth_access_token,
                 'backup_server_node':credentials.backup_server_node,
                 
             }
