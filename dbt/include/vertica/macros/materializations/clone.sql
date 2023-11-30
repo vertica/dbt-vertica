@@ -5,12 +5,5 @@
 
 
 {% macro vertica__create_or_replace_clone(this_relation, defer_relation) %}
-
-
-DROP TABLE IF EXISTS  {{this_relation}};
-    create table
-        {{ this_relation }} as select * from
-      {{ defer_relation }}
-
-      
+    SELECT COPY_TABLE ( {{ "'"+defer_relation|replace('"','')+"'"}}, {{ "'"+this_relation|replace('"','')+"'"}} );
 {% endmacro %}
