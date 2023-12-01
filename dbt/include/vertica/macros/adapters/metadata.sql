@@ -49,6 +49,11 @@
 {% endmacro %}
 
 
+
+
+
+
+
 {% macro vertica__information_schema_name(database) -%}
   {%- if database -%}
     {{ adapter.quote_as_configured(database, 'database') }}.v_catalog
@@ -97,3 +102,29 @@
   {% endcall %}
   {{ return(load_result('list_relations_without_caching').table) }}
 {% endmacro %}
+
+
+
+{% macro vertica__get_relation_last_modified(information_schema, relations) -%}
+
+  {%- call statement('last_modified', fetch_result=True) -%}
+        select table_schema as schema,
+              table_name as identifier,
+              create_time as last_modified,
+               {{ current_timestamp() }} as snapshotted_at 
+        from v_catalog.tables
+        where (
+          {%- for relation in relations -%}
+            (upper(table_schema) = upper('{{ relation.schema }}') and
+             upper(table_name) = upper('{{ relation.identifier }}')){%- if not loop.last %} or {% endif -%}
+          {%- endfor -%}
+        )
+  {%- endcall -%}
+
+  {{ return(load_result('last_modified')) }}
+
+{% endmacro %}
+
+
+
+
