@@ -1,5 +1,5 @@
-{% macro vertica__get_catalog(information_schema, schemas) -%}
-  {% call statement('get_catalog', fetch_result=True) %}
+{% macro  d__get_catalog99(information_schema, schemas) -%}
+  {% call statement('get_catalog99', fetch_result=True) %}
 
     select
     '{{ information_schema.database }}' table_database
@@ -45,7 +45,7 @@
     order by table_schema, table_name, column_index
 
   {% endcall %}
-  {{ return(load_result('get_catalog').table) }}
+  {{ return(load_result('get_catalog00').table) }}
 {% endmacro %}
 
 
