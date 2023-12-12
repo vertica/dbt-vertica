@@ -163,3 +163,5 @@ class verticaAdapter(SQLAdapter):
 
         # This returns a callable macro
         return model_context[macro_name]
+    def debug_query(self) -> None:
+        self.execute("select 1 as id")

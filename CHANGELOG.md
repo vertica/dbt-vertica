@@ -1,6 +1,32 @@
 ## Changelog
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
+
+### 1.6.0
+
+#### Features:
+- Added support for [`dbt-core version 1.6.0`](https://github.com/dbt-labs/dbt-core/discussions/7958) according to DBT guidelines.
+- Added support of oAuth authentication.
+- New `clone` command.
+- Droped support for Python 3.7. 
+
+#### Fixes:
+- Ensure support for revamped `dbt debug`.
+- New limit arg for `adapter.execute()`
+- Configuring composite unique key for incremental merge or insert+update strategy
+- Added new functional tests and parameterize them by overriding fixtures:
+  - TestIncrementalConstraintsRollback 
+  - TestTableContractSqlHeader 
+  - TestIncrementalContractSqlHeader 
+  - TestModelConstraintsRuntimeEnforcement 
+  - TestConstraintQuotedColumn 
+  - TestEquals 
+  - TestMixedNullCompare 
+  - TestNullCompare 
+  - TestVerticaCloneNotPossible 
+  - TestValidateSqlMethod 
+  
+
 ### 1.5.0
 #### Features:
 - Added support for [`dbt-core version 1.5.0`](https://github.com/dbt-labs/dbt-core/discussions/7213) according to DBT guidelines. 
