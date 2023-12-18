@@ -13,7 +13,7 @@
           
         )
      
-     {{vertica__get_catalog_results_sql ()}}
+        {{vertica__get_catalog_results_sql ()}}
 
          {%- endset -%}
           {{ return(run_query(query)) }}
@@ -95,18 +95,17 @@
     select * from  ( select
        '{{ information_schema.database }}' table_database , 
     table_schema 
-    ,table_name, 
-         column_name
-        , ordinal_position column_index
-        , data_type column_type
+    ,table_name
+    , column_name
+    , ordinal_position column_index
+    , data_type column_type
          
-       
-        from v_catalog.columns 
+    from v_catalog.columns 
 
          union all
 
      select 
-      '{{ information_schema.database }}' table_database ,
+    '{{ information_schema.database }}' table_database ,
     table_schema 
     ,table_name
     ,  column_name
@@ -125,21 +124,15 @@
 {%- endmacro %}
 
 {% macro vertica__get_catalog_schemas_where_clause_sql(schemas) -%}
-        where not(tab.is_system_table) and
+        where   
         (
-          {%- for schema in schemas -%}
-            lower(tab.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
+          {%- for schema in schemas -%} 
+         
+      
+            lower(table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
           {%- endfor -%}
         )
-         where not(vw.is_system_view) and
-
-
-        (
-          {%- for schema in schemas -%}
-            lower(vw.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
-          {%- endfor -%}
-        )
-
+         
          order by table_schema, table_name, column_index
 
 {%- endmacro %}
