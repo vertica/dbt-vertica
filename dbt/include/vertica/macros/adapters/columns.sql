@@ -1,5 +1,5 @@
 {% macro vertica__get_columns_in_relation(relation) -%}
- 
+
    {% call statement('get_columns_in_relation', fetch_result=True) %}
     select
     column_name
@@ -46,7 +46,7 @@
 
 
 {% macro vertica__get_columns_in_temp_relation(relation) -%}
- 
+
    {% call statement('get_columns_in_temp_relation', fetch_result=True) %}
     select
     column_name
@@ -83,17 +83,12 @@
 {% endmacro %}
 
 
-
-
-
-
-
 {% macro sql_convert_columns_in_relation(table) -%}
   {% set columns = [] %}
   {% for row in table %}
     {% do columns.append(api.Column(*row)) %}
   {% endfor %}
- 
+
   {{ return(columns) }}
 {% endmacro %}
 
@@ -101,7 +96,6 @@
 {% macro alter_column_type(relation, column_name, new_column_type) -%}
   {{ return(adapter.dispatch('alter_column_type', 'dbt')(relation, column_name, new_column_type)) }}
 {% endmacro %}
-
 
 
 {% macro diff_columns(source_columns, target_columns) %}
@@ -138,11 +132,6 @@
 {% endmacro %}
 
 
-
-
-
-
-
 {% macro vertica__alter_column_type(relation, column_name, new_column_type) -%}
   {#
     1. Create a new column (w/ temp name and correct type)
@@ -162,7 +151,6 @@
 {% endmacro %}
 
 
-
 {% macro alter_relation_add_remove_columns(relation, add_columns, remove_columns ) -%}
   {{ return(adapter.dispatch('alter_relation_add_remove_columns', 'dbt')(relation, add_columns, remove_columns)) }}
 {% endmacro %}
@@ -175,29 +163,21 @@
   {% if remove_columns is none %}
     {% set remove_columns = [] %}
   {% endif %}
-            {% for column in add_columns %}
-             {% set sql -%}
-              alter table {{ relation }}
-                   add column {{  adapter.quote(column.name) }} {{ column.data_type }} 
-                {%- endset -%} 
-               {% do run_query(sql) %}
-            {% endfor %}
-            {% for column in remove_columns %}  
-             {% set sql -%}
-              alter table  {{ relation }} 
-                drop column {{  adapter.quote(column.name) }}  ;
-                 {%- endset -%} 
-             
-            {% endfor %}
-             {% do log(sql) %}
-              {% do run_query(sql) %}
-              
-           
-  -- {% do run_query(sql) %}
+
+  {% set sql -%}
+  {% for column in add_columns %}
+    ALTER TABLE {{ relation }} ADD COLUMN IF NOT EXISTS {{  adapter.quote(column.name) }} {{ column.data_type }} ;
+  {% endfor %}
+  {% for column in remove_columns %}
+    ALTER TABLE {{ relation }} DROP COLUMN IF EXISTS {{  adapter.quote(column.name) }} ;
+  {% endfor %}
+  {%- endset -%}
+
+  {% do log(sql) %}
+  {% do run_query(sql) %}
 {% endmacro %}
 
 
-
-{# 
-  No need to implement get_columns_in_query(). Syntax supported by default. 
+{#
+  No need to implement get_columns_in_query(). Syntax supported by default.
 #}
