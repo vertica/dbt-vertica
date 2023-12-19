@@ -2,6 +2,47 @@
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
 
+
+
+### 1.7.0
+
+#### Features:
+- New capability support structure for adapters
+- Metadata freshness checks
+- Catalog fetch performance improvements
+- Behavior of dbt show's --limit flag
+- Migrate date_spine() Macro from dbt-utils to Core
+- Data Spine Tests
+- Storing Test Failures as View
+- Additional Tests
+
+#### Fixes:
+
+- Metadata freshness checks Tests
+  - TestGetLastRelationModified
+  - TestListRelationsWithoutCachingSingle
+  - TestListRelationsWithoutCachingFull
+- Behavior of dbt show's --limit flag Tests
+  - BaseShowSqlHeader
+  - BaseShowLimit
+- Data Spine Tests
+  - TestDateSpine
+  - TestGenerateSeries
+  - TestGetIntervalsBetween
+  - TestGetPowersOfTwo
+- Storing Test Failures as View
+  - TestStoreTestFailuresAsInteractions
+  - TestStoreTestFailuresAsProjectLevelOff
+  - TestStoreTestFailuresAsProjectLevelView
+  - TestStoreTestFailuresAsGeneric
+  - TestStoreTestFailuresAsProjectLevelEphemeral
+  - TestStoreTestFailuresAsExceptions
+- Additional Tests
+  - TestCloneSameTargetAndState
+  - SeedUniqueDelimiterTestBase 
+  - TestSeedWithWrongDelimiter
+  - TestSeedWithEmptyDelimiter
+
 ### 1.6.0
 
 #### Features:
