@@ -18,7 +18,7 @@ SELECT
   {% if target.type == 'postgres' %}
     {{ get_intervals_between('day',"'09/01/2023'::date", "'09/12/2023'::date" ) }} as intervals,
   {% else %}
-      {{ get_intervals_between( "'09/01/2023' ::date", "'09/12/2023' ::date",'day'  ) }} as intervals,
+      {{ get_intervals_between( "'09/01/2023'", "'09/12/2023'",'day'  ) }} as intervals,
   {% endif %}
   11 as expected
 

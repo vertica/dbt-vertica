@@ -4,10 +4,11 @@
     {{ return(dbt.datediff(first_date, second_date, datepart)) }}
   {% else %}
 
-    datetime_diff(
-        cast({{second_date}} as datetime),
-        cast({{first_date}} as datetime),
-        {{datepart}}
+    datediff( {{datepart}},
+    cast({{first_date}} as datetime),
+        cast({{second_date}} as datetime)
+        
+       
     )
 
   {% endif %}
