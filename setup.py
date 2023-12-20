@@ -107,6 +107,7 @@ setup(
             'include/vertica/macros/materializations/models/view/*.sql',
             'include/vertica/macros/materializations/seeds/*.sql',
             'include/vertica/macros/materializations/snapshots/*.sql',
+            'include/vertica/macros/utils/*.sql',
         ]
     },
     install_requires=[

@@ -15,11 +15,18 @@
 
 import pytest
 from dbt.tests.adapter.utils.base_array_utils import BaseArrayUtils
-from dbt.tests.adapter.utils.fixture_array_construct import (
-    models__array_construct_actual_sql,
-    models__array_construct_expected_sql,
-)
 
+
+models__array_construct_expected_sql = """
+select 1 as id, {{ array_construct([1,2,3]) }} as array_col union all
+select 2 as id, {{ array_construct([0]) }} as array_col
+"""
+
+
+models__array_construct_actual_sql = """
+select 1 as id, {{ array_construct([1,2,3]) }} as array_col union all
+select 2 as id, {{ array_construct([0]) }} as array_col
+"""
 
 class BaseArrayConstruct(BaseArrayUtils):
     @pytest.fixture(scope="class")
