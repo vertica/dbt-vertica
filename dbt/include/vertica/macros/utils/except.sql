@@ -1,4 +1,4 @@
-{% macro except() %}
+{% macro vertica__except() %}
 
     except distinct
 

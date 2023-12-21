@@ -39,9 +39,6 @@
   -- build model
   {% call statement('main') -%}
     {{ create_table_as(False, intermediate_relation, sql) }}
-      {% if grant_config is not none %}
-        {{ vertica__do_apply_grants(target_relation, grant_config) }}
-      {% endif %}
   {%- endcall %}
 
   -- cleanup
@@ -50,6 +47,12 @@
   {% endif %}
 
   {{ adapter.rename_relation(intermediate_relation, target_relation) }}
+
+  {% call statement('main') -%}
+    {% if grant_config is not none %}
+      {{ vertica__do_apply_grants(target_relation, grant_config) }}
+    {% endif %}
+  {%- endcall %}
 
   {{ run_hooks(post_hooks, inside_transaction=True) }}
 
