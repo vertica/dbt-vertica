@@ -1,4 +1,4 @@
-{% macro right(string_text, length_expression) %}
+{% macro vertica__right(string_text, length_expression) %}
 
     case when {{ length_expression }} = 0
         then ''
