@@ -4,7 +4,7 @@
 
 
 
-### 1.7.0
+### 1.7.3
 
 #### Features:
 - New capability support structure for adapters
