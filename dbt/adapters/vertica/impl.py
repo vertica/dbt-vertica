@@ -16,7 +16,7 @@
 from dbt.adapters.sql import SQLAdapter
 from dbt.adapters.vertica import verticaConnectionManager
 #from dbt.adapters.vertica import VerticaRelation
-from dbt.adapters.vertica import VerticaColumn
+from dbt.adapters.vertica.column import VerticaColumn
 from typing import Optional, List, Union, Dict
 from dbt.adapters.base import available
 from dbt.exceptions import (
