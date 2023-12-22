@@ -18,6 +18,8 @@ from dbt.adapters.vertica import verticaConnectionManager
 #from dbt.adapters.vertica import VerticaRelation
 from dbt.adapters.vertica.column import VerticaColumn
 from typing import Optional, List, Union, Dict
+
+from dbt.adapters.capability import CapabilityDict, CapabilitySupport, Support, Capability
 from dbt.adapters.base import available
 from dbt.exceptions import (
 
@@ -60,6 +62,12 @@ class verticaAdapter(SQLAdapter):
         ConstraintType.foreign_key: ConstraintSupport.NOT_ENFORCED,
     }
 
+    _capabilities: CapabilityDict = CapabilityDict(
+        {
+            Capability.SchemaMetadataByRelations: CapabilitySupport(support=Support.Full),
+            Capability.TableLastModifiedMetadata: CapabilitySupport(support=Support.Full),
+        }
+    )
 
     @classmethod
     def date_function(cls):
