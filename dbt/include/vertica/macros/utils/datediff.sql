@@ -1,4 +1,4 @@
-{% macro datediff(first_date, second_date, datepart) -%}
+{% macro vertica__datediff(first_date, second_date, datepart) -%}
 
   {% if dbt_version[0] == 1 and dbt_version[2] >= 2 %}
     {{ return(dbt.datediff(first_date, second_date, datepart)) }}

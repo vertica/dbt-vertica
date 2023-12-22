@@ -16,8 +16,8 @@
 from dbt.adapters.sql import SQLAdapter
 from dbt.adapters.vertica import verticaConnectionManager
 #from dbt.adapters.vertica import VerticaRelation
-#from dbt.adapters.vertica import VerticaColumn
-from typing import Mapping, Any, Optional, List, Union, Dict
+from dbt.adapters.vertica.column import VerticaColumn
+from typing import Optional, List, Union, Dict
 
 from dbt.adapters.capability import CapabilityDict, CapabilitySupport, Support, Capability
 from dbt.adapters.base import available
@@ -30,11 +30,6 @@ import agate
 from dataclasses import dataclass
 from dbt.adapters.base.meta import available
 from dbt.adapters.sql import SQLAdapter  # type: ignore
-
-from dbt.adapters.sql.impl import (
-    LIST_SCHEMAS_MACRO_NAME,
-    LIST_RELATIONS_MACRO_NAME,
-)
 
 from dbt.adapters.base.impl import AdapterConfig,ConstraintSupport
 from dbt.contracts.graph.nodes import ConstraintType
@@ -56,7 +51,7 @@ class VerticaConfig(AdapterConfig):
 class verticaAdapter(SQLAdapter):
     ConnectionManager = verticaConnectionManager
    # Relation = VerticaRelation
-    #Column = VerticaColumn
+    Column = VerticaColumn
     
     AdapterSpecificConfigs = VerticaConfig
     CONSTRAINT_SUPPORT = {
@@ -91,6 +86,10 @@ class verticaAdapter(SQLAdapter):
     def convert_number_type(cls, agate_table, col_idx):
         decimals = agate_table.aggregate(agate.MaxPrecision(col_idx))
         return "numeric(18,{})".format(decimals) if decimals else "integer"
+
+    @classmethod
+    def convert_datetime_type(cls, agate_table, col_idx):
+        return "timestamp"
 
     @available
     def standardize_grants_dict(self, grants_table: agate.Table) -> dict:

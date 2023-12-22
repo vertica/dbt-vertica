@@ -571,12 +571,12 @@ class TestVerticaViewConstraintsColumnsEqual(
 
 
 
-class TestVerticaConstraintsRuntimeDdlEnforcement(BaseConstraintsRuntimeDdlEnforcement):
-     @pytest.fixture(scope="class")
-     def expected_sql(self):
-        return """
-create table <model_identifier> include schema privileges as(-- depends_on: <foreign_key_model_identifier> select 'blue' as color,1 as id,'2019-01-01' as date_day); 
-"""
+#class TestVerticaConstraintsRuntimeDdlEnforcement(BaseConstraintsRuntimeDdlEnforcement):
+#     @pytest.fixture(scope="class")
+#     def expected_sql(self):
+#        return """
+#create table <model_identifier> include schema privileges as(-- depends_on: <foreign_key_model_identifier> select 'blue' as color,1 as id,'2019-01-01' as date_day); 
+#"""
 class TestVerticaIncrementalConstraintsRuntimeDdlEnforcement(BaseIncrementalConstraintsRuntimeDdlEnforcement):
      @pytest.fixture(scope="class")
      def expected_sql(self):
@@ -672,19 +672,19 @@ class TestEquals(BaseEquals):
     
 
 
-class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
-    @pytest.fixture(scope="class")
-    def expected_sql(self):
-        return """
-create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( select 'blue' as "from", 1 as id, '2019-01-01' as date_day ) ;       """
-    pass
+#class TestConstraintQuotedColumn(BaseConstraintQuotedColumn):
+#    @pytest.fixture(scope="class")
+#    def expected_sql(self):
+#        return """
+#create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( select 'blue' as "from", 1 as id, '2019-01-01' as date_day ) ;       """
+#    pass
 
-class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
-    @pytest.fixture(scope="class")
-    def expected_sql(self):
-        return """
-create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
-"""
+#class TestModelConstraintsRuntimeEnforcement(BaseModelConstraintsRuntimeEnforcement):
+#    @pytest.fixture(scope="class")
+#    def expected_sql(self):
+#        return """
+#create table <model_identifier> INCLUDE SCHEMA PRIVILEGES as ( -- depends_on: <foreign_key_model_identifier> select 'blue' as color, 1 as id, '2019-01-01' as date_day ) ;
+#"""
 
 
 

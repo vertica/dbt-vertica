@@ -12,29 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-
-
-
+import os
+import ssl
 from contextlib import contextmanager
 from dataclasses import dataclass
-import ssl
-import os
-import requests
-from typing import Optional
-from dbt.contracts.connection import AdapterResponse
-from typing import List, Optional, Tuple, Any, Iterable, Dict, Union
-import dbt.clients.agate_helper
+from typing import Any, List, Optional, Tuple, Union
+
 import agate
+import dbt.clients.agate_helper
+import dbt.exceptions
+import requests
+import vertica_python
 from dbt.adapters.base import Credentials
 from dbt.adapters.sql import SQLConnectionManager
-from dbt.events import AdapterLogger
-logger = AdapterLogger("vertica")
 from dbt.contracts.connection import AdapterResponse
+from dbt.events import AdapterLogger
 
-
-import dbt.exceptions
-import vertica_python
-
+logger = AdapterLogger("vertica")
 
 @dataclass
 class verticaCredentials(Credentials):
@@ -46,6 +40,7 @@ class verticaCredentials(Credentials):
     ssl: bool = False
     port: int = 5433
     timeout: int = 3600
+    oauth_access_token: str = ""
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
@@ -97,7 +92,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'connection_load_balance':credentials.connection_load_balance,
                 'session_label': f'dbt_{credentials.username}',
                 'retries': credentials.retries,
-              
+                'oauth_access_token': credentials.oauth_access_token,
                 'backup_server_node':credentials.backup_server_node,
                 
             }
@@ -118,7 +113,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 else:
                     context = ssl.create_default_context()
                 conn_info['ssl'] = context
-                logger.debug(f'SSL is on')
+                logger.debug('SSL is on')
             
             def connect():
                 handle = vertica_python.connect(**conn_info)
@@ -145,7 +140,7 @@ class verticaConnectionManager(SQLConnectionManager):
         # used in dbt-integration-tests
         if credentials.withMaterialization:
             try:
-                logger.debug(f':P Set EnableWithClauseMaterialization')
+                logger.debug(':P Set EnableWithClauseMaterialization')
                 cur = connection.handle.cursor()
                 cur.execute("ALTER SESSION SET PARAMETER EnableWithClauseMaterialization=1")
                 cur.close()
@@ -199,7 +194,7 @@ class verticaConnectionManager(SQLConnectionManager):
             # check result for every query if there are some queries with ; separator
             while cursor.nextset():
                 check = cursor._message
-                if isinstance(check, ErrorResponse):
+                if isinstance(check, vertica_python.vertica.messages.ErrorResponse):
                     logger.debug(f'Cursor message is: {check}')
                     self.release()
                     raise dbt.exceptions.DbtDatabaseError(str(check))
@@ -242,4 +237,4 @@ class verticaConnectionManager(SQLConnectionManager):
     @classmethod
     def data_type_code_to_name(cls, type_code: Union[int, str]) -> str:
         assert isinstance(type_code, int)
-        return vertica.connector.constants.FIELD_ID_TO_NAME[type_code]
+        return vertica_python.vertica.connector.constants.FIELD_ID_TO_NAME[type_code]
