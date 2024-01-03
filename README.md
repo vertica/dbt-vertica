@@ -3,9 +3,18 @@
 [![PyPI version](https://badge.fury.io/py/dbt-vertica.svg)](https://badge.fury.io/py/dbt-vertica)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange.svg)](https://opensource.org/licenses/Apache-2.0)
 
-[dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/). The adapter uses [vertica-python](https://github.com/vertica/vertica-python) to connect to your Vertica database. The adapter is forward compatible with newer versions of dbt-core but it is not backward compatible with dbt-core versions earlier than v1.3.0.
+[dbt](https://www.getdbt.com/) adapter for [Vertica](https://www.vertica.com/). The adapter uses [vertica-python](https://github.com/vertica/vertica-python) to connect to your Vertica database.
 
 For more information on using dbt with Vertica, consult the [Vertica-Setup](https://docs.getdbt.com/reference/warehouse-setups/vertica-setup) and [Configuration](https://docs.getdbt.com/reference/resource-configs/vertica-configs) pages.
+
+
+## dbt-vertica Versions Tested 
+dbt-vertica has been developed using the following software and versions: 
+* Vertica Server 23.4.0-0
+* Python 3.11
+* vertica-python client 1.3.1
+* dbt-core 1.6.0
+* dbt-tests-adapter 1.6.0
 
 ## Supported Features
 ### dbt Core Features
@@ -28,17 +37,7 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 * **Yes** - Supported, and tests pass.
 * **No** - Not supported or implemented.
 * **Untested** - May support out of the box, though hasn't been tested.
-* **Passes Test** -The testes have passed, though haven't tested in a production like environment
-### Vertica Features
-Below is a table for what features the current Vertica adapter supports for Vertica. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
-|   Vertica Features    | Supported |    
-| --------------------- | --------- |
-| Created/Drop Schema   | Yes       |
-| Analyze Statistics    | No        |
-| Purge Delete Vectors  | No        |
-| Projection Management | No        |
-| Primary/Unique Keys   | No        |
-| Other DDLs            | No        |
+* **Passes Test** - The tests have passed, though haven't tested in a production like environment. 
 
 ## Installation
 ```
@@ -57,6 +56,7 @@ your-profile:
       username: [your username] 
       password: [your password] 
       database: [database name] 
+      oauth_access_token: [access token]
       schema: [dbt schema] 
       connection_load_balance: True
       backup_server_node: [list of backup hostnames or IPs]
@@ -75,6 +75,7 @@ your-profile:
 | username | The username to use to connect to the server. | Yes | None	| dbadmin |
 | password | The password to use for authenticating to the server. | Yes | None | my_password |
 | database | The name of the database running on the server. | Yes | None | my_db |
+| oauth_access_token | To authenticate via OAuth, provide an OAuth Access Token that authorizes a user to the database. | No | "" | Default: "" |
 | schema | The schema to build models into. | No | None | VMart |
 | connection_load_balance | A Boolean value that indicates whether the connection can be redirected to a host in the database other than host. | No | true | true |
 | backup_server_node | List of hosts to connect to if the primary host specified in the connection (host, port) is unreachable. Each item in the list should be either a host string (using default port 5433) or a (host, port) tuple. A host can be a host name or an IP address. | No | none | ['123.123.123.123','www.abc.com',('123.123.123.124',5433)]
@@ -114,7 +115,7 @@ Access the local Vertica instance like:
 
 You need the pytest dbt adapter:
 
-    pip3 install  dbt-tests-adapter==1.3.0
+    pip3 install  dbt-tests-adapter==1.5.0
 
 Run tests via:
   

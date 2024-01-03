@@ -1,0 +1,34 @@
+version: 2
+
+sources:
+  - name: raw_data
+    description: This is the raw data to transform.
+    database: partner12db
+    schema: raw_schema 
+    tables: 
+      - name: states
+        description: This is the raw states data.
+        columns:
+          - name: statecode
+            description: The primary key for the raw states data.
+            tests:
+              - unique
+              - not_null
+
+      - name: vendors
+        description: This is the raw vendors data.
+        columns:
+          - name: vendorid
+            description: The primary key for the raw vendors data.
+            tests:
+              - unique
+              - not_null
+              
+      - name: store_orders
+        description: This is the raw store_orders data.
+        columns:
+          - name: ordernumber
+            description: The primary key for the raw store_orders data.
+            tests:
+              - unique
+              - not_null

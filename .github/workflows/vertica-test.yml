@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ['3.7', '3.8', '3.9', '3.10']
+        python-version: [ '3.8','3.9' ,'3.10', '3.11']
     services:
       vertica:
         image: vertica/vertica-ce:latest
@@ -44,10 +44,12 @@ jobs:
       run: python setup.py install
     - name: Test Basic
       run: python -m pytest tests/functional/adapter/test_basic.py
+    - name: Test Constraints
+      run: python -m pytest tests/functional/adapter/constraints/test_constraints.py
+    - name: Test Incremental
+      run: python -m pytest tests/functional/adapter/incremental/
     - name: Test Concurrency
       run: python -m pytest tests/functional/adapter/concurrency/
-    - name: Test ephemeral
-      run: python -m pytest tests/functional/adapter/ephemeral/
     - name: Test Doc Generate
       run: python -m pytest tests/functional/adapter/test_doc_gen.py
     - name: Test Data Type Boolean
@@ -56,6 +58,28 @@ jobs:
       run: python -m pytest tests/functional/adapter/utils/test_concat.py
     - name: Test Data Type Int
       run: python -m pytest tests/functional/adapter/utils/data_type/
+    - name: Test Last Relation Modified
+      run: python -m pytest tests/functional/adapter/test_get_last_relation_modified.py
+    - name: Test  Relation Caching
+      run: python -m pytest tests/functional/adapter/test_list_relations_without_caching.py
+    - name: Test Store test Failure
+      run: python -m pytest tests/functional/adapter/store_test_failures_tests/test_store_test_failures.py
+    - name: Test Date Spine
+      run: python -m pytest tests/functional/adapter/utils/test_date_spine.py
+    - name: Test DBT Show
+      run: python -m pytest tests/functional/adapter/dbt-show/test_dbt_show.py
+    - name: Test DBT Clone
+      run: python -m pytest tests/functional/adapter/dbt_clone/
+    - name: Test Seeds
+      run: python -m pytest tests/functional/adapter/seeds/test_seeds.py
 
+
+
+      
+
+
+
+
+    
 
 

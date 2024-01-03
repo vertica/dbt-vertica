@@ -1,0 +1,28 @@
+version: 2
+
+models:
+  - name: vendor_performance
+    description: "This table is used by end-users for visualization purposes \n
+      and contains information about vendor performance KPIs."
+      
+    columns:
+      - name: vendor_key
+        description: The primary key of the vendor_performance table.
+        tests:
+          - not_null
+          - unique
+
+      - name: quantity_accuracy_rate
+        description: "The quantity accuracy rate is the percentage of orders that were delivered \n 
+          with the correct quantity. \n
+          quantity_accuracy_rate = TOTAL(quantity_accuracy_flag) / TOTAL(order_count)"
+
+      - name: on_time_delivery_rate
+        description: "The on-time delivery rate is the percentage of orders that where deliver \n
+          on the expected delivery date or sooner. \n
+          on_time_delivery_rate = TOTAL(on_time_delivery_flag) / TOTAL(order_count)"
+
+      - name: perfect_order_rate
+        description: "The perfect order rate is the percentage of orders that were delivered \n
+          without incidents. \n
+          perfect_order_rate = TOTAL(perfect_order_flag) / TOTAL(order_count)" 

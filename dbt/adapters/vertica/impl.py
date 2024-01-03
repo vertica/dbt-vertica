@@ -15,23 +15,25 @@
 
 from dbt.adapters.sql import SQLAdapter
 from dbt.adapters.vertica import verticaConnectionManager
-from typing import Mapping, Any, Optional, List, Union, Dict
+#from dbt.adapters.vertica import VerticaRelation
+from dbt.adapters.vertica.column import VerticaColumn
+from typing import Optional, List, Union, Dict
+
+from dbt.adapters.capability import CapabilityDict, CapabilitySupport, Support, Capability
 from dbt.adapters.base import available
 from dbt.exceptions import (
 
-    RuntimeException
+    DbtRuntimeError
 )
 
 import agate
 from dataclasses import dataclass
 from dbt.adapters.base.meta import available
 from dbt.adapters.sql import SQLAdapter  # type: ignore
-from dbt.adapters.sql.impl import (
-    LIST_SCHEMAS_MACRO_NAME,
-    LIST_RELATIONS_MACRO_NAME,
-)
 
-from dbt.adapters.base.impl import AdapterConfig
+from dbt.adapters.base.impl import AdapterConfig,ConstraintSupport
+from dbt.contracts.graph.nodes import ConstraintType
+
 @dataclass
 class VerticaConfig(AdapterConfig):
     transient: Optional[bool] = None
@@ -39,12 +41,33 @@ class VerticaConfig(AdapterConfig):
     automatic_clustering: Optional[bool] = None
     secure: Optional[bool] = None
     copy_grants: Optional[bool] = None
-    snowflake_warehouse: Optional[str] = None
+    vertica_warehouse: Optional[str] = None
     query_tag: Optional[str] = None
     merge_update_columns: Optional[str] = None
 
+
+
+
 class verticaAdapter(SQLAdapter):
     ConnectionManager = verticaConnectionManager
+   # Relation = VerticaRelation
+    Column = VerticaColumn
+    
+    AdapterSpecificConfigs = VerticaConfig
+    CONSTRAINT_SUPPORT = {
+        ConstraintType.check: ConstraintSupport.NOT_SUPPORTED,
+        ConstraintType.not_null: ConstraintSupport.ENFORCED,
+        ConstraintType.unique: ConstraintSupport.NOT_ENFORCED,
+        ConstraintType.primary_key: ConstraintSupport.NOT_ENFORCED,
+        ConstraintType.foreign_key: ConstraintSupport.NOT_ENFORCED,
+    }
+
+    _capabilities: CapabilityDict = CapabilityDict(
+        {
+            Capability.SchemaMetadataByRelations: CapabilitySupport(support=Support.Full),
+            Capability.TableLastModifiedMetadata: CapabilitySupport(support=Support.Full),
+        }
+    )
 
     @classmethod
     def date_function(cls):
@@ -63,6 +86,10 @@ class verticaAdapter(SQLAdapter):
     def convert_number_type(cls, agate_table, col_idx):
         decimals = agate_table.aggregate(agate.MaxPrecision(col_idx))
         return "numeric(18,{})".format(decimals) if decimals else "integer"
+
+    @classmethod
+    def convert_datetime_type(cls, agate_table, col_idx):
+        return "timestamp"
 
     @available
     def standardize_grants_dict(self, grants_table: agate.Table) -> dict:
@@ -128,7 +155,7 @@ class verticaAdapter(SQLAdapter):
         valid_strategies.append("default")
         builtin_strategies = self.builtin_incremental_strategies()
         if strategy in builtin_strategies and strategy not in valid_strategies:
-            raise RuntimeException(
+            raise DbtRuntimeError(
                 f"The incremental strategy '{strategy}' is not valid for this adapter"
             )
 
@@ -136,7 +163,7 @@ class verticaAdapter(SQLAdapter):
         macro_name = f"get_incremental_{strategy}_sql"
         # The model_context should have MacroGenerator callable objects for all macros
         if macro_name not in model_context:
-            raise RuntimeException(
+            raise DbtRuntimeError(
                 'dbt could not find an incremental strategy macro with the name "{}" in {}'.format(
                     macro_name, self.config.project_name
                 )
@@ -144,3 +171,5 @@ class verticaAdapter(SQLAdapter):
 
         # This returns a callable macro
         return model_context[macro_name]
+    def debug_query(self) -> None:
+        self.execute("select 1 as id")

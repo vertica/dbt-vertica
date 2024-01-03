@@ -1,6 +1,96 @@
 ## Changelog
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
+
+
+
+### 1.7.3
+
+#### Features:
+- New capability support structure for adapters
+- Metadata freshness checks
+- Catalog fetch performance improvements
+- Behavior of dbt show's --limit flag
+- Migrate date_spine() Macro from dbt-utils to Core
+- Data Spine Tests
+- Storing Test Failures as View
+- Additional Tests
+
+#### Fixes:
+
+- Metadata freshness checks Tests
+  - TestGetLastRelationModified
+  - TestListRelationsWithoutCachingSingle
+  - TestListRelationsWithoutCachingFull
+- Behavior of dbt show's --limit flag Tests
+  - BaseShowSqlHeader
+  - BaseShowLimit
+- Data Spine Tests
+  - TestDateSpine
+  - TestGenerateSeries
+  - TestGetIntervalsBetween
+  - TestGetPowersOfTwo
+- Storing Test Failures as View
+  - TestStoreTestFailuresAsInteractions
+  - TestStoreTestFailuresAsProjectLevelOff
+  - TestStoreTestFailuresAsProjectLevelView
+  - TestStoreTestFailuresAsGeneric
+  - TestStoreTestFailuresAsProjectLevelEphemeral
+  - TestStoreTestFailuresAsExceptions
+- Additional Tests
+  - TestCloneSameTargetAndState
+  - SeedUniqueDelimiterTestBase 
+  - TestSeedWithWrongDelimiter
+  - TestSeedWithEmptyDelimiter
+
+### 1.6.0
+
+#### Features:
+- Added support for [`dbt-core version 1.6.0`](https://github.com/dbt-labs/dbt-core/discussions/7958) according to DBT guidelines.
+- Added support of oAuth authentication.
+- New `clone` command.
+- Droped support for Python 3.7. 
+
+#### Fixes:
+- Ensure support for revamped `dbt debug`.
+- New limit arg for `adapter.execute()`
+- Configuring composite unique key for incremental merge or insert+update strategy
+- Added new functional tests and parameterize them by overriding fixtures:
+  - TestIncrementalConstraintsRollback 
+  - TestTableContractSqlHeader 
+  - TestIncrementalContractSqlHeader 
+  - TestModelConstraintsRuntimeEnforcement 
+  - TestConstraintQuotedColumn 
+  - TestEquals 
+  - TestMixedNullCompare 
+  - TestNullCompare 
+  - TestVerticaCloneNotPossible 
+  - TestValidateSqlMethod 
+  
+
+### 1.5.0
+#### Features:
+- Added support for [`dbt-core version 1.5.0`](https://github.com/dbt-labs/dbt-core/discussions/7213) according to DBT guidelines. 
+- Support for Python 3.11.
+#### Fixes:
+- Added support for `constraints` data structure. 
+- Implemented `data_type_code_to_name` to convert Python connector return types to strings.
+- In both `create_table_as` and `create_view_as` macros, raised an explicit warning if a model is configured with an enforced contract
+- Added new functional tests and parameterize them by overriding fixtures:
+  - TestTableConstraintsColumnsEqual
+  - TestViewConstraintsColumnsEqual
+  - TestIncrementalConstraintsColumnsEqual
+  - TestTableConstraintsRuntimeDdlEnforcement
+  - TestIncrementalConstraintsRuntimeDdlEnforcement
+  - TestModelConstraintsRuntimeEnforcement  
+
+### 1.4.4
+#### Features:
+- Added support for [`dbt-core version 1.4.0`](https://github.com/dbt-labs/dbt-core/discussions/6624) according to DBT guidelines. 
+- Support for Python 3.11.
+#### Fixes:
+- Merge strategy config parameter `merge_update_columns` is now working as intended. 
+- The incremental flag `--full-refresh` is now working as intended.
 ### 1.3.0
 #### Features:
 - Added support for [`dbt-core version 1.3.0`](https://github.com/dbt-labs/dbt-core/discussions/6011) and migrated testing framework to new testing framework according to DBT guidelines. 

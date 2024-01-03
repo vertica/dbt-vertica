@@ -1,52 +1,4 @@
-{% macro vertica__get_catalog(information_schema, schemas) -%}
-  {% call statement('get_catalog', fetch_result=True) %}
 
-    select
-    '{{ information_schema.database }}' table_database
-    , tab.table_schema
-    , tab.table_name
-    , 'TABLE' table_type
-    , comment table_comment
-    , tab.owner_name table_owner
-    , col.column_name
-    , col.ordinal_position column_index
-    , col.data_type column_type
-    , nullif('','') column_comment
-    from v_catalog.tables tab
-    join v_catalog.columns col on tab.table_id = col.table_id
-    left join v_catalog.comments on tab.table_id = object_id
-    where not(tab.is_system_table) and
-        (
-          {%- for schema in schemas -%}
-            lower(tab.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
-          {%- endfor -%}
-        )
-    union all
-    select
-    '{{ information_schema.database }}' table_database
-    , vw.table_schema
-    , vw.table_name
-    , 'VIEW' table_type
-    , comment table_comment
-    , vw.owner_name table_owner
-    , col.column_name
-    , col.ordinal_position column_index
-    , col.data_type column_type
-    , nullif('','') column_comment
-    from v_catalog.views vw
-    join v_catalog.view_columns col on vw.table_id = col.table_id
-    left join v_catalog.comments on vw.table_id = object_id
-    where not(vw.is_system_view) and
-        (
-          {%- for schema in schemas -%}
-            lower(vw.table_schema) = lower('{{ schema }}') {%- if not loop.last %} or {% endif %}
-          {%- endfor -%}
-        )
-    order by table_schema, table_name, column_index
-
-  {% endcall %}
-  {{ return(load_result('get_catalog').table) }}
-{% endmacro %}
 
 
 {% macro vertica__information_schema_name(database) -%}
@@ -97,3 +49,29 @@
   {% endcall %}
   {{ return(load_result('list_relations_without_caching').table) }}
 {% endmacro %}
+
+
+
+{% macro vertica__get_relation_last_modified(information_schema, relations) -%}
+
+  {%- call statement('last_modified', fetch_result=True) -%}
+        select table_schema as schema,
+              table_name as identifier,
+              create_time as last_modified,
+               {{ current_timestamp() }} as snapshotted_at 
+        from v_catalog.tables
+        where (
+          {%- for relation in relations -%}
+            (upper(table_schema) = upper('{{ relation.schema }}') and
+             upper(table_name) = upper('{{ relation.identifier }}')){%- if not loop.last %} or {% endif -%}
+          {%- endfor -%}
+        )
+  {%- endcall -%}
+
+  {{ return(load_result('last_modified')) }}
+
+{% endmacro %}
+
+
+
+

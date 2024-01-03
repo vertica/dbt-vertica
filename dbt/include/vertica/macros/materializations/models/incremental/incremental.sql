@@ -1,7 +1,7 @@
 {% materialization incremental, adapter='vertica' %}
 
   {% set unique_key = config.get('unique_key')   or 'none' %}
-
+  {% set grant_config = config.get('grants') %}
   {% set target_relation = this %}
   -- {%- set existing_relation = load_cached_relation(this) -%}
   {% set existing_relation = load_relation(this) %}
@@ -46,10 +46,11 @@
       {% set intermediate_relation = existing_relation.incorporate(path={"identifier": tmp_identifier}) %}
       {% set backup_relation = existing_relation.incorporate(path={"identifier": backup_identifier}) %}
       
-      {% set build_sql = vertica__create_table_as(False, target_relation, sql) %}
+      {% set build_sql = vertica__create_table_as(False, intermediate_relation, sql) %}
       
       {% set need_swap = true %}
       {% do to_drop.append(backup_relation) %}
+      {% do to_drop.append(intermediate_relation) %}
   {% else %}
       {% do run_query(vertica__create_table_as(True, tmp_relation, sql)) %}
       {% do adapter.expand_target_column_types(
@@ -73,6 +74,9 @@
   {% endif %}
   {% call statement("main") %}
       {{ build_sql }}
+      {% if grant_config is not none %}
+       ; {{ vertica__do_apply_grants(target_relation, grant_config) }}
+      {% endif %}
   {% endcall %}
   {% if need_swap %}
       {% do adapter.rename_relation(target_relation, backup_relation) %}

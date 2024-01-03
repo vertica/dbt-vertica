@@ -28,10 +28,10 @@ import os
 import sys
 import re
 
-# require python 3.7 or newer
-if sys.version_info < (3, 7):
+# require python 3.8 or newer
+if sys.version_info < (3, 8):
     print("Error: dbt does not support this version of Python.")
-    print("Please upgrade to Python 3.7 or higher.")
+    print("Please upgrade to Python 3.8 or higher.")
     sys.exit(1)
 
 
@@ -78,7 +78,7 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.3.0"
+package_version = "1.7.3"
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
 
@@ -89,9 +89,9 @@ setup(
     long_description=README,
     long_description_content_type='text/markdown',
     license='Apache License 2.0', 
-    author='Vertica (Former authors:- Matthew Carter, Andy Regan, Andrew Hedengren)',
-    author_email='arosychuk@gmail.com, andy@andyreagan.com',
-    url='https://github.com/vertica/dbt-vertica/',
+    author='Vertica (Former authors: Matthew Carter, Andy Regan, Andrew Hedengren)',
+    author_email='os_dbt_vertica@microfocus.com',
+    url='https://github.com/ajay.abrol2/dbt-vertica/',
     packages=find_packages(include=["dbt","dbt.*"]),
     
     package_data={
@@ -107,13 +107,14 @@ setup(
             'include/vertica/macros/materializations/models/view/*.sql',
             'include/vertica/macros/materializations/seeds/*.sql',
             'include/vertica/macros/materializations/snapshots/*.sql',
+            'include/vertica/macros/utils/*.sql',
         ]
     },
     install_requires=[
-        'dbt-core==1.3.0',
+        'dbt-core==1.7.3',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.3.0',
+        'dbt-tests-adapter==1.7.3',
         'python-dotenv==0.21.1',
     ],
     classifiers=[
@@ -127,4 +128,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
+    python_requires=">=3.8.0",
 )

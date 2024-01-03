@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: dim_vendors
+    description: "This is the vendors dimension table."
+    columns:
+      - name: vendor_key
+        description: The primary key of the vendors dimension table.
+        tests:
+          - not_null
+          - unique
+
+  - name: fct_store_orders
+    description: "This is the store orders fact table."
+    columns:
+      - name: order_number
+        description: The primary key of the store orders fact table.
+        tests:
+          - not_null
+          - unique
+
+      - name: days_to_deliver
+        description: "Number of days it takes to deliver an order. This is the date of delivery \n
+          minus the date of the order. Example: days_to_deliver = (date_delivered-date_ordered)"
+
+      - name: total_order_cost
+        description: "Total cost of a particular order. This is quantity delivered multiplied by \n
+          the unit price plus the cost of shipping. Example: total_order_cost = \n
+          (qtydelivered * unitprice) + shippingcost"
+
+      - name: order_count
+        description: "Order count has the value of 1. This column facilitates the calculation of \n
+          different measures for reporting such as quantity_accuracy_rate and on_time_delivery_rate."
+
+      - name: quantity_accuracy_flag
+        description: "The quantity accuracy flag indicates whether the order was delivered \n 
+          with the correct quantity. \n 
+          This is the quantity_delivered field equaling the quantity_ordered field. \n
+          An example of this calculation is: \n
+          IF (quantity_delivered = quantity_ordered) THEN (1) ELSE (0) END."
+
+      - name: on_time_delivery_flag
+        description: "The on-time delivery flag indicates whether the order was delivered \n
+          on the expected delivery date or sooner. \n
+          This is the date_delivered is less than or equal to the expected_delivery_date. \n
+          An example of this calculation is: \n
+          IF (date_delivered <= expected_delivery_date) THEN (1) ELSE (0) END." 
+          
+      - name: perfect_order_flag
+        description: "The perfect order flag indicates whether the order was delivered without \n
+          incidents. \n
+          This is both quantity accuracy and on-time delivery. \n
+          An example of this calculation is: \n
+          IF (date_delivered <= expected_delivery_date) AND \n
+          (quantity_delivered = quantity_ordered) THEN (1) ELSE (0) END."

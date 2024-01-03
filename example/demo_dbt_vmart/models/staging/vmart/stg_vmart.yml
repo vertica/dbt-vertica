@@ -1,0 +1,29 @@
+version: 2
+
+models:
+  - name: stg_states
+    description: This is the staged states table.
+    columns:
+      - name: state_code
+        description: The primary key of the stg_states table.
+        tests:
+          - not_null
+          - unique
+
+  - name: stg_vendors
+    description: This is the staged vendors table.
+    columns:
+      - name: vendor_key
+        description: The primary key of the stg_vendors table.
+        tests:
+          - not_null
+          - unique
+          
+  - name: stg_store_orders
+    description: This is the staged store_orders table.
+    columns:
+      - name: order_number
+        description: The primary key of the stg_store_orders table.
+        tests:
+          - not_null
+          - unique

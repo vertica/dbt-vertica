@@ -15,6 +15,11 @@
 
 import pytest
 from dbt.tests.adapter.utils.data_types.base_data_type_macro import BaseDataTypeMacro
+from dbt.tests.adapter.utils.data_types.test_type_int import BaseTypeInt
+
+
+
+
 
 seeds__expected_csv = """boolean_col
 True
@@ -36,4 +41,6 @@ class BaseTypeBoolean(BaseDataTypeMacro):
 
 
 class TestTypeBoolean(BaseTypeBoolean):
+    pass
+class TestTypeInt(BaseTypeInt):
     pass
