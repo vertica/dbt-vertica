@@ -50,7 +50,7 @@ class verticaCredentials(Credentials):
     # backup_server_node: Optional[str] = None
 
     # additional_info = {
-    # 'password': str, 
+    # 'password': str,
     # 'backup_server_node': list# invalid value to be set in a connection string
     # }
 
@@ -94,7 +94,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'retries': credentials.retries,
                 'oauth_access_token': credentials.oauth_access_token,
                 'backup_server_node':credentials.backup_server_node,
-                
+
             }
 
             # if credentials.ssl.lower() in {'true', 'yes', 'please'}:
@@ -114,7 +114,6 @@ class verticaConnectionManager(SQLConnectionManager):
                     context = ssl.create_default_context()
                 conn_info['ssl'] = context
                 logger.debug('SSL is on')
-            
             def connect():
                 handle = vertica_python.connect(**conn_info)
                 logger.debug(f':P Connection work {handle}')
@@ -122,8 +121,8 @@ class verticaConnectionManager(SQLConnectionManager):
                 connection.handle = handle
                 logger.debug(f':P Connected to database: {credentials.database} at {credentials.host} at {handle}')
                 return handle
-        
-               
+
+
 
 
         except Exception as exc:
