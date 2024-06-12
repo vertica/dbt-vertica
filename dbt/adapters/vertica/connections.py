@@ -41,6 +41,7 @@ class verticaCredentials(Credentials):
     port: int = 5433
     timeout: int = 3600
     oauth_access_token: str = ""
+    autocommit: Optional[bool]= False
     withMaterialization: bool = False
     ssl_env_cafile: Optional[str] = None
     ssl_uri: Optional[str] = None
@@ -68,7 +69,7 @@ class verticaCredentials(Credentials):
 
     def _connection_keys(self):
         # return an iterator of keys to pretty-print in 'dbt debug'
-        return ('host','port','database','username','schema', 'connection_load_balance')
+        return ('host','port','database','username','schema', 'connection_load_balance', 'autocommit')
 
 class verticaConnectionManager(SQLConnectionManager):
     TYPE = 'vertica'
@@ -93,6 +94,7 @@ class verticaConnectionManager(SQLConnectionManager):
                 'session_label': f'dbt_{credentials.username}',
                 'retries': credentials.retries,
                 'oauth_access_token': credentials.oauth_access_token,
+                'autocommit': credentials.autocommit,
                 'backup_server_node':credentials.backup_server_node,
                 
             }
