@@ -2,7 +2,15 @@
 - This file provides a full account of all changes to dbt-vertica.
 - "Breaking changes" listed under a version may require action from end users.
 
+### 1.7.13
 
+
+#### Fixes:
+
+- Enable connetion parameter autocommit(https://github.com/vertica/dbt-vertica/issues/128)
+- Fix SQl Parse vulnrability issue
+- Update collect_freshness(https://github.com/vertica/dbt-vertica/issues/129)
+- On Schema Change, add remove or insert columns fis(https://github.com/vertica/dbt-vertica/issues/122)
 
 ### 1.7.3
 
