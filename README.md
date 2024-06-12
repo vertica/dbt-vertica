@@ -62,6 +62,7 @@ your-profile:
       backup_server_node: [list of backup hostnames or IPs]
       retries: [1 or more]
       threads: [1 or more] 
+      autocommit: False
   target: dev
 
 ```
@@ -81,6 +82,7 @@ your-profile:
 | backup_server_node | List of hosts to connect to if the primary host specified in the connection (host, port) is unreachable. Each item in the list should be either a host string (using default port 5433) or a (host, port) tuple. A host can be a host name or an IP address. | No | none | ['123.123.123.123','www.abc.com',('123.123.123.124',5433)]
 | retries | The retry times after an unsuccessful connection. | No | 2 | 3 |
 | threads | The number of threads the dbt project will run on. | No | 1 | 3 |
+| autocommit | Connection autocommit(True/False) | Yes | False | True |
 | label | A session label to identify the connection. | No | An auto-generated label with format of: dbt_username	| dbt_dbadmin |
 
 For more information on Vertica’s connection properties please refer to [Vertica-Python](https://github.com/vertica/vertica-python#create-a-connection) Connection Properties.
