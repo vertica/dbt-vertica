@@ -4,6 +4,14 @@
 
 
 
+### 1.7.13
+
+#### Fixes:
+- Enable connection autocommit parameter(https://github.com/vertica/dbt-vertica/issues/128)
+- Fixed- SQLParse with a high vulnerability(https://github.com/vertica/dbt-vertica/security/dependabot/1)
+- Update collect_freshness(https://github.com/vertica/dbt-vertica/issues/129)
+- Incremental strategy, On schema change- Add or remove columns from table(https://github.com/vertica/dbt-vertica/issues/122)
+
 ### 1.7.3
 
 #### Features:
