@@ -175,28 +175,17 @@
   {% if remove_columns is none %}
     {% set remove_columns = [] %}
   {% endif %}
-            {% for column in add_columns %}
-             {% set sql -%}
-              alter table {{ relation }}
-                   add column {{  adapter.quote(column.name) }} {{ column.data_type }} 
-                {%- endset -%} 
-               {% do run_query(sql) %}
-            {% endfor %}
-            {% for column in remove_columns %}  
-             {% set sql -%}
-              alter table  {{ relation }} 
-                drop column {{  adapter.quote(column.name) }}  ;
-                 {%- endset -%} 
-             
-            {% endfor %}
-             {% do log(sql) %}
-              {% do run_query(sql) %}
-              
-           
-  -- {% do run_query(sql) %}
+  {% set sql -%}
+  {% for column in add_columns %}
+    ALTER TABLE {{ relation }} ADD COLUMN IF NOT EXISTS {{  adapter.quote(column.name) }} {{ column.data_type }} ;
+  {% endfor %}
+  {% for column in remove_columns %}
+    ALTER TABLE {{ relation }} DROP COLUMN IF EXISTS {{  adapter.quote(column.name) }} ;
+  {% endfor %}
+  {%- endset -%}
+  {% do log(sql) %}
+  {% do run_query(sql) %}
 {% endmacro %}
-
-
 
 {# 
   No need to implement get_columns_in_query(). Syntax supported by default. 
