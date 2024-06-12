@@ -26,6 +26,10 @@ prompts:
     hint: 'takes True or False'
     type: 'bool'
     default: True
+  autocommit:
+    hint: 'takes True or False'
+    type: 'bool'
+    default: False
   retries:
     hint: 'number of retries'
     type: 'int'
