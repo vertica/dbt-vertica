@@ -132,7 +132,7 @@ class verticaConnectionManager(SQLConnectionManager):
             logger.debug(f':P Error connecting to database: {exc}')
             connection.state = 'fail'
             connection.handle = None
-            raise dbt.adapters.exceptions.connection.DbtFailedToConnectError(str(exc))
+            raise dbt.adapters.exceptions.connection.FailedToConnectError(str(exc))
 
         # This is here mainly to support dbt-integration-tests.
         # It globally enables WITH materialization for every connection dbt
