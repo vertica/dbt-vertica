@@ -16,8 +16,8 @@
 import functools
 import pytest
 from requests.exceptions import RequestException
-from dbt.exceptions import ConnectionError
-from dbt.utils import _connection_exception_retry
+from dbt_common.exceptions import ConnectionError
+from dbt_common.utils import _connection_exception_retry
 
 
 def no_retry_fn():

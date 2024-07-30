@@ -22,12 +22,3 @@ MY_VIEW = """
 select *
 from {{ ref('my_seed') }}
 """
-
-
-MY_MATERIALIZED_VIEW = """
-{{ config(
-    materialized='materialized_view',
-) }}
-select *
-from {{ ref('my_table') }}
-"""

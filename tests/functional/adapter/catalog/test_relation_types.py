@@ -13,30 +13,32 @@ class TestCatalogRelationTypes:
     @pytest.fixture(scope="class", autouse=True)
     def models(self):
         yield {
-            "table.sql": files.MY_TABLE,
-            "view.sql": files.MY_VIEW,
-            #"my_materialized_view.sql": files.MY_MATERIALIZED_VIEW,
+            "my_table.sql": files.MY_TABLE,
+            "my_view.sql": files.MY_VIEW,
+           # "my_dynamic_table.sql": files.MY_DYNAMIC_TABLE,
         }
 
     @pytest.fixture(scope="class", autouse=True)
     def docs(self, project):
         run_dbt(["seed"])
-        #run_dbt(["run"])
+        run_dbt(["run"])
         yield run_dbt(["docs", "generate"])
 
     @pytest.mark.parametrize(
         "node_name,relation_type",
         [
-           # ("seed.test.seed", "table"),
-            ("model.test.table", "table"),
-           # ("model.test.view", "view"),
-           # ("model.test.my_materialized_view", "materialized view"),
+            ("seed.test.my_seed", "TABLE"),
+            ("model.test.my_table", "TABLE"),
+            ("model.test.my_view", "VIEW"),
+           # ("model.test.my_dynamic_table", "DYNAMIC TABLE"),
         ],
     )
     def test_relation_types_populate_correctly(
         self, docs: CatalogArtifact, node_name: str, relation_type: str
     ):
-        
+        """
+        This test addresses: https://github.com/dbt-labs/dbt-vertica/issues/817
+        """
         assert node_name in docs.nodes
         node = docs.nodes[node_name]
         assert node.metadata.type == relation_type

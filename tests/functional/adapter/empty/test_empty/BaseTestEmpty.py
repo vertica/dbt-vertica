@@ -1,6 +1,6 @@
 import pytest
 
-from dbt.tests.adapter.util import relation_from_name, run_dbt
+from dbt.tests.util import relation_from_name, run_dbt
 
 
 model_input_sql = """
