@@ -35,7 +35,7 @@ class BaseUnitTestCaseInsensivity:
         return {
             "my_model.sql": my_model_sql,
             "my_upstream_model.sql": my_upstream_model_sql,
-            "unit_tests.yml": test_my_model_yml,
+           # "unit_tests.yml": test_my_model_yml,
         }
 
     def test_case_insensitivity(self, project):

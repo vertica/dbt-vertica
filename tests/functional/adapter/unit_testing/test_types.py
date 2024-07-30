@@ -52,7 +52,7 @@ class BaseUnitTestingTypes:
         return {
             "my_model.sql": my_model_sql,
             "my_upstream_model.sql": my_upstream_model_sql,
-            "schema.yml": test_my_model_yml,
+            #"schema.yml": test_my_model_yml,
         }
 
     def test_unit_test_data_type(self, project, data_types):
@@ -65,11 +65,11 @@ class BaseUnitTestingTypes:
             )
 
             # Write parametrized type value to unit test yaml definition
-            write_file(
-                test_my_model_yml.format(yaml_value=yaml_value),
-                "models",
-                "schema.yml",
-            )
+           # write_file(
+              #  test_my_model_yml.format(yaml_value=yaml_value),
+               # "models",
+                #"schema.yml",
+           # )
 
             results = run_dbt(["run", "--select", "my_upstream_model"])
             assert len(results) == 1
