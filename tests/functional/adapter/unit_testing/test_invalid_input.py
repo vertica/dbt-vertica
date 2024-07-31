@@ -14,7 +14,7 @@ select 1 as tested_column
 test_my_model_yml = """
 unit_tests:
   - name: test_invalid_input_column_name
-    model: test183_append
+    model: my_model
     given:
       - input: ref('my_upstream_model')
         rows:
@@ -27,10 +27,10 @@ unit_tests:
     given:
       - input: ref('my_upstream_model')
         rows:
-          - {tested_column: 1}
+          - {invalid_column_name: 1}
     expect:
       rows:
-          - {invalid_column_name: 1}
+          - {tested_column: 1}
 """
 
 
@@ -40,7 +40,7 @@ class BaseUnitTestInvalidInput:
         return {
             "my_model.sql": my_model_sql,
             "my_upstream_model.sql": my_upstream_model_sql,
-          #  "unit_tests.yml": test_my_model_yml,
+            "unit_tests.yml": test_my_model_yml,
         }
 
     def test_invalid_input(self, project):
@@ -64,5 +64,5 @@ class BaseUnitTestInvalidInput:
         )
 
 
-class TestPostgresUnitTestInvalidInput(BaseUnitTestInvalidInput):
+class TestVerticaUnitTestInvalidInput(BaseUnitTestInvalidInput):
     pass

@@ -1,9 +1,7 @@
+{% macro cast(field, type) %}
+  {{ return(adapter.dispatch('cast', 'dbt') (field, type)) }}
+{% endmacro %}
+
 {% macro vertica__cast(field, type) %}
-    {% if (type|upper == "GEOGRAPHY") -%}
-        to_geography({{field}})
-    {% elif (type|upper == "GEOMETRY") -%}
-        to_geometry({{field}})
-    {% else -%}
-        cast({{field}} as {{type}})
-    {% endif -%}
+    cast({{field}} as {{type}})
 {% endmacro %}
