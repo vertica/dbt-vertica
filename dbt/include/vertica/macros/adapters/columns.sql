@@ -16,8 +16,9 @@
         , numeric_scale
         , ordinal_position
         from v_catalog.columns
-        where table_schema = '{{ relation.schema }}'
-        and table_name = '{{ relation.identifier }}'
+        where --table_schema = '{{ relation.schema }}'
+       -- and 
+        table_name = '{{ relation.identifier }}'
         union all
         select
         column_name
@@ -27,8 +28,9 @@
         , numeric_scale
         , ordinal_position
         from v_catalog.view_columns
-        where table_schema = '{{ relation.schema }}'
-        and table_name = '{{ relation.identifier }}'
+        where --table_schema = '{{ relation.schema }}'
+        --and 
+        table_name = '{{ relation.identifier }}'
     ) t
     order by ordinal_position
   {% endcall %}
