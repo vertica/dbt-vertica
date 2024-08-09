@@ -3,7 +3,7 @@
     {% do return(base_relation.incorporate(
                                   path={
                                     "identifier": tmp_identifier,
-                                    "schema": none,
+                                    "schema": 'v_temp_schema',
                                     "database": none
                                   })) -%}
 {% endmacro %}
