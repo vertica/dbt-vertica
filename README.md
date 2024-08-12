@@ -13,8 +13,8 @@ dbt-vertica has been developed using the following software and versions:
 * Vertica Server 23.4.0-0
 * Python 3.11
 * vertica-python client 1.3.1
-* dbt-core 1.6.0
-* dbt-tests-adapter 1.6.0
+* dbt-core 1.8.3
+* dbt-tests-adapter 1.8.0
 
 ## Supported Features
 ### dbt Core Features
@@ -34,6 +34,7 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 | Tests                                             | Yes         |
 | Documentation                                     | Yes         |
 | External Tables                                   | Untested    |
+| Unit Testing                                      | Yes         |
 * **Yes** - Supported, and tests pass.
 * **No** - Not supported or implemented.
 * **Untested** - May support out of the box, though hasn't been tested.
@@ -124,5 +125,9 @@ Run tests via:
     pytest tests/functional/adapter/
     # run an individual test 
     pytest tests/functional/adapter/test_basic.py
+
+Run Unit test via:
+   
+    dbt test --select /{foldername}/{unit_test_file}
 
     

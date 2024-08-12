@@ -3,6 +3,30 @@
 - "Breaking changes" listed under a version may require action from end users.
 
 
+### 1.8.3
+
+#### Features:
+- Update base adapter references as part of decoupling migration to support dbt core 1.8.3 https://github.com/vertica/dbt-vertica/issues/131
+- Support --empty tests
+- Support all types for unit testing in dbt-vertica, expand coverage of safe_cast macro https://github.com/dbt-labs/dbt-core/discussions/9798
+- Add new workflow for internal patch releases
+- Support limiting get_catalog by object name
+- add --empty value to jinja context as flags.EMPTY
+
+#### Fixes:
+- Unit-test check tests
+  - test_types.BaseUnitTestingTypes
+  - test_case_insensitivity.BaseUnitTestCaseInsensivity
+  - test_invalid_input.BaseUnitTestInvalidInput
+- Flags.EMPTY check tests
+  - BaseTestEmpty
+- Support limiting get_catalog check tests
+  - BaseChangeRelationTypeValidator
+- warning on unit_test config in dbt_project.yaml file
+- Additional tests
+  - TestBaseContext
+  - BaseIncrementalOnSchemaChangeSetup
+
 
 ### 1.7.13
 
