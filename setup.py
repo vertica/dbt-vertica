@@ -118,6 +118,7 @@ setup(
         'vertica-python>=1.1.0',
         'dbt-tests-adapter==1.8.0',
         'python-dotenv==0.21.1',
+        'pytest>=8.3.2',
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
