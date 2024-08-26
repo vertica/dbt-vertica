@@ -18,6 +18,7 @@ from dataclasses import dataclass
 from typing import Dict, ClassVar
 
 from dbt.adapters.base.column import Column
+#from dbt.common.exceptions import DbtRuntimeError
 
 @dataclass(init=False)
 class VerticaColumn(Column):

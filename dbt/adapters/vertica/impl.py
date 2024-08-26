@@ -13,17 +13,20 @@
 # limitations under the License.
 
 
-from dbt.adapters.sql import SQLAdapter
+from dbt.adapters.sql.impl import SQLAdapter
 from dbt.adapters.vertica import verticaConnectionManager
 #from dbt.adapters.vertica import VerticaRelation
 from dbt.adapters.vertica.column import VerticaColumn
 from typing import Optional, List, Union, Dict
 
+
 from dbt.adapters.capability import CapabilityDict, CapabilitySupport, Support, Capability
 from dbt.adapters.base import available
-from dbt.exceptions import (
+from dbt_common.exceptions import (
 
-    DbtRuntimeError
+    DbtRuntimeError,
+    CompilationError,
+    DbtDatabaseError
 )
 
 import agate
@@ -32,7 +35,8 @@ from dbt.adapters.base.meta import available
 from dbt.adapters.sql import SQLAdapter  # type: ignore
 
 from dbt.adapters.base.impl import AdapterConfig,ConstraintSupport
-from dbt.contracts.graph.nodes import ConstraintType
+from dbt_common.contracts.constraints import ConstraintType
+
 
 @dataclass
 class VerticaConfig(AdapterConfig):
