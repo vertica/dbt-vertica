@@ -4,7 +4,7 @@
 
 
 ### 1.8.5
-
+=======
 #### Features:
 - Update base adapter references as part of decoupling migration to support dbt core 1.8.3 https://github.com/vertica/dbt-vertica/issues/131
 - Support --empty tests
