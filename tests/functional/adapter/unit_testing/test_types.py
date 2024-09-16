@@ -81,4 +81,4 @@ class BaseUnitTestingTypes:
 
 
 class TestVerticaUnitTestingTypes(BaseUnitTestingTypes):
-    pass
+pass

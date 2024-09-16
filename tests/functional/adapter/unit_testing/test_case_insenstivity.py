@@ -44,6 +44,6 @@ class BaseUnitTestCaseInsensivity:
 
         results = run_dbt(["test"])
 
-
 class TestVerticaUnitTestCaseInsensitivity(BaseUnitTestCaseInsensivity):
     pass
+
