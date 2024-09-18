@@ -64,6 +64,7 @@
         , ordinal_position
         from v_catalog.columns
         where  table_name = '{{ relation.identifier }}'
+        and table_schema = '{{ relation.schema }}'
         union all
         select
         column_name
@@ -74,6 +75,7 @@
         , ordinal_position
         from v_catalog.view_columns
         where table_name = '{{ relation.identifier }}'
+        and table_schema = '{{ relation.schema }}'
     ) t
     order by ordinal_position
   {% endcall %}

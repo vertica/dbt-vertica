@@ -78,7 +78,8 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.7.13"
+package_version = "1.8.5"
+
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
 
@@ -101,8 +102,10 @@ setup(
             'include/vertica/sample_profiles.yml',
             'include/vertica/macros/*.sql',
             'include/vertica/macros/adapters/*.sql',
+            'include/vertica/macros/unit_test_sql/*.sql',
             'include/vertica/macros/materializations/*.sql',
             'include/vertica/macros/materializations/models/incremental/*.sql',
+            'include/vertica/macros/materializations/tests/*.sql',
             'include/vertica/macros/materializations/models/table/*.sql',
             'include/vertica/macros/materializations/models/view/*.sql',
             'include/vertica/macros/materializations/seeds/*.sql',
@@ -111,11 +114,12 @@ setup(
         ]
     },
     install_requires=[
-        'dbt-core==1.7.13',
+       'dbt-core==1.8.5',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.7.13',
+        'dbt-tests-adapter==1.8.0',
         'python-dotenv==0.21.1',
+        'pytest>=8.3.2',
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",

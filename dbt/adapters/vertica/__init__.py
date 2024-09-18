@@ -18,6 +18,7 @@ from dbt.adapters.vertica.connections import verticaCredentials
 from dbt.adapters.vertica.impl import verticaAdapter
 from dbt.adapters.vertica.column import VerticaColumn
 
+
 from dbt.adapters.base import AdapterPlugin
 from dbt.include import vertica
 

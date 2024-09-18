@@ -3,7 +3,7 @@
     {% do return(base_relation.incorporate(
                                   path={
                                     "identifier": tmp_identifier,
-                                    "schema": none,
+                                    "schema": 'v_temp_schema',
                                     "database": none
                                   })) -%}
 {% endmacro %}
@@ -28,3 +28,5 @@
   No need to implement drop_relation_if_exists(). Syntax supported by default.
   No need to implement get_or_create_relation(). Syntax supported by default.
 #}
+
+{%- set tmp_relation = tmp_relation.include(database=false, schema=false) -%}
