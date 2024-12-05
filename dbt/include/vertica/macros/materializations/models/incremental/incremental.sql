@@ -5,7 +5,7 @@
   {% set target_relation = this %}
   -- {%- set existing_relation = load_cached_relation(this) -%}
   {% set existing_relation = load_relation(this) %}
-   {%- set target_relation = this.incorporate(type='table') -%}
+  {%- set target_relation = this.incorporate(type='table') -%}
   {% set tmp_relation = make_temp_relation(target_relation) %}
   {%- set full_refresh_mode = (should_full_refresh()) -%}
   {%- set on_schema_change = incremental_validate_on_schema_change(config.get('on_schema_change'), default='ignore') -%}
@@ -14,7 +14,7 @@
   -- {#-- Validate early so we don't run SQL if the strategy is invalid --#}
   {% set strategy = vertica__validate_get_incremental_strategy(config) %}
 
-  
+
 
   -- setup
   {{ run_hooks(pre_hooks, inside_transaction=False) }}
@@ -45,11 +45,12 @@
       {% set backup_identifier = model['name'] + '__dbt_backup' %}
       {% set intermediate_relation = existing_relation.incorporate(path={"identifier": tmp_identifier}) %}
       {% set backup_relation = existing_relation.incorporate(path={"identifier": backup_identifier}) %}
-      
-      {% set build_sql = vertica__create_table_as(False, target_relation, sql) %}
-      
+
+      {% set build_sql = vertica__create_table_as(False, intermediate_relation, sql) %}
+
       {% set need_swap = true %}
       {% do to_drop.append(backup_relation) %}
+      {% do to_drop.append(intermediate_relation) %}
   {% else %}
       {% do run_query(vertica__create_table_as(True, tmp_relation, sql)) %}
       {% do adapter.expand_target_column_types(
