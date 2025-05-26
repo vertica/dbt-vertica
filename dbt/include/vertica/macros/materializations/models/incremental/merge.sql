@@ -50,7 +50,7 @@
         delete from {{ target }}
             where (
                 {{ unique_key }}) in (
-                select ({{ unique_key }})
+                select {{ unique_key }}
                 from {{ source }}
             );
 
