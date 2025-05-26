@@ -31,13 +31,13 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 * **Passes Test** -The testes have passed, though haven't tested in a production like environment
 ### Vertica Features
 Below is a table for what features the current Vertica adapter supports for Vertica. This is constantly improving and changing as both dbt adds new functionality, as well as the dbt-vertica driver improves.
-|   Vertica Features    | Supported |    
+|   Vertica Features    | Supported |
 | --------------------- | --------- |
 | Created/Drop Schema   | Yes       |
 | Analyze Statistics    | No        |
 | Purge Delete Vectors  | No        |
 | Projection Management | No        |
-| Primary/Unique Keys   | No        |
+| Primary/Unique Keys   | Primary key only |
 | Other DDLs            | No        |
 
 ## Installation
@@ -54,14 +54,14 @@ your-profile:
       type: vertica # Don't change this!
       host: [hostname]
       port: [port] # or your custom port (optional)
-      username: [your username] 
-      password: [your password] 
-      database: [database name] 
-      schema: [dbt schema] 
+      username: [your username]
+      password: [your password]
+      database: [database name]
+      schema: [dbt schema]
       connection_load_balance: True
       backup_server_node: [list of backup hostnames or IPs]
       retries: [1 or more]
-      threads: [1 or more] 
+      threads: [1 or more]
   target: dev
 
 ```
@@ -117,9 +117,7 @@ You need the pytest dbt adapter:
     pip3 install  dbt-tests-adapter==1.3.0
 
 Run tests via:
-  
-    pytest tests/functional/adapter/
-    # run an individual test 
-    pytest tests/functional/adapter/test_basic.py
 
-    
+    pytest tests/functional/adapter/
+    # run an individual test
+    pytest tests/functional/adapter/test_basic.py
