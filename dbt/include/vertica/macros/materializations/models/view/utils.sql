@@ -1,7 +1,7 @@
 {% macro vertica__get_view_current_owner(relation) %}
-    {{ log("relation is " ~relation, info=False) }}
-    {% set table_schema = relation.split('.')[1] %}
-    {% set table_name = relation.split('.')[2] %}
+    {{ log("relation is " ~relation.identifier, info=False) }}
+    {% set table_schema = relation.identifier.split('.')[1] %}
+    {% set table_name = relation.identifier.split('.')[2] %}
     {{ log("table_schema is " ~table_schema, info=False) }}
     {{ log("table_name is " ~table_name, info=False) }}
 
