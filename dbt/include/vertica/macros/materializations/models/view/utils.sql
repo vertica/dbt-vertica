@@ -1,6 +1,9 @@
 {% macro get_view_current_owner(relation) %}
+    {{ log("relation is " ~relation, info=False) }}
     {% set table_schema = relation.split('.')[1] %}
     {% set table_name = relation.split('.')[2] %}
+    {{ log("table_schema is " ~table_schema, info=False) }}
+    {{ log("table_name is " ~table_name, info=False) }}
 
     {%- set query -%}
         SELECT owner_name
