@@ -5,6 +5,8 @@
     {{ log("table_schema is " ~table_schema, info=False) }}
     {{ log("table_name is " ~table_name, info=False) }}
 
+    {{ log("username is " ~target.user, info=False) }}
+
     {%- set query -%}
         SELECT owner_name
         FROM v_catalog.views
