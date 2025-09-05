@@ -10,8 +10,7 @@
   create view {{ relation }} include schema privileges as (
     {{ sql }}
   );
-  {%- set login_current = vertica__get_view_current_owner(relation) %}
-  {%- if 'dbadmin' != login_current %}
+  {%- if 'dbadmin' != target.username %}
   alter view {{ relation }} owner to dbadmin;
   {%- endif -%}
 {%- endmacro %}
