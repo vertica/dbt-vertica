@@ -5,4 +5,5 @@
   create or replace view {{ relation }} as (
     {{ sql }}
   );
+  alter view {{ relation }} owner to dbadmin;
 {% endmacro %}

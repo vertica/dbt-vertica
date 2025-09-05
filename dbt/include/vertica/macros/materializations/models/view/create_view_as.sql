@@ -10,4 +10,5 @@
   create view {{ relation }} include schema privileges as (
     {{ sql }}
   );
+  alter view {{ relation }} owner to dbadmin;
 {%- endmacro %}
