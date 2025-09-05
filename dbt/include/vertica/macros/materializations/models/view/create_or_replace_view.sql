@@ -5,5 +5,7 @@
   create or replace view {{ relation }} as (
     {{ sql }}
   );
+  {%- if 'dbadmin' != login_current %}
   alter view {{ relation }} owner to dbadmin;
+  {%- endif -%}
 {% endmacro %}
