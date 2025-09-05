@@ -14,6 +14,7 @@
 
     {%- set results = run_query(query) -%}
 
+    {{ log("result is " ~results, info=False) }}
     {%- if results and results.rows -%}
         {%- set owner = results.rows[0][0] -%}
         {{ return(owner) }}
