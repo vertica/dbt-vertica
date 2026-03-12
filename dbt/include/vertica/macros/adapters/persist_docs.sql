@@ -22,12 +22,16 @@
 
 
 {% macro vertica__alter_column_comment(relation, column_dict) %}
-  {% set existing_columns = adapter.get_columns_in_relation(relation) | map(attribute="name") | list %}
-  {% for column_name in column_dict if (column_name in existing_columns) %}
-    {% set comment = column_dict[column_name]['description'] %}
-    {% set escaped_comment = vertica_escape_comment(comment) %}
-    comment on column {{ relation }}.{{ adapter.quote(column_name) if column_dict[column_name]['quote'] else column_name }} is {{ escaped_comment }};
-  {% endfor %}
+  {% if relation.type == 'view' -%}
+    {{ exceptions.warn("[WARNING]: Vertica does not support comments for view columns in view: " ~ relation.name) }}
+  {%- else -%}
+    {% set existing_columns = adapter.get_columns_in_relation(relation) | map(attribute="name") | list %}
+    {% for column_name in column_dict if (column_name in existing_columns) %}
+      {% set comment = column_dict[column_name]['description'] %}
+      {% set escaped_comment = vertica_escape_comment(comment) %}
+      comment on column {{ relation }}.{{ adapter.quote(column_name) if column_dict[column_name]['quote'] else column_name }} is {{ escaped_comment }};
+    {% endfor %}
+  {%- endif -%}
 {%- endmacro %}
 
 
