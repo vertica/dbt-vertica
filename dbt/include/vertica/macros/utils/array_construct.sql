@@ -2,6 +2,6 @@
     {% if inputs|length > 0 %}
     ARRAY[ {{ inputs|join(' , ') }} ]
     {% else %}
-    ARRAY[{{data_type}}]
+    ARRAY[]::ARRAY[{{ data_type }}]
     {% endif %}
 {%- endmacro %}

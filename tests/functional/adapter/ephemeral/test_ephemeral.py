@@ -22,6 +22,10 @@ from dbt.tests.util import run_dbt, check_relations_equal
 
 class TestEphemeralMultiVertica(BaseEphemeralMulti):
 
+    # Override base assertion that expects a different SQL rendering style.
+    def test_ephemeral_multi(self, project):
+        self.test_ephemeral_multi_vertica(project)
+
     def test_ephemeral_multi_vertica(self, project):
         run_dbt(["seed"])
         results = run_dbt(["run"])

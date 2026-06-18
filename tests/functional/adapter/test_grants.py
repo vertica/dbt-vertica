@@ -48,7 +48,7 @@ models:
     config:
       materialized: table
       grants:
-        fake_privilege: ["{{ env_var('DBT_TEST_USER_2') }}"]
+                fake_privilege: ["{{ env_var('DBT_TEST_USER_2', 'invalid_user') }}"]
 """
 
 from dotenv import load_dotenv
@@ -79,7 +79,7 @@ class BaseGrantsVertica(BaseGrants):
     def get_test_users(self, project):
         test_users = []
         for env_var in TEST_USER_ENV_VARS:
-            user_name = os.environ[env_var]
+            user_name = os.getenv(env_var)
             if user_name:
                 test_users.append(user_name)
         return test_users
@@ -105,19 +105,25 @@ class BaseGrantsVertica(BaseGrants):
 
 class BaseInvalidGrantsVertica(BaseGrantsVertica):
 
+    def grantee_does_not_exist_error(self):
+        return "No user or role"
+
+    def privilege_does_not_exist_error(self):
+        return "fake_privilege"
+
     def test_invalid_grants(self, project, get_test_users, logs_dir):
         
         # failure when grant to a user/role that doesn't exist
         yaml_file = self.interpolate_name_overrides(invalid_user_table_model_schema_yml)
         write_file(yaml_file, project.project_root, "models", "schema.yml")
-        (results, log_output) = run_dbt_and_capture(["--debug", "run"])
-        assert results,self.grantee_does_not_exist_error() in log_output
+        (results, log_output) = run_dbt_and_capture(["--debug", "run"], expect_pass=False)
+        assert self.grantee_does_not_exist_error() in log_output
 
         # failure when grant to a privilege that doesn't exist
         yaml_file = self.interpolate_name_overrides(invalid_privilege_table_model_schema_yml)
         write_file(yaml_file, project.project_root, "models", "schema.yml")
-        (results, log_output) = run_dbt_and_capture(["--debug", "run"])
-        assert results,self.privilege_does_not_exist_error() in log_output
+        (results, log_output) = run_dbt_and_capture(["--debug", "run"], expect_pass=False)
+        assert self.privilege_does_not_exist_error() in log_output
 
 class TestInvalidGrantsVertica(BaseInvalidGrantsVertica,BaseInvalidGrants):
     pass
