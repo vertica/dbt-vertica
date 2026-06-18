@@ -92,8 +92,13 @@ setup(
     license='Apache License 2.0', 
     author='Vertica (Former authors: Matthew Carter, Andy Regan, Andrew Hedengren)',
     author_email='os_dbt_vertica@microfocus.com',
-    url='https://github.com/ajay.abrol2/dbt-vertica/',
+    url='https://github.com/vertica/dbt-vertica/',
     packages=find_packages(include=["dbt","dbt.*"]),
+    entry_points={
+        "dbt.adapters": [
+            "vertica = dbt.adapters.vertica:Plugin",
+        ],
+    },
     
     package_data={
         'dbt': [

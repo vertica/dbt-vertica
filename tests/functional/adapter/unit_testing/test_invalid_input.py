@@ -27,10 +27,10 @@ unit_tests:
     given:
       - input: ref('my_upstream_model')
         rows:
-          - {invalid_column_name: 1}
+          - {tested_column: 1}
     expect:
       rows:
-          - {tested_column: 1}
+          - {invalid_column_name: 1}
 """
 
 

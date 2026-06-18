@@ -53,7 +53,9 @@
       {{ vertica__do_apply_grants(target_relation, grant_config) }}
     {% endif %}
   {%- endcall %}
-
+  
+  {% do persist_docs(target_relation, model) %}
+  
   {{ run_hooks(post_hooks, inside_transaction=True) }}
 
   -- `COMMIT` happens here
