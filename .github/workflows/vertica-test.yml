@@ -14,7 +14,7 @@ jobs:
         python-version: [ '3.8','3.9' ,'3.10', '3.11']
     services:
       vertica:
-        image: vertica/vertica-ce:latest
+        image: ghcr.io/ratiopbc/vertica-ce:latest
         ports:
           - 5433:5433
           - 5444:5444
@@ -72,14 +72,5 @@ jobs:
       run: python -m pytest tests/functional/adapter/dbt_clone/
     - name: Test Seeds
       run: python -m pytest tests/functional/adapter/seeds/test_seeds.py
-
-
-
-      
-
-
-
-
-    
-
-
+    - name: Test Persist Docs
+      run: python -m pytest tests/functional/adapter/test_persist_docs.py
