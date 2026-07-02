@@ -23,8 +23,6 @@ pytest_plugins = "dbt.tests.fixtures.project"
 def pytest_addoption(parser):
     parser.addoption("--profile", action="store", default="vertica", type=str)
 
-
-
 def pytest_configure(config):
     config.addinivalue_line(
         "markers",
@@ -42,39 +40,12 @@ def dbt_profile_target():
     return {
          'type': 'vertica',
         'threads': 1,
-        'host': 'localhost',
+        'host': 'verticadb-sample',
         'username': 'dbadmin',
         'password': '',
-        'database': 'docker',
-        'port': 5433,
-        
+        'database': 'vdb',
+        'port': 5433,        
     }
-
-
-#  return {
-#         "type": "vertica",
-#         "threads": 1,
-#         "host": "159.65.150.255",
-#         "port": int(os.getenv("VERTICA_TEST_PORT", 5433)),
-#         "username": os.getenv("VERTICA_TEST_USER", "dbadmin"),
-#         "password": os.getenv("VERTICA_TEST_PASS", ""),
-#         "database": os.getenv("VERTICA_TEST_DATABASE","VMart"),
-        
-#     }
-
-
-
-
-# def dbt_profile_target():
-#     return {
-#         'type': 'vertica',
-#         'threads': 1,
-#         'host': 'localhost',
-#         'username': 'dbadmin',
-#         'password': '',
-#         'database': 'docker',
-#         'port': 5433,
-#     }
 
 @pytest.fixture(scope="session")
 def dbt_profile_target(request):
@@ -105,13 +76,12 @@ def vertica_target():
     return {
        'type': 'vertica',
         'threads': 1,
-        'host': 'localhost',
+        'host': 'verticadb-sample',
         'username': 'dbadmin',
         'password': '',
-        'database': 'docker',
+        'database': 'vdb',
         'port': 5433,
     }
-
 
 @pytest.fixture(autouse=True)
 def skip_by_profile_type(request):
@@ -128,5 +98,3 @@ def only_profile_type(request):
         for only_profile_type in request.node.get_closest_marker("only_profile").args:
             if only_profile_type != profile_type:
                 pytest.skip("skipped on '{profile_type}' profile")
-                
-                
