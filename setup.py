@@ -78,7 +78,7 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.8.5"
+package_version = "1.8.6"
 
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
