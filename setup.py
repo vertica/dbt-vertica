@@ -28,10 +28,10 @@ import os
 import sys
 import re
 
-# require python 3.8 or newer
-if sys.version_info < (3, 8):
+# require python 3.9 or newer
+if sys.version_info < (3, 9):
     print("Error: dbt does not support this version of Python.")
-    print("Please upgrade to Python 3.8 or higher.")
+    print("Please upgrade to Python 3.9 or higher.")
     sys.exit(1)
 
 
@@ -78,7 +78,7 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.8.6"
+package_version = "1.10.0"
 
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
@@ -114,10 +114,10 @@ setup(
         ]
     },
     install_requires=[
-       'dbt-core==1.8.5',
+       'dbt-core==1.10.22',
         # "dbt-core~={}".format(dbt_core_version),
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.8.0',
+        'dbt-tests-adapter==1.11.0',
         'python-dotenv==0.21.1',
         'pytest>=8.3.2',
     ],
@@ -132,5 +132,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
-    python_requires=">=3.8.0",
+    python_requires=">=3.9.0",
 )
