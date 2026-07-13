@@ -3,6 +3,15 @@
 - "Breaking changes" listed under a version may require action from end users.
 
 
+### 1.10.0
+=======
+#### Features:
+- Upgrade to support dbt-core v1.10 https://github.com/vertica/dbt-vertica/issues/151
+- Bump `dbt-core` dependency to `1.10.22` and `dbt-tests-adapter` to `1.11.0`
+
+#### Breaking changes:
+- Dropped support for Python 3.8 (dbt-core 1.10 requires Python >= 3.9)
+
 ### 1.8.5
 =======
 #### Features:
