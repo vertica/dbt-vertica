@@ -3,6 +3,15 @@
 - "Breaking changes" listed under a version may require action from end users.
 
 
+### 1.11.0
+=======
+#### Features:
+- Upgrade to support dbt-core v1.11
+- Bump `dbt-core` dependency to `1.11.12` and `dbt-tests-adapter` to `1.20.0`
+
+#### Breaking changes:
+- Dropped support for Python 3.8 (dbt-core 1.11 requires Python >= 3.9)
+
 ### 1.8.5
 =======
 #### Features:

@@ -344,4 +344,4 @@ class TestConcurenncyVertica(BaseConcurrency):
         check_table_does_not_exist(project.adapter, "invalid")
         check_table_does_not_exist(project.adapter, "skip")
 
-        assert "PASS=5 WARN=0 ERROR=1 SKIP=1 TOTAL=7" in output
+        assert "PASS=5 WARN=0 ERROR=1 SKIP=1 NO-OP=0 TOTAL=7" in output
