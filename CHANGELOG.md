@@ -3,6 +3,16 @@
 - "Breaking changes" listed under a version may require action from end users.
 
 
+### 1.12.0
+=======
+#### Features:
+- Upgrade to support dbt-core v1.12
+- Bump `dbt-core` dependency to `1.12.0` and `dbt-tests-adapter` to `1.20.0`
+- Bump `python-dotenv` to `>=1.2` (required by dbt-core 1.12)
+
+#### Breaking changes:
+- Dropped support for Python 3.8 (dbt-core 1.12 requires Python >= 3.9)
+
 ### 1.8.5
 =======
 #### Features:
