@@ -13,8 +13,8 @@ dbt-vertica has been developed using the following software and versions:
 * Vertica Server 23.4.0-0
 * Python 3.11
 * vertica-python client 1.3.1
-* dbt-core 1.8.5
-* dbt-tests-adapter 1.8.0
+* dbt-core 1.12.0
+* dbt-tests-adapter 1.20.0
 
 ## Supported Features
 ### dbt Core Features
@@ -28,8 +28,15 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 | Incremental Materailizations - Merge              | Yes         |
 | Incremental Materializations - Delete+Insert      | Yes         |
 | Incremental Materializations - Insert_Overwrite   | Yes         |
+| Incremental Materializations - Microbatch         | Yes         |
+| Sample mode (`--sample`)                          | Yes         |
 | Snapshots - Timestamp                             | Yes         |
-| Snapshots - Check Cols                            | No  |
+| Snapshots - Check Cols                            | Yes         |
+| Snapshots - YAML definitions (1.9+ style)         | Yes         |
+| Snapshots - `hard_deletes` (incl. `new_record`)   | Yes         |
+| Snapshots - `dbt_valid_to_current` / custom meta column names | Yes |
+| SQL UDFs (`functions/` scalar, language `sql`)    | Yes         |
+| Python / JavaScript UDFs, aggregate UDFs          | No (require compiled Vertica UDx libraries) |
 | Seeds                                             | Yes         |
 | Tests                                             | Yes         |
 | Documentation                                     | Yes         |
@@ -39,6 +46,16 @@ Below is a table for what features the current Vertica adapter supports for dbt.
 * **No** - Not supported or implemented.
 * **Untested** - May support out of the box, though hasn't been tested.
 * **Passes Test** - The tests have passed, though haven't tested in a production like environment. 
+
+### dbt Fusion engine / ADBC
+The dbt Fusion engine does not load Python adapters: it talks to warehouses through
+its own Rust drivers over ADBC (Arrow Database Connectivity), and those drivers are
+developed in the dbt Fusion project itself. `dbt-vertica` therefore runs on dbt Core
+(this package); Fusion support requires a Vertica ADBC driver contributed to the
+Fusion engine and cannot be provided from this repository. The macros in this
+adapter are kept free of Fusion-incompatible Jinja (dbt Core 1.12's Fusion-conformance
+deprecation warnings are clean), so projects using dbt-vertica can adopt Fusion-ready
+project syntax (e.g. `require_generic_test_arguments_property`) today.
 
 ## Installation
 ```
@@ -116,9 +133,17 @@ Access the local Vertica instance like:
     docker exec -it <docker_image_name> /opt/vertica/bin/vsql
 
 
-You need the pytest dbt adapter:
+Install the package with its test dependencies:
 
-    pip3 install  dbt-tests-adapter==1.5.0
+    pip3 install -e ".[test]"
+
+Point the test suite at your Vertica instance (defaults target the CI
+`verticadb-sample` host; override with env vars for local runs):
+
+    export VERTICA_HOST=localhost VERTICA_PORT=5433 \
+           VERTICA_USER=dbadmin VERTICA_PASSWORD='' VERTICA_DATABASE=vdb
+    # grants tests need three extra users to exist in the database:
+    export DBT_TEST_USER_1=dbt_test_user_1 DBT_TEST_USER_2=dbt_test_user_2 DBT_TEST_USER_3=dbt_test_user_3
 
 Run tests via:
   

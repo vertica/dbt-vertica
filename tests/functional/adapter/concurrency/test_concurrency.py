@@ -344,4 +344,5 @@ class TestConcurenncyVertica(BaseConcurrency):
         check_table_does_not_exist(project.adapter, "invalid")
         check_table_does_not_exist(project.adapter, "skip")
 
-        assert "PASS=5 WARN=0 ERROR=1 SKIP=1 TOTAL=7" in output
+        # dbt 1.12 added a REUSED counter to the summary line
+        assert "PASS=5 WARN=0 ERROR=1 SKIP=1 NO-OP=0 REUSED=0 TOTAL=7" in output

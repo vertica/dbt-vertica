@@ -28,10 +28,10 @@ import os
 import sys
 import re
 
-# require python 3.8 or newer
-if sys.version_info < (3, 8):
+# require python 3.9 or newer
+if sys.version_info < (3, 9):
     print("Error: dbt does not support this version of Python.")
-    print("Please upgrade to Python 3.8 or higher.")
+    print("Please upgrade to Python 3.9 or higher.")
     sys.exit(1)
 
 
@@ -78,7 +78,7 @@ def _get_dbt_core_version():
 
 
 package_name = "dbt-vertica"
-package_version = "1.8.6"
+package_version = "1.12.0"
 
 description = """Official vertica adapter plugin for dbt (data build tool)"""
 dbt_core_version = _get_dbt_core_version()
@@ -105,6 +105,7 @@ setup(
             'include/vertica/macros/unit_test_sql/*.sql',
             'include/vertica/macros/materializations/*.sql',
             'include/vertica/macros/materializations/models/incremental/*.sql',
+            'include/vertica/macros/materializations/functions/*.sql',
             'include/vertica/macros/materializations/tests/*.sql',
             'include/vertica/macros/materializations/models/table/*.sql',
             'include/vertica/macros/materializations/models/view/*.sql',
@@ -114,13 +115,25 @@ setup(
         ]
     },
     install_requires=[
-       'dbt-core==1.8.5',
-        # "dbt-core~={}".format(dbt_core_version),
+        'dbt-core>=1.12.0,<1.13',
+        'dbt-common>=1.10,<2.0',
+        'dbt-adapters>=1.16,<2.0',
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.8.0',
-        'python-dotenv==0.21.1',
-        'pytest>=8.3.2',
     ],
+    extras_require={
+        'test': [
+            'dbt-tests-adapter==1.20.0',
+            'python-dotenv>=1.2',
+            'pytest>=8.3.2',
+            'freezegun',
+        ],
+        'dev': [
+            'dbt-tests-adapter==1.20.0',
+            'python-dotenv>=1.2',
+            'pytest>=8.3.2',
+            'freezegun',
+        ],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: Apache Software License",
@@ -132,5 +145,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
-    python_requires=">=3.8.0",
+    python_requires=">=3.9.0",
 )
