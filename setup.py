@@ -105,6 +105,7 @@ setup(
             'include/vertica/macros/unit_test_sql/*.sql',
             'include/vertica/macros/materializations/*.sql',
             'include/vertica/macros/materializations/models/incremental/*.sql',
+            'include/vertica/macros/materializations/functions/*.sql',
             'include/vertica/macros/materializations/tests/*.sql',
             'include/vertica/macros/materializations/models/table/*.sql',
             'include/vertica/macros/materializations/models/view/*.sql',
@@ -114,13 +115,25 @@ setup(
         ]
     },
     install_requires=[
-       'dbt-core==1.12.0',
-        # "dbt-core~={}".format(dbt_core_version),
+        'dbt-core>=1.12.0,<1.13',
+        'dbt-common>=1.10,<2.0',
+        'dbt-adapters>=1.16,<2.0',
         'vertica-python>=1.1.0',
-        'dbt-tests-adapter==1.20.0',
-        'python-dotenv>=1.2',
-        'pytest>=8.3.2',
     ],
+    extras_require={
+        'test': [
+            'dbt-tests-adapter==1.20.0',
+            'python-dotenv>=1.2',
+            'pytest>=8.3.2',
+            'freezegun',
+        ],
+        'dev': [
+            'dbt-tests-adapter==1.20.0',
+            'python-dotenv>=1.2',
+            'pytest>=8.3.2',
+            'freezegun',
+        ],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: Apache Software License",

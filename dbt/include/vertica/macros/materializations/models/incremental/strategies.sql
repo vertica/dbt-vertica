@@ -61,6 +61,34 @@
 
 
 
+{% macro vertica__get_incremental_microbatch_sql(arg_dict) %}
+  {%- set target = arg_dict["target_relation"] -%}
+  {%- set source = arg_dict["temp_relation"] -%}
+  {%- set dest_columns = arg_dict["dest_columns"] -%}
+  {%- set predicates = [] -%}
+
+  {% if not model.config.get("__dbt_internal_microbatch_event_time_start") or not model.config.get("__dbt_internal_microbatch_event_time_end") -%}
+    {% do exceptions.raise_compiler_error("dbt could not compute the start and end timestamps for the running batch") %}
+  {% endif %}
+
+  {#-- Build the event-time window predicates for this batch --#}
+  {% set start_time = model.config["__dbt_internal_microbatch_event_time_start"] %}
+  {% do predicates.append(model.config.event_time ~ " >= TIMESTAMP '" ~ start_time ~ "'") %}
+  {% set end_time = model.config["__dbt_internal_microbatch_event_time_end"] %}
+  {% do predicates.append(model.config.event_time ~ " < TIMESTAMP '" ~ end_time ~ "'") %}
+  {% do arg_dict.update({'incremental_predicates': predicates}) %}
+
+  delete from {{ target }} where (
+  {% for predicate in predicates %}
+    {%- if not loop.first %} and {% endif -%} {{ predicate }}
+  {% endfor %}
+  );
+
+  {{ get_insert_into_sql(target, source, dest_columns) }}
+
+{% endmacro %}
+
+
 {% macro get_incremental_default_sql(arg_dict) %}
 
   {{ return(adapter.dispatch('get_incremental_default_sql', 'dbt')(arg_dict)) }}

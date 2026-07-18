@@ -309,5 +309,8 @@ jobs:
           python -m pytest tests/functional/adapter/dbt-show/test_dbt_show.py &&
           python -m pytest tests/functional/adapter/dbt_clone/ &&
           python -m pytest tests/functional/adapter/seeds/test_seeds.py &&
+          python -m pytest tests/functional/adapter/simple_snapshot/ &&
+          python -m pytest tests/functional/adapter/sample_mode/ &&
+          python -m pytest tests/functional/adapter/functions/ &&
           python -m pytest tests/functional/adapter/test_persist_docs.py -v
         '

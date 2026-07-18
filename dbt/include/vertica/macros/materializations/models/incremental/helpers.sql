@@ -7,9 +7,9 @@
 
   {% set invalid_strategy_msg -%}
     Invalid incremental strategy provided: {{ strategy }}
-    Expected one of: 'merge', 'delete+insert','insert_overwrite','append'
+    Expected one of: 'merge', 'delete+insert','insert_overwrite','append','microbatch'
   {%- endset %}
-  {% if strategy not in ['merge', 'delete+insert','insert_overwrite','append'] %}
+  {% if strategy not in ['merge', 'delete+insert','insert_overwrite','append','microbatch'] %}
     {% do exceptions.raise_compiler_error(invalid_strategy_msg) %}
   {% endif %}
 
@@ -37,6 +37,9 @@
     {% do return(vertica__get_insert_overwrite_merge_sql(target_relation, tmp_relation, dest_columns)) %}
   {% elif strategy == 'append' %}
     {% do return(vertica__get_incremental_append_sql(target_relation, tmp_relation,  dest_columns)) %}
+  {% elif strategy == 'microbatch' %}
+    {% set arg_dict = {'target_relation': target_relation, 'temp_relation': tmp_relation, 'unique_key': unique_key, 'dest_columns': dest_columns, 'incremental_predicates': []} %}
+    {% do return(vertica__get_incremental_microbatch_sql(arg_dict)) %}
   {% else %}
     {% do exceptions.raise_compiler_error('invalid strategy: ' ~ strategy) %}
   {% endif %}

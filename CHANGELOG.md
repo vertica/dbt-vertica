@@ -7,11 +7,22 @@
 =======
 #### Features:
 - Upgrade to support dbt-core v1.12
-- Bump `dbt-core` dependency to `1.12.0` and `dbt-tests-adapter` to `1.20.0`
-- Bump `python-dotenv` to `>=1.2` (required by dbt-core 1.12)
+- Added `microbatch` incremental strategy (`event_time` / `begin` / `batch_size`, batched backfills via delete+insert per event-time window)
+- Sample mode (`dbt run --sample=...`) works out of the box via event-time filtering
+- Modernized snapshots to the dbt-core 1.9+ feature set by adopting the default snapshot materialization:
+  - YAML-defined snapshots (`snapshots/*.yml` with `relation:`)
+  - `check` strategy (check_cols) now supported
+  - `hard_deletes: ignore | invalidate | new_record`
+  - `dbt_valid_to_current` and `snapshot_meta_column_names`
+  - multi-column `unique_key`
+- Added SQL UDF support via dbt function models (`functions/` directory): scalar SQL functions are created with `CREATE OR REPLACE FUNCTION ... RETURN ...`. Python/JavaScript and aggregate UDFs raise a clear error (they require compiled Vertica UDx libraries)
+- Bump `dbt-core` dependency to `>=1.12.0,<1.13`, add explicit `dbt-adapters` / `dbt-common` dependencies, and move test-only dependencies (`dbt-tests-adapter`, `pytest`, `python-dotenv`) to the `test` extra
+- Removed Fusion-incompatible Jinja (stray top-level `set` block) so dbt 1.12's Fusion-conformance deprecation warnings are clean
 
 #### Breaking changes:
 - Dropped support for Python 3.8 (dbt-core 1.12 requires Python >= 3.9)
+- The snapshot materialization is now the dbt-core default implementation; custom overrides that patched the old copy may need review
+- `dbt-tests-adapter`, `pytest` and `python-dotenv` are no longer installed with the package; install with `pip install dbt-vertica[test]` for development
 
 ### 1.8.5
 =======
