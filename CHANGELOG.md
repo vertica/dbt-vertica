@@ -19,6 +19,13 @@
 - Bump `dbt-core` dependency to `>=1.12.0,<1.13`, add explicit `dbt-adapters` / `dbt-common` dependencies, and move test-only dependencies (`dbt-tests-adapter`, `pytest`, `python-dotenv`) to the `test` extra
 - Removed Fusion-incompatible Jinja (stray top-level `set` block) so dbt 1.12's Fusion-conformance deprecation warnings are clean
 
+#### Fixes (found during live-Vertica validation of the 1.12 feature set):
+- `data_type_code_to_name` referenced a non-existent `vertica_python.vertica.connector` module and crashed any code path using column-schema introspection (e.g. the 1.12 snapshot flow); now uses `vertica_python.datatypes.getTypeName`
+- `vertica__snapshot_get_time` now casts to plain `timestamp` — previously `current_timestamp` (timestamptz) broke snapshot staging UNIONs against `date`/`timestamp` source columns
+- `vertica__array_construct` produced invalid SQL (`ARRAY[INT]`) for empty arrays; now emits `ARRAY[]::ARRAY[<type>]`
+- Removed stale copies of the unit-test materialization and `get_expected_sql`/`get_fixture_sql` macros whose old 2-argument signature broke dbt 1.12 unit tests (`column_name_to_quoted` support comes from the defaults now)
+- Test harness: `tests/conftest.py` profile now overridable via `VERTICA_HOST/PORT/USER/PASSWORD/DATABASE` env vars; fixed grants/ephemeral/concurrency/unit-test suites that asserted Postgres-specific SQL, the pre-1.12 run-summary format, or never asserted at all
+
 #### Breaking changes:
 - Dropped support for Python 3.8 (dbt-core 1.12 requires Python >= 3.9)
 - The snapshot materialization is now the dbt-core default implementation; custom overrides that patched the old copy may need review

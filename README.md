@@ -133,9 +133,17 @@ Access the local Vertica instance like:
     docker exec -it <docker_image_name> /opt/vertica/bin/vsql
 
 
-You need the pytest dbt adapter:
+Install the package with its test dependencies:
 
-    pip3 install  dbt-tests-adapter==1.5.0
+    pip3 install -e ".[test]"
+
+Point the test suite at your Vertica instance (defaults target the CI
+`verticadb-sample` host; override with env vars for local runs):
+
+    export VERTICA_HOST=localhost VERTICA_PORT=5433 \
+           VERTICA_USER=dbadmin VERTICA_PASSWORD='' VERTICA_DATABASE=vdb
+    # grants tests need three extra users to exist in the database:
+    export DBT_TEST_USER_1=dbt_test_user_1 DBT_TEST_USER_2=dbt_test_user_2 DBT_TEST_USER_3=dbt_test_user_3
 
 Run tests via:
   
