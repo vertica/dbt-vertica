@@ -6,30 +6,52 @@
 ### 1.12.0
 =======
 #### Features:
-- Upgrade to support dbt-core v1.12
-- Added `microbatch` incremental strategy (`event_time` / `begin` / `batch_size`, batched backfills via delete+insert per event-time window)
-- Sample mode (`dbt run --sample=...`) works out of the box via event-time filtering
-- Modernized snapshots to the dbt-core 1.9+ feature set by adopting the default snapshot materialization:
-  - YAML-defined snapshots (`snapshots/*.yml` with `relation:`)
-  - `check` strategy (check_cols) now supported
-  - `hard_deletes: ignore | invalidate | new_record`
-  - `dbt_valid_to_current` and `snapshot_meta_column_names`
-  - multi-column `unique_key`
-- Added SQL UDF support via dbt function models (`functions/` directory): scalar SQL functions are created with `CREATE OR REPLACE FUNCTION ... RETURN ...`. Python/JavaScript and aggregate UDFs raise a clear error (they require compiled Vertica UDx libraries)
-- Bump `dbt-core` dependency to `>=1.12.0,<1.13`, add explicit `dbt-adapters` / `dbt-common` dependencies, and move test-only dependencies (`dbt-tests-adapter`, `pytest`, `python-dotenv`) to the `test` extra
-- Removed Fusion-incompatible Jinja (stray top-level `set` block) so dbt 1.12's Fusion-conformance deprecation warnings are clean
+- Added support for [`dbt-core version 1.12.0`](https://github.com/dbt-labs/dbt-core/releases/tag/v1.12.0) according to DBT guidelines
+- Support for incremental model strategy 'microbatch'
+- Support for sample mode (`dbt run --sample`)
+- Support for YAML-defined snapshots (`snapshots/*.yml`)
+- Support for snapshot strategy 'check' (check_cols)
+- Support for snapshot configs:
+  - hard_deletes (ignore, invalidate, new_record)
+  - dbt_valid_to_current
+  - snapshot_meta_column_names
+  - multi-column unique_key
+- Support for SQL scalar UDFs via dbt function models (`functions/` directory)
+- Bump `dbt-core` dependency to `>=1.12.0,<1.13` and added explicit `dbt-adapters` and `dbt-common` dependencies
+- Moved test-only dependencies (`dbt-tests-adapter`, `pytest`, `python-dotenv`, `freezegun`) to the `test`/`dev` extras
 
-#### Fixes (found during live-Vertica validation of the 1.12 feature set):
-- `data_type_code_to_name` referenced a non-existent `vertica_python.vertica.connector` module and crashed any code path using column-schema introspection (e.g. the 1.12 snapshot flow); now uses `vertica_python.datatypes.getTypeName`
-- `vertica__snapshot_get_time` now casts to plain `timestamp` — previously `current_timestamp` (timestamptz) broke snapshot staging UNIONs against `date`/`timestamp` source columns
-- `vertica__array_construct` produced invalid SQL (`ARRAY[INT]`) for empty arrays; now emits `ARRAY[]::ARRAY[<type>]`
-- Removed stale copies of the unit-test materialization and `get_expected_sql`/`get_fixture_sql` macros whose old 2-argument signature broke dbt 1.12 unit tests (`column_name_to_quoted` support comes from the defaults now)
-- Test harness: `tests/conftest.py` profile now overridable via `VERTICA_HOST/PORT/USER/PASSWORD/DATABASE` env vars; fixed grants/ephemeral/concurrency/unit-test suites that asserted Postgres-specific SQL, the pre-1.12 run-summary format, or never asserted at all
+#### Fixes:
+- Implemented `data_type_code_to_name` using `vertica_python.datatypes.getTypeName` (previous implementation referenced a non-existent module)
+- Cast `vertica__snapshot_get_time` to timestamp to fix snapshot staging against date/timestamp source columns
+- Fixed `vertica__array_construct` for empty arrays
+- Removed outdated copies of the snapshot and unit-test materializations and fixture macros in favor of the dbt default implementations
+- Removed a stray top-level Jinja `set` block (Fusion-conformance deprecation warning)
+- Test profile in `tests/conftest.py` is now overridable via VERTICA_* environment variables
+- Added new functional tests and parameterized them by overriding fixtures:
+  - TestVerticaMicrobatch
+  - TestVerticaSampleMode
+  - TestVerticaSnapshot
+  - TestVerticaSnapshotCheck
+  - TestVerticaSnapshotColumnNames
+  - TestVerticaSnapshotColumnNamesFromDbtProject
+  - TestVerticaSnapshotInvalidColumnNames
+  - TestVerticaSnapshotDbtValidToCurrent
+  - TestVerticaSnapshotMultiUniqueKey
+  - TestVerticaSnapshotNewRecordTimestampMode
+  - TestVerticaSnapshotNewRecordCheckMode
+  - TestVerticaSnapshotNewRecordDbtValidToCurrent
+  - TestVerticaSqlUdfs
+- Fixed existing functional tests for dbt 1.12:
+  - TestConcurenncyVertica
+  - TestEphemeralMultiVertica
+  - TestInvalidGrantsVertica
+  - TestVerticaUnitTestInvalidInput
+  - TestArrayConcat
 
 #### Breaking changes:
 - Dropped support for Python 3.8 (dbt-core 1.12 requires Python >= 3.9)
-- The snapshot materialization is now the dbt-core default implementation; custom overrides that patched the old copy may need review
-- `dbt-tests-adapter`, `pytest` and `python-dotenv` are no longer installed with the package; install with `pip install dbt-vertica[test]` for development
+- The snapshot materialization now uses the dbt default implementation; custom overrides that patched the old copy may need review
+- `dbt-tests-adapter`, `pytest` and `python-dotenv` are no longer installed with the package; use `pip install dbt-vertica[test]` for development
 
 ### 1.8.5
 =======
