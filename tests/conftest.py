@@ -76,11 +76,11 @@ def vertica_target():
     return {
        'type': 'vertica',
         'threads': 1,
-        'host': 'verticadb-sample',
-        'username': 'dbadmin',
-        'password': '',
-        'database': 'vdb',
-        'port': 5433,
+        'host': os.getenv('VERTICA_HOST', 'verticadb-sample'),
+        'username': os.getenv('VERTICA_USER', 'dbadmin'),
+        'password': os.getenv('VERTICA_PASSWORD', ''),
+        'database': os.getenv('VERTICA_DATABASE', 'vdb'),
+        'port': int(os.getenv('VERTICA_PORT', '5433')),
     }
 
 @pytest.fixture(autouse=True)

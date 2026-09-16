@@ -1,67 +1,18 @@
-import pytest
-from dbt.tests.util import run_dbt, run_dbt_and_capture
+# Copyright (c) [2018-2025]  Micro Focus or one of its affiliates.
 
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
 
-my_model_sql = """
-select
-    tested_column from {{ ref('my_upstream_model')}}
-"""
+#    http://www.apache.org/licenses/LICENSE-2.0
 
-my_upstream_model_sql = """
-select 1 as tested_column
-"""
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-test_my_model_yml = """
-unit_tests:
-  - name: test_invalid_input_column_name
-    model: my_model
-    given:
-      - input: ref('my_upstream_model')
-        rows:
-          - {invalid_column_name: 1}
-    expect:
-      rows:
-          - {tested_column: 1}
-  - name: test_invalid_expect_column_name
-    model: my_model
-    given:
-      - input: ref('my_upstream_model')
-        rows:
-          - {invalid_column_name: 1}
-    expect:
-      rows:
-          - {tested_column: 1}
-"""
-
-
-class BaseUnitTestInvalidInput:
-    @pytest.fixture(scope="class")
-    def models(self):
-        return {
-            "my_model.sql": my_model_sql,
-            "my_upstream_model.sql": my_upstream_model_sql,
-            "unit_tests.yml": test_my_model_yml,
-        }
-
-    def test_invalid_input(self, project):
-        results = run_dbt(["run"])
-        assert len(results) == 2
-
-        _, out = run_dbt_and_capture(
-            ["test", "--select", "test_name:test_invalid_input_column_name"], expect_pass=False
-        )
-        assert (
-            "Invalid column name: 'invalid_column_name' in unit test fixture for 'my_upstream_model'."
-            in out
-        )
-
-        _, out = run_dbt_and_capture(
-            ["test", "--select", "test_name:test_invalid_expect_column_name"], expect_pass=False
-        )
-        assert (
-            "Invalid column name: 'invalid_column_name' in unit test fixture for expected output."
-            in out
-        )
+from dbt.tests.adapter.unit_testing.test_invalid_input import BaseUnitTestInvalidInput
 
 
 class TestVerticaUnitTestInvalidInput(BaseUnitTestInvalidInput):

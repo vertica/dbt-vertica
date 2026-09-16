@@ -13,7 +13,7 @@
     Get the current time cross-db
 #}
 {% macro vertica__snapshot_get_time() -%}
-  {{ current_timestamp() }}
+  {{ current_timestamp() }}::timestamp
 {%- endmacro %}
 
 

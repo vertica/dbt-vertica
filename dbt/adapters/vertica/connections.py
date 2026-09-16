@@ -239,4 +239,4 @@ class verticaConnectionManager(SQLConnectionManager):
     @classmethod
     def data_type_code_to_name(cls, type_code: Union[int, str]) -> str:
         assert isinstance(type_code, int)
-        return vertica_python.vertica.connector.constants.FIELD_ID_TO_NAME[type_code]
+        return vertica_python.datatypes.getTypeName(type_code, -1)

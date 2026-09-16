@@ -105,19 +105,29 @@ class BaseGrantsVertica(BaseGrants):
 
 class BaseInvalidGrantsVertica(BaseGrantsVertica):
 
+    def grantee_does_not_exist_error(self):
+        return "exists"  # Vertica: No user or role "invalid_user" exists
+
+    def privilege_does_not_exist_error(self):
+        return "Invalid privilege type"
+
+    @pytest.fixture(scope="class")
+    def models(self):
+        return {"my_invalid_model.sql": my_invalid_model_sql}
+
     def test_invalid_grants(self, project, get_test_users, logs_dir):
-        
+
         # failure when grant to a user/role that doesn't exist
         yaml_file = self.interpolate_name_overrides(invalid_user_table_model_schema_yml)
         write_file(yaml_file, project.project_root, "models", "schema.yml")
-        (results, log_output) = run_dbt_and_capture(["--debug", "run"])
-        assert results,self.grantee_does_not_exist_error() in log_output
+        (results, log_output) = run_dbt_and_capture(["--debug", "run"], expect_pass=False)
+        assert self.grantee_does_not_exist_error() in log_output
 
         # failure when grant to a privilege that doesn't exist
         yaml_file = self.interpolate_name_overrides(invalid_privilege_table_model_schema_yml)
         write_file(yaml_file, project.project_root, "models", "schema.yml")
-        (results, log_output) = run_dbt_and_capture(["--debug", "run"])
-        assert results,self.privilege_does_not_exist_error() in log_output
+        (results, log_output) = run_dbt_and_capture(["--debug", "run"], expect_pass=False)
+        assert self.privilege_does_not_exist_error() in log_output
 
 class TestInvalidGrantsVertica(BaseInvalidGrantsVertica,BaseInvalidGrants):
     pass

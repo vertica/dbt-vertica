@@ -22,15 +22,12 @@ from dbt.tests.util import run_dbt, check_relations_equal
 
 class TestEphemeralMultiVertica(BaseEphemeralMulti):
 
-    def test_ephemeral_multi_vertica(self, project):
+    def test_ephemeral_multi(self, project):
+        # Overrides the base test: the base asserts against compiled SQL with a
+        # hard-coded "dbt" database name and Postgres-style view DDL.
         run_dbt(["seed"])
         results = run_dbt(["run"])
         assert len(results) == 3
-        # check_relations_equal(project.adapter, ["SEED", "DEPENDENT", "DOUBLE_DEPENDENT", "SUPER_DEPENDENT"])
-        # check_relations_equal(project.adapter, ["seed", "dependent", "double_dependent", "super_dependent"])
-        # check_relations_equal(project.adapter, ["seed", "dependent", "double_dependent", "super_dependent"])
-     
- 
         check_relations_equal(project.adapter, ["seed", "dependent"])
         check_relations_equal(project.adapter, ["seed", "double_dependent"])
         check_relations_equal(project.adapter, ["seed", "super_dependent"])
