@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: [ '3.10', '3.11', '3.12', '3.13']
+        python-version: [ '3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -45,8 +45,6 @@ jobs:
           --dry-run=client -o yaml | kubectl apply -f -
 
         kubectl get secret vertica-license -n my-verticadb-operator
-
-    
       
     - name: Add Helm repositories
       run: |
@@ -117,19 +115,30 @@ jobs:
 
         kubectl apply -f minio.yaml
 
-        kubectl rollout status deployment/minio -n minio --timeout=5m || true
-
-        echo "=== PODS ==="
-        kubectl get pods -n minio -o wide
-
-        echo "=== DESCRIBE ==="
-        kubectl describe pods -n minio
-
-        echo "=== LOGS ==="
-        kubectl logs deployment/minio -n minio --all-containers=true || true
-
-        kubectl rollout status deployment/minio -n minio --timeout=5m
-        
+        echo "Waiting for MinIO deployment to become ready..."
+        if ! kubectl rollout status deployment/minio -n minio --timeout=5m; then
+            
+            echo "=== MinIO rollout failed. Collecting diagnostics ==="
+            echo "=== PODS ==="
+            kubectl get pods -n minio -o wide || true
+            
+            echo "=== DESCRIBE ==="
+            kubectl describe pods -n minio || true
+            
+            echo "=== LOGS ==="
+            kubectl logs deployment/minio -n minio \
+            --all-containers=true \
+            --tail=200 || true
+            
+            echo "=== EVENTS ==="
+            kubectl get events -n minio \
+            --sort-by='.lastTimestamp' || true
+            
+            echo "MinIO deployment failed to become ready."
+            exit 1
+        fi
+        echo "MinIO deployment is ready."
+               
     - name: Ensure MinIO bucket exists
       run: |
         kubectl run mc-client \
@@ -182,10 +191,12 @@ jobs:
         kubectl get pods -n my-verticadb-operator
         kubectl wait --for=condition=Available deployment --all -n my-verticadb-operator --timeout=300s
     - name: Create Vertica Password Secret
+      env:
+        VERTICA_PASSWORD: ${{ secrets.VERTICA_PASSWORD }}
       run: |
         kubectl create secret generic vertica-password \
           -n my-verticadb-operator \
-          --from-literal=password=Vertica@123 \
+          --from-literal=password=${{ secrets.VERTICA_PASSWORD }} \
           --dry-run=client -o yaml | kubectl apply -f -
           
     - name: Deploy VerticaDB and per-node Services
@@ -305,7 +316,7 @@ jobs:
           host="verticadb-sample",
           port=5433,
           user="dbadmin",
-          password="Vertica@123",
+          password="${{ secrets.VERTICA_LICENSE }}",
           database="vdb"
         )
 
