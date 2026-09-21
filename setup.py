@@ -28,10 +28,10 @@ import os
 import sys
 import re
 
-# require python 3.9 or newer
-if sys.version_info < (3, 9):
+# require python 3.10 or newer
+if sys.version_info < (3, 10):
     print("Error: dbt does not support this version of Python.")
-    print("Please upgrade to Python 3.9 or higher.")
+    print("Please upgrade to Python 3.10 or higher.")
     sys.exit(1)
 
 
@@ -145,5 +145,5 @@ setup(
         "Topic :: Software Development :: Libraries :: Python Modules",
         "Operating System :: OS Independent"
     ],
-    python_requires=">=3.9.0",
+    python_requires=">=3.10.0",
 )
